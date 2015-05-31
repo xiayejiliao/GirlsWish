@@ -1,0 +1,31 @@
+项目介绍：
+	这是同舟的女生心愿安卓客户端代码，客户端一期主要实现摘心愿、发布心愿的功能
+	
+package介绍：
+	com.tongjo.girlswish：程序入口，主要包括自定义的单例Applicaiton
+	com.tongjo.girlswish.bean：继承Serialization的单元class，用类的方式对每一次网络请求到的数据进行封装，有利于GSON的解析
+	com.tongjo.girlswish.data：数据缓存，具包括内存缓存对应的操作，也包括Preference，SQLite，File操作等
+	com.tongjo.girlswish.network：网络连接，对应的网络连接参数设置
+	com.tongjo.girlswish.test：测试用例，一些测试用的东西都放在这边（最后发布的时候不需要用到的包）
+	com.tongjo.girlswish.ui：前端UI界面，主要是各个Activity所在的包，具体会按照功能模块再进行详细的划分
+	com.tongjo.girlswish.utils：自定义的工具类，包括字符串出来，图片处理，时间处理
+	com.tongjo.girlswish.widget：自定义的View组件，包括下拉刷新，等
+
+项目命名规范：
+	不要随便添加package,将每个类放到对应的package下
+	类命名时，每个Activity后面固定为Activity,类名应该能够体现这个类的功能，每个关键词的首字母为大写，关键词（不包括aActivity）尽量不要超过三个
+	命名Layout时，如果是Activity布局，前面声明为activity,后面跟上关键字，比如activity_maintab_main
+	标题的定义统一命名为titlebar加关键字比如titlebar_login
+	对于资源文件，自定义的drawable XML文件放在drawable文件夹下,图片看情况放在其他drawable-XXX文件下
+	
+代码书写规范：
+	每个类开头为该类介绍，说明该类的主要功能，以及其中可能的bug和后期可以改进的地方
+	函数上也说明一下函数的用途，通用的函数统一放到util这个包下面。
+
+	
+编码类型：
+	文中统一使用utf8编码格式，千万不要使用gbk
+	
+需要注意的地方：
+	push之前先pull一次，以防不小心覆盖别人的东西
+	写完的代码一定自己本地测试通过后在上传github
