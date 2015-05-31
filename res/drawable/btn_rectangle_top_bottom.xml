@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 主要实现在长方形的按钮时候按下的效果,上下四个边角都是圆角 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/rc_co6666_lblue" android:state_enabled="true" android:state_pressed="true"/>
+
+</selector>

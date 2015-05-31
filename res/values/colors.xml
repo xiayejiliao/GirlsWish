@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 黑色色系定义 -->
+    <color name="lblack">#666666</color>
+    <color name="mlblack">#333333</color>
+    <color name="black">#000000</color>
+    
+    <!-- 白色色系定义 -->
+    <color name="white">#ffffff</color>
+    <color name="lwhite">#f6f6f6</color>
+    <color name="llwhite">#d6d6d6</color>
+    
+    <!-- 透明色彩 -->
+    <color name="transparent">#00ffffff</color>
+    
+    <!-- drawable资源文件中使用的颜色 -->
+    <color name="lblue">#aaccee</color>
+    
+    <color name="rectangle_border">#c2c2c2</color>
+    <color name="line">#ff888888</color>
+</resources>

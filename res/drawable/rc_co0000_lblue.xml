@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 没有圆角 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+
+    <solid android:color="@color/lblue" />
+    
+     <!-- 设置边框 -->
+    <stroke
+        android:width="0dip"
+        android:color="@color/rectangle_border" />
+
+</shape>

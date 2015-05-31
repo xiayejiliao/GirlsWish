@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tongjo="http://schemas.android.com/apk/res/com.tongjo.girlswish"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="20px"
+            android:paddingBottom="20px"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:text="测试带有箭头的按钮以及自动填充背景的按钮组件" />
+
+            <com.tongjo.girlswish.widget.ArrayLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="20dip"
+                android:orientation="vertical" >
+
+                <com.tongjo.girlswish.widget.ButtonWithArrow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tongjo:iconvisiable="visiable"
+                    tongjo:lefttextValue="测试左边"
+                    tongjo:righttextValue="测试右边" />
+
+                <com.tongjo.girlswish.widget.ButtonWithArrow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tongjo:iconvisiable="gone"
+                    tongjo:lefttextValue="测试左边"
+                    tongjo:righttextValue="测试右边" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="带有边角的按钮测试3" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="带有边角的按钮测试4" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="带有边角的按钮测试5" />
+            </com.tongjo.girlswish.widget.ArrayLayout>
+
+            <com.tongjo.girlswish.widget.ArrayLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="20dip"
+                android:layout_marginTop="20dip"
+                android:orientation="vertical" >
+
+                <com.tongjo.girlswish.widget.ButtonWithArrow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tongjo:iconvisiable="visiable"
+                    tongjo:lefttextValue="测试左边"
+                    tongjo:righttextValue="测试右边" />
+            </com.tongjo.girlswish.widget.ArrayLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginTop="20dip"
+                android:text="测试圆形图片" />
+
+            <ImageView
+                android:id="@+id/test_image"
+                android:layout_width="180dip"
+                android:layout_height="180dip"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="20dip" />
+            
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginTop="20dip"
+                android:text="测试可清除输入内容的文本编辑框" />
+
+            <com.tongjo.girlswish.widget.ClearEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="20dip"
+                android:background="@drawable/rc_co6666_pd1111_lwhite"
+                android:padding="10dip"
+                tongjo:hint="请输入用户名" />
+
+            <com.tongjo.girlswish.widget.ClearEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="20dip"
+                android:layout_marginTop="20dip"
+                android:background="@drawable/rc_co6666_pd1111_lwhite"
+                android:padding="10dip"
+                tongjo:hint="请输入密码"
+                tongjo:password="true" />
+
+            
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
