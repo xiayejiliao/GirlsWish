@@ -33,7 +33,6 @@
         android:id="@+id/widget_arrow"
         android:layout_width="12.0dip"
         android:layout_height="12.0dip"
-        
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:src="@drawable/into_icon" />
@@ -42,7 +41,7 @@
         android:id="@+id/widget_righttext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10.0dip"
+        android:paddingRight="10.0dip"
         android:layout_centerVertical="true"
         android:singleLine="true"
         android:gravity="right"

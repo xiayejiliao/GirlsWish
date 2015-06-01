@@ -27,12 +27,14 @@ public class ButtonWithArrow extends LinearLayout{
 	private final static String TAG = "ButtonWithArrow";
 	private Context mContext;
 	private ImageView mIcon;
+	private ImageView mArrow;
 	private TextView mLeftText;
 	private TextView mRightText;
 	
-	//用于设置左边的图片是否显示
+	//用于设置左边的图片是否显示,注意insivible与gone的区别，invisible的位置仍然在，gone是连位置都不在
 	public static final int VISIBLE = 0x001;
 	public static final int GONE = 0x002;
+	public static final int INVISIBLE = 0x003;
 	
 	public ButtonWithArrow(Context context) {
 		super(context);
@@ -66,6 +68,7 @@ public class ButtonWithArrow extends LinearLayout{
 		mLeftText = (TextView)mView.findViewById(R.id.widget_lefttext);
 		mRightText = (TextView)mView.findViewById(R.id.widget_righttext);
 		mIcon = (ImageView)mView.findViewById(R.id.widget_icon);
+		mArrow = (ImageView)mView.findViewById(R.id.widget_arrow);
 		
 		TypedArray typeArray = mContext.obtainStyledAttributes(attrs,
 				R.styleable.ButtonWithArrow);
@@ -124,7 +127,23 @@ public class ButtonWithArrow extends LinearLayout{
 					mIcon.setVisibility(View.VISIBLE);
 				}else if(resouceId == GONE){
 					mIcon.setVisibility(View.GONE);
+				}else if(resouceId == INVISIBLE){
+					mIcon.setVisibility(View.INVISIBLE);
 				}
+				break;
+			}
+			case R.styleable.ButtonWithArrow_arrowvisiable:{
+				int resouceId = 0;
+				//默认为1，显示箭头图片
+				resouceId = typeArray.getInt(R.styleable.ButtonWithArrow_arrowvisiable, 1);
+				if(resouceId == VISIBLE){
+					mArrow.setVisibility(View.VISIBLE);
+				}else if(resouceId == GONE){
+					mArrow.setVisibility(View.GONE);
+				}else if(resouceId == INVISIBLE){
+					mArrow.setVisibility(View.INVISIBLE);
+				}
+				break;
 			}
 			}
 		}

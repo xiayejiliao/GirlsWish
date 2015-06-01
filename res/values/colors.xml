@@ -17,5 +17,6 @@
     <color name="lblue">#aaccee</color>
     
     <color name="rectangle_border">#c2c2c2</color>
+    <color name="head_text">#0e5986</color>
     <color name="line">#ff888888</color>
 </resources>

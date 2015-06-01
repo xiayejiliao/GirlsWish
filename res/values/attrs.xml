@@ -11,6 +11,12 @@
         <attr name="righttextValue" format="string" />
         <attr name="iconsrc" format="reference" />
         <attr name="iconvisiable">
+            <flag name="invisible" value="3" />
+            <flag name="gone" value="2" />
+            <flag name="visiable" value="1" />
+        </attr>
+        <attr name="arrowvisiable">
+            <flag name="invisible" value="3" />
             <flag name="gone" value="2" />
             <flag name="visiable" value="1" />
         </attr>
