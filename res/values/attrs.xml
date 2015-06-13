@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<!-- 定义共用的东西，不同styleable里的name不能重复 -->
+
+    <!-- 定义共用的东西，不同styleable里的name不能重复 -->
     <attr name="textColor" format="color" />
     <attr name="textSize" format="dimension" />
 
@@ -21,12 +22,15 @@
             <flag name="visiable" value="1" />
         </attr>
     </declare-styleable>
-    
     <declare-styleable name="ClearEditText">
         <attr name="textColor" />
         <attr name="textSize" />
         <attr name="hint" format="string" />
         <attr name="password" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="LinkTextView">
+        <attr name="linktext" format="string"></attr>
+        <attr name="clickcolor" format="color"></attr>
     </declare-styleable>
 
 </resources>

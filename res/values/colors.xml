@@ -12,7 +12,8 @@
     
     <!-- 透明色彩 -->
     <color name="transparent">#00ffffff</color>
-    
+    <!-- 红色系列 -->
+    <color name="red">#FF0000</color>
     <!-- drawable资源文件中使用的颜色 -->
     <color name="lblue">#aaccee</color>
     
