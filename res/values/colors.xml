@@ -21,6 +21,9 @@
     <color name="head_text">#0e5986</color>
     <color name="line">#ff888888</color>
     
+    <!-- 绿色色系系列 -->
+    <color name="lgreen">#00bb00</color>
+    <color name="green">#00ff00</color>
     
     <color name="colorPrimary">#F50057</color>
     <color name="colorPrimaryDark">#C51162</color>
