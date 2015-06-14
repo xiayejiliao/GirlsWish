@@ -4,22 +4,24 @@ import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.widget.TextWithImageButton;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 /**
- * 基本Activity，主要是提供了操作ActionBar的方法
+ * 基本FragmentActivity，主要是提供了操作ActionBar的方法
+ * 
+ * 后续应该还会添加一些Fragment相关的管理
+ * 
  * Copyright 2015 
  * @author preparing
  * @date 2015-6-14
  */
-public class BaseActivity extends Activity {
+public class BaseFragmentActivity extends FragmentActivity{
 	/** 主要用来判断当前Activity是否在前端 */
 	public static boolean isFront = false;
 
@@ -63,7 +65,7 @@ public class BaseActivity extends Activity {
 		backBtnContainer.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				BaseActivity.this.finish();
+				BaseFragmentActivity.this.finish();
 			}
 		});
 	}

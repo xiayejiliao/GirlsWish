@@ -2,6 +2,6 @@
 <!-- 正常显示透明，只有触摸到了才会有背景显示 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/re_co0000_pd0000_black" android:state_enabled="true" android:state_pressed="true"/>
+    <item android:drawable="@drawable/btn_pressed" android:state_enabled="true" android:state_pressed="true"/>
 
 </selector>

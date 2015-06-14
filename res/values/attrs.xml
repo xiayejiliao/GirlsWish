@@ -2,6 +2,7 @@
 <resources>
 
     <!-- 定义共用的东西，不同styleable里的name不能重复 -->
+    <attr name="text" format="string" />
     <attr name="textColor" format="color" />
     <attr name="textSize" format="dimension" />
 
@@ -31,6 +32,15 @@
     <declare-styleable name="LinkTextView">
         <attr name="linktext" format="string"></attr>
         <attr name="clickcolor" format="color"></attr>
+    </declare-styleable>
+    
+    <declare-styleable name="TextWithImageButton">
+        <attr name="text" />
+        <attr name="textColor" />
+        <attr name="textSize" />
+        <attr name="imageSrc" format="reference"></attr>
+        <attr name="imageClickSrc" format="reference"></attr>
+        <attr name="textClickColor" format="color"></attr>
     </declare-styleable>
 
 </resources>
