@@ -1,6 +1,8 @@
 package com.tongjo.girlswish.ui;
 
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.ui.TakePicturePopup.ChoicedItem;
+import com.tongjo.girlswish.ui.TakePicturePopup.onChoiced;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -35,12 +37,12 @@ public class RegisterActivity2 extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.bt_register2_sure:
-			takePicturePopup.update();;
+			//takePicturePopup.dismiss();
 			break;
 		case R.id.iv_register2_personico:
 			takePicturePopup =new TakePicturePopup(this);
-			takePicturePopup.showAsDropDown(v,0,-takePicturePopup.getHeight());;
-			System.out.println("----------");
+			takePicturePopup.showAsDropDown(v,0,-takePicturePopup.getHeight());
+			takePicturePopup.setOutsideTouchable(true);
 			break;
 		default:
 			break;
