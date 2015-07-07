@@ -1,9 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tongjo="http://schemas.android.com/apk/res/com.tongjo.girlswish"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="androidhive.info.materialdesign.activity.HomeFragment" >
+    android:layout_height="match_parent" >
 
     <RelativeLayout
         android:id="@+id/rl_fragme_main"
@@ -37,57 +35,19 @@
             android:textSize="14dp" />
     </RelativeLayout>
 
-    <TabHost
-        android:id="@android:id/tabhost"
+    <com.viewpagerindicator.TabPageIndicator
+        android:id="@+id/indicator_fragme_wishs"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:theme="@style/StyledIndicators"
+        android:layout_below="@id/rl_fragme_main">
+    </com.viewpagerindicator.TabPageIndicator>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpage_fragme_wishs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_fragme_main" >
-
-		<TextView
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="fadsfadfddsafd" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"/>
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
-                <LinearLayout
-                    android:id="@+id/tabs1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="我是tab1" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tabs2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="我是tab2" />
-                </LinearLayout>
-            </FrameLayout>
-        </RelativeLayout>
-    </TabHost>
+        android:layout_below="@id/indicator_fragme_wishs" >
+    </android.support.v4.view.ViewPager>
 
 </RelativeLayout>

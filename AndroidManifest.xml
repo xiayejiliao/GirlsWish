@@ -16,7 +16,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/DefaultStyle" >
+        android:theme="@style/DefaultStyle">
         <activity
             android:name="com.tongjo.girlswish.ui.MainTabActivity"
             android:label="@string/app_name" >
