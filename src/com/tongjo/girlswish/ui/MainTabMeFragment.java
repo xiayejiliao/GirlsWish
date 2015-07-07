@@ -21,9 +21,11 @@ import com.viewpagerindicator.TabPageIndicator;
 public class MainTabMeFragment extends BaseFragment {
 	private ViewPager viewpager;
 	private TabPageIndicator tabPageIndicator;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_me, container, false);
+
 		viewpager = (ViewPager) rootView.findViewById(R.id.viewpage_fragme_wishs);
 		tabPageIndicator=(TabPageIndicator)rootView.findViewById(R.id.indicator_fragme_wishs);
 		viewpager.setAdapter(new MyPages());
