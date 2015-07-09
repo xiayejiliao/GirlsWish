@@ -1,5 +1,6 @@
 package com.tongjo.girlswish.ui;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 import org.apache.http.Header;
@@ -7,6 +8,10 @@ import org.apache.http.Header;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -19,6 +24,7 @@ import com.tongjo.girlswish.widget.LinkTextView;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,29 +66,25 @@ public class LoginActivity extends BaseActivity implements OnClickListener{
 		switch (v.getId()) {
 		case R.id.bt_login_sure:
 			RequestParams requestParams=new RequestParams();
-			requestParams.add("tel", "1234");
-			requestParams.add("password", "123");
+			requestParams.add("tel", et_phone.getText().toString());
+			requestParams.add("password", et_pass.getText().toString());
 			asyncHttpClient.post("http://api.wish.tongjo.com/login", requestParams, new BaseJsonHttpResponseHandler<TJResponse<TJUserInfo>>() {
 
 				@Override
 				public void onFailure(int arg0, Header[] arg1, Throwable arg2, String arg3, TJResponse<TJUserInfo> arg4) {
-					// TODO Auto-generated method stub
 					
 				}
 
 				@Override
 				public void onSuccess(int arg0, Header[] arg1, String arg2, TJResponse<TJUserInfo> arg3) {
-					// TODO Auto-generated method stub
-					
+					System.out.println(arg3.getResult().getCode());
 				}
 
 				@Override
 				protected TJResponse<TJUserInfo> parseResponse(String arg0, boolean arg1) throws Throwable {
-					// TODO Auto-generated method stub
-					return null;
+					Type type = new TypeToken<TJResponse<TJUserInfo>>(){}.getType();
+					return new Gson().fromJson(arg0, type);
 				}
-
-	
 			});
 			break;
 
