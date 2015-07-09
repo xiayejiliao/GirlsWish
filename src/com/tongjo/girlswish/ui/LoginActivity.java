@@ -1,13 +1,18 @@
 package com.tongjo.girlswish.ui;
 
+import java.lang.reflect.Type;
+
 import org.apache.http.Header;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
+import com.tongjo.bean.TJResponse;
+import com.tongjo.bean.TJUserInfo;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.widget.LinkTextView;
@@ -57,28 +62,27 @@ public class LoginActivity extends BaseActivity implements OnClickListener{
 			RequestParams requestParams=new RequestParams();
 			requestParams.add("tel", "1234");
 			requestParams.add("password", "123");
-			asyncHttpClient.post("http://api.wish.tongjo.com/login", requestParams, new BaseJsonHttpResponseHandler<JsonObject>() {
+			asyncHttpClient.post("http://api.wish.tongjo.com/login", requestParams, new BaseJsonHttpResponseHandler<TJResponse<TJUserInfo>>() {
 
 				@Override
-				public void onFailure(int arg0, Header[] arg1, Throwable arg2, String arg3, JsonObject arg4) {
+				public void onFailure(int arg0, Header[] arg1, Throwable arg2, String arg3, TJResponse<TJUserInfo> arg4) {
 					// TODO Auto-generated method stub
-					System.out.println("----------"+arg3);
+					
 				}
 
 				@Override
-				public void onSuccess(int arg0, Header[] arg1, String arg2, JsonObject arg3) {
+				public void onSuccess(int arg0, Header[] arg1, String arg2, TJResponse<TJUserInfo> arg3) {
 					// TODO Auto-generated method stub
-					System.out.println("+++++++++++"+arg2);
+					
 				}
 
 				@Override
-				protected JsonObject parseResponse(String arg0, boolean arg1) throws Throwable {
+				protected TJResponse<TJUserInfo> parseResponse(String arg0, boolean arg1) throws Throwable {
 					// TODO Auto-generated method stub
-					System.out.println("!!!!!!!!"+arg0);
 					return null;
 				}
 
-		
+	
 			});
 			break;
 
