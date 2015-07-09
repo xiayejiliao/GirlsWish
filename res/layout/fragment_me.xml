@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tongjo="http://schemas.android.com/apk/res/com.tongjo.girlswish"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
