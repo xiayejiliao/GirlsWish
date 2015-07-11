@@ -7,7 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName="message")
 public class TJMessage {
-	@DatabaseField(generatedId=true)
+	@DatabaseField(id=true,index=true)
 	private UUID _id;
 	@DatabaseField
 	private int type;

@@ -3,6 +3,7 @@ package com.tongjo.db;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,10 +28,10 @@ public class OrmLiteHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "parkshare.db";
 	private static final int DATABASE_VERSION = 1;
 	
-	private Dao<TJUserInfo, Integer> tjuserinfoDao;
-	private Dao<TJSchool, Integer> tjschoolDao;
-	private Dao<TJWish, Integer> tjwishDao;
-	private Dao<TJMessage, Integer> tjmessageDao;
+	private Dao<TJUserInfo, UUID> tjuserinfoDao;
+	private Dao<TJSchool, UUID> tjschoolDao;
+	private Dao<TJWish, UUID> tjwishDao;
+	private Dao<TJMessage, UUID> tjmessageDao;
 
 	public OrmLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -65,7 +66,7 @@ public class OrmLiteHelper extends OrmLiteSqliteOpenHelper {
 			e.printStackTrace();
 		}
 	}
-	public Dao<TJUserInfo, Integer> getTJUserInfoDao() {
+	public Dao<TJUserInfo, UUID> getTJUserInfoDao() {
 		if(tjuserinfoDao==null){
 			try {
 				tjuserinfoDao=getDao(TJUserInfo.class);
@@ -78,7 +79,7 @@ public class OrmLiteHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return tjuserinfoDao;
 	}
-	public Dao<TJSchool, Integer> getTJSchoolDao() {
+	public Dao<TJSchool, UUID> getTJSchoolDao() {
 		if(tjschoolDao==null){
 			try {
 				tjschoolDao=getDao(TJSchool.class);
@@ -89,7 +90,7 @@ public class OrmLiteHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return tjschoolDao;
 	}
-	public Dao<TJWish, Integer> getTJWishDao() {
+	public Dao<TJWish, UUID> getTJWishDao() {
 		if(tjwishDao==null){
 			try {
 				tjwishDao=getDao(TJWish.class);
@@ -100,7 +101,7 @@ public class OrmLiteHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return tjwishDao;
 	}
-	public Dao<TJMessage, Integer> getTJMessageDao() {
+	public Dao<TJMessage, UUID> getTJMessageDao() {
 		if(tjmessageDao==null){
 			try {
 				tjmessageDao=getDao(TJMessage.class);

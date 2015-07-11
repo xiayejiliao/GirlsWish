@@ -7,7 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName="school")
 public class TJSchool {
-	@DatabaseField(generatedId=true)
+	@DatabaseField(id=true,index=true)
 	private UUID _id;
 	@DatabaseField
 	private String name;

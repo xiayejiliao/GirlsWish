@@ -2,12 +2,13 @@ package com.tongjo.bean;
 
 import java.util.UUID;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName="userinfo")
 public class TJUserInfo {
-	@DatabaseField(generatedId=true)
+	@DatabaseField(id=true,index=true)
 	private UUID _id;
 	@DatabaseField
 	private String email;

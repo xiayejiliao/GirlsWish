@@ -7,7 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName="wish")
 public class TJWish {
-	@DatabaseField(generatedId=true)
+	@DatabaseField(id=true,index=true)
 	private UUID _id;
 	@DatabaseField(foreign=true,foreignAutoRefresh=true)
 	private TJUserInfo creatorUser;

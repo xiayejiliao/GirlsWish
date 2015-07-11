@@ -5,6 +5,8 @@ package com.tongjo.girlswish.utils;
  * @date 2015-7-8
  */
 public class AppConstant {
+	//path
+	
 	//SharedPreferences
 	public static final String USER_PHONE="user_pohone";
 	public static final String USER_PASSWORD="user_password";
