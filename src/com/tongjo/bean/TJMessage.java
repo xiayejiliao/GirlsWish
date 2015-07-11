@@ -1,19 +1,30 @@
 package com.tongjo.bean;
 
+import java.util.UUID;
+
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName="message")
 public class TJMessage {
-	private String _id;
+	@DatabaseField(id=true,index=true)
+	private UUID _id;
+	@DatabaseField
 	private int type;
+	@DatabaseField
 	private String content;
+	@DatabaseField(foreign=true,foreignAutoRefresh=true)
 	private TJWish wish;
+	@DatabaseField
 	private String messageUrl;
 	public TJMessage() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public String get_id() {
+	public UUID get_id() {
 		return _id;
 	}
-	public void set_id(String _id) {
+	public void set_id(UUID _id) {
 		this._id = _id;
 	}
 	public int getType() {

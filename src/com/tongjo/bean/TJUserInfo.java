@@ -1,22 +1,37 @@
 package com.tongjo.bean;
 
+import java.util.UUID;
+
+import com.j256.ormlite.field.DataType;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName="userinfo")
 public class TJUserInfo {
-	private String _id;
+	@DatabaseField(id=true,index=true)
+	private UUID _id;
+	@DatabaseField
 	private String email;
+	@DatabaseField
 	private String tel;
+	@DatabaseField
 	private String realname;
+	@DatabaseField
 	private int gender;
+	@DatabaseField
 	private String nickname;
+	@DatabaseField
 	private String avatarUrl;
+	@DatabaseField(foreign=true,foreignAutoRefresh=true)
 	private TJSchool school;
 	public TJUserInfo() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public String get_id() {
+	public UUID get_id() {
 		return _id;
 	}
-	public void set_id(String _id) {
+	public void set_id(UUID _id) {
 		this._id = _id;
 	}
 	public String getEmail() {

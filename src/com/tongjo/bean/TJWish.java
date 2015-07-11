@@ -1,24 +1,39 @@
 package com.tongjo.bean;
 
+import java.util.UUID;
+
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName="wish")
 public class TJWish {
-	private String _id;
+	@DatabaseField(id=true,index=true)
+	private UUID _id;
+	@DatabaseField(foreign=true,foreignAutoRefresh=true)
 	private TJUserInfo creatorUser;
+	@DatabaseField(foreign=true,foreignAutoRefresh=true)
 	private TJUserInfo pickerUser;
+	@DatabaseField
 	private String content;
+	@DatabaseField
 	private int isCompleted;
+	@DatabaseField
 	private String createdTime;
+	@DatabaseField
 	private int isPicked;
+	@DatabaseField
 	private String pickedTime;
+	@DatabaseField
 	private String backgroundColor;
 	
 	public TJWish() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public String get_id() {
+	public UUID get_id() {
 		return _id;
 	}
-	public void set_id(String _id) {
+	public void set_id(UUID _id) {
 		this._id = _id;
 	}
 	public TJUserInfo getCreatorUser() {
