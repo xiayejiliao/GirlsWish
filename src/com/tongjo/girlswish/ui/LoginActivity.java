@@ -1,6 +1,7 @@
 package com.tongjo.girlswish.ui;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,6 +32,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.db.OrmLiteHelper;
@@ -42,6 +45,7 @@ import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.widget.LinkTextView;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -85,16 +89,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		iv_personico.setOnClickListener(this);
 		ltv_forgetpass.setOnClickListener(this);
 		ltv_register.setOnClickListener(this);
-		syncHttpClient = ((BaseApplication) getApplication()).getSyncHttpClient();
+		et_phone.setText((String) SpUtils.get(getApplicationContext(), AppConstant.USER_PHONE, ""));
+
+		// 异步网络请求客户端
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 
+		// 初始化数据数据持久化
 		ormLiteHelper = OpenHelperManager.getHelper(getApplicationContext(), OrmLiteHelper.class);
 		tjuserinfoDao = ormLiteHelper.getTJUserInfoDao();
 
-		et_phone.setText((String) SpUtils.get(getApplicationContext(), AppConstant.USER_PHONE, ""));
+		// 配置图像下载工具
 		ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(this);
-
-		// Initialize ImageLoader with configuration.
 		ImageLoader.getInstance().init(configuration);
 	}
 
@@ -118,11 +123,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 						TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
 						if (response.getResult().getCode() == 0) {
 							try {
+								// 保存用户数据到sqllite
 								tjuserinfoDao.createIfNotExists(response.getData());
 							} catch (SQLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							// 将手机号、密码、登陆状态，登陆用户的uuid保存到SharedPreferences
 							SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, tel);
 							SpUtils.put(getApplicationContext(), AppConstant.USER_PASSWORD, password);
 							SpUtils.put(getApplicationContext(), AppConstant.USER_LOGINSTATE, LoginState.LOGIN);
@@ -130,41 +137,39 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 							final String iconpath = getFilesDir().toString() + "/image/usericon.jpg";
 							SpUtils.put(getApplicationContext(), AppConstant.USER_ICONPATH, iconpath);
 
-							String[] allowedContentTypes = new String[] { "image/png", "image/jpeg" };
-							URL urlicon = null;
-							try {
-								urlicon = new URL(response.getData().getAvatarUrl());
-							} catch (MalformedURLException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							System.out.println(urlicon.toString());
+							// 登陆成功后下载图像并保存在iconpath
+							ImageLoader.getInstance().loadImage(response.getData().getAvatarUrl(), new ImageSize(200, 200), new SimpleImageLoadingListener() {
+								public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+									iv_personico.setImageBitmap(loadedImage);
+									// 保存图像
+									CompressFormat format = Bitmap.CompressFormat.JPEG;
+									try {
+										File file = new File(iconpath);
+										if (file.exists())
+											file.delete();
+										file.createNewFile();
+										OutputStream stream = new FileOutputStream(file);
+										loadedImage.compress(format, 100, stream);
+										stream.close();
+									} catch (IOException e) {
+										Intent intent = new Intent();
+										intent.putExtra(AppConstant.USER_ICONPATH, "");
+										setResult(AppConstant.FORRESULT_LOG_OK, intent);
+										finish();
+										e.printStackTrace();
+									}
+									Intent intent = new Intent();
+									intent.putExtra(AppConstant.USER_ICONPATH, iconpath);
+									setResult(AppConstant.FORRESULT_LOG_OK, intent);
+									finish();
+								};
 
-							ImageLoader.getInstance().loadImage(urlicon.toString(),new ImageSize(200, 200), new com.nostra13.universalimageloader.core.listener.ImageLoadingListener() {
-								
-								@Override
-								public void onLoadingStarted(String arg0, View arg1) {
-									// TODO Auto-generated method stub
-									
-								}
-								
-								@Override
-								public void onLoadingFailed(String arg0, View arg1, FailReason arg2) {
-									// TODO Auto-generated method stub
-									
-								}
-								
-								@Override
-								public void onLoadingComplete(String arg0, View arg1, Bitmap arg2) {
-									// TODO Auto-generated method stub
-									
-								}
-								
-								@Override
-								public void onLoadingCancelled(String arg0, View arg1) {
-									// TODO Auto-generated method stub
-									
-								}
+								public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+									Intent intent = new Intent();
+									intent.putExtra(AppConstant.USER_ICONPATH, "");
+									setResult(AppConstant.FORRESULT_LOG_OK, intent);
+									finish();
+								};
 							});
 
 						} else {

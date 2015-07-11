@@ -16,7 +16,12 @@ import com.tongjo.bean.TJMessage;
 import com.tongjo.bean.TJSchool;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
-
+/**
+ * 数据持久工具。
+ * @author 16ren
+ * @data 2015/7/11
+ * 
+ */
 public class OrmLiteHelper extends OrmLiteSqliteOpenHelper {
 	private static final String TAG = "DatabaseHelper";
 	private static final String DATABASE_NAME = "parkshare.db";
