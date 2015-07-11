@@ -37,4 +37,6 @@
     <string name="updated_just_now">刚刚更新</string>
     <string name="time_error">时间有问题</string>
 
+    <!-- 消息界面 -->
+    <string name="delete">删除</string>
 </resources>

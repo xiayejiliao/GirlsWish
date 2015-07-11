@@ -14,6 +14,7 @@
     <color name="transparent">#00ffffff</color>
     <!-- 红色系列 -->
     <color name="red">#FF0000</color>
+    <color name="lred">#FF9999</color>
     <!-- drawable资源文件中使用的颜色 -->
     <color name="lblue">#aaccee</color>
     
@@ -24,6 +25,7 @@
     <!-- 绿色色系系列 -->
     <color name="lgreen">#00bb00</color>
     <color name="green">#00ff00</color>
+    <color name="llgreen">#00CC99</color>
     
     <color name="colorPrimary">#F50057</color>
     <color name="colorPrimaryDark">#C51162</color>
@@ -44,4 +46,11 @@
     <color name="vpi__bright_foreground_disabled_holo_light">#ffb2b2b2</color>
     <color name="vpi__bright_foreground_inverse_holo_dark">@color/vpi__bright_foreground_holo_light</color>
     <color name="vpi__bright_foreground_inverse_holo_light">@color/vpi__bright_foreground_holo_dark</color>
+    <!-- 灰色 -->
+    <color name="grey">#808080</color>
+    <!-- 暗灰色 -->
+    <color name="dimgrey">#696969</color>
+    <!-- 雪白色 -->
+    <color name="floralwhite">#FFFAF0</color>
+    
 </resources>
