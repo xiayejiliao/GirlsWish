@@ -42,6 +42,7 @@ import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.model.LoginState;
+import com.tongjo.girlswish.model.UserSex;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.FileUtils;
 import com.tongjo.girlswish.utils.SpUtils;
@@ -153,10 +154,28 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 							SpUtils.put(getApplicationContext(), AppConstant.USER_PASSWORD, password);
 							SpUtils.put(getApplicationContext(), AppConstant.USER_LOGINSTATE, LoginState.LOGIN);
 							SpUtils.put(getApplicationContext(), AppConstant.USER_ID, response.getData().get_id().toString());
+							if(response.getData().getGender()==0){
+								SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, UserSex.WOMEN);
+							}else if(response.getData().getGender()==1) {
+								SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, UserSex.MAN);
+							}
 							final String imagepath = getFilesDir().toString() + "/image/";
 							final String iconname = "usericon.jpg";
 							SpUtils.put(getApplicationContext(), AppConstant.USER_ICONPATH, imagepath + iconname);
-
+							asyncHttpClient.post(AppConstant.URL_BASE+AppConstant.URL_WISHLIST, new TextHttpResponseHandler("UTF-8") {
+								
+								@Override
+								public void onSuccess(int arg0, Header[] arg1, String arg2) {
+									// TODO Auto-generated method stub
+									System.out.println(arg2);
+								}
+								
+								@Override
+								public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+									// TODO Auto-generated method stub
+									System.out.println(arg3.toString());
+								}
+							});
 							// 登陆成功后下载图像并保存在iconpath
 							ImageLoader.getInstance().loadImage(response.getData().getAvatarUrl(), new ImageSize(200, 200), new SimpleImageLoadingListener() {
 								public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {

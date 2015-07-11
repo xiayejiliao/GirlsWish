@@ -13,11 +13,15 @@ public class AppConstant {
 	public static final String USER_LOGINSTATE="user_loginstate";
 	public static final String USER_ICONPATH="user_iconpath";
 	public static final String USER_ISREMEMBER="user_isremeber";
+	public static final String USER_SEX="user_sex";
 	public static final String USER_ID="user_id";
+	
 	
 	//web 
 	public static final String URL_BASE="http://api.wish.tongjo.com";
 	public static final String URL_LOGIN="/login";
+	public static final String URL_WISHLIST="/wish/mylist";
+	
 	
 	//intent
 	public static final int FORRESULT_LOG_OK=1001001;

@@ -17,6 +17,8 @@ public class TJMessage {
 	private TJWish wish;
 	@DatabaseField
 	private String messageUrl;
+	@DatabaseField
+	private String time;
 	public TJMessage() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -51,9 +53,17 @@ public class TJMessage {
 	public void setMessageUrl(String messageUrl) {
 		this.messageUrl = messageUrl;
 	}
+	
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
+	}
 	@Override
 	public String toString() {
-		return "TJMessage [_id=" + _id + ", type=" + type + ", content=" + content + ", wish=" + wish + ", messageUrl=" + messageUrl + "]";
+		return "TJMessage [_id=" + _id + ", type=" + type + ", content=" + content + ", wish=" + wish + ", messageUrl=" + messageUrl + ", time=" + time + "]";
 	}
+	
 	
 }
