@@ -22,6 +22,16 @@
         <item name="android:background">@drawable/bg_titlebar</item>
     </style>
 
+    <style name="customer_progress_dialog" parent="@android:style/Theme.Dialog">
+         <item name="android:windowBackground">@color/transparent</item>
+         <item name="android:windowNoTitle">true</item>
+         <item name="android:windowFrame">@null</item>
+         <item name="android:windowIsTranslucent">false</item>
+         <item name="android:paddingLeft">10dip</item>  
+         <item name="android:paddingRight">10dip</item>     
+         <item name="android:textColor">@color/lblack</item>  
+     </style>
+    
     <style name="ActionBartitle" parent="android:Theme.Holo.Light">
         <item name="android:titleTextStyle">@style/actionbar_title_text</item>
         <item name="android:actionBarStyle">@style/actionbar_style</item>

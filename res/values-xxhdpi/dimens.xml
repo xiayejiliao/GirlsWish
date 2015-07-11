@@ -27,6 +27,7 @@
     <dimen name="margin_40">40dp</dimen>
     <dimen name="margin_50">50dp</dimen>
     <dimen name="margin_60">60dp</dimen>
+    <dimen name="margin_200">200dp</dimen>
     
     <dimen name="text_size_8">8sp</dimen>
     <dimen name="text_size_10">10sp</dimen>

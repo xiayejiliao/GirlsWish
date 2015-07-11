@@ -193,7 +193,7 @@ public class BaseActivity extends Activity {
 	/** 返回左边按钮的ImageView*/
 	public ImageView getRightBtnImageView(){
 		if(rightBtnContainer != null){
-			return ((ImageView) rightBtnContainer.getChildAt(0));
+			return ((ImageView) rightBtnContainer.getChildAt(1));
 		}
 		return null;
 	}
@@ -201,7 +201,7 @@ public class BaseActivity extends Activity {
 	/** 返回左边按钮的TextView*/
 	public TextView getRightBtnTextView(){
 		if(rightBtnContainer != null){
-			return ((TextView) rightBtnContainer.getChildAt(1));
+			return ((TextView) rightBtnContainer.getChildAt(0));
 		}
 		return null;
 	}
