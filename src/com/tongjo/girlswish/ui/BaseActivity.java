@@ -1,5 +1,8 @@
 package com.tongjo.girlswish.ui;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.SyncHttpClient;
+import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.widget.TextWithImageButton;
 
@@ -23,6 +26,9 @@ public class BaseActivity extends Activity {
 	/** 主要用来判断当前Activity是否在前端 */
 	public static boolean isFront = false;
 
+	protected AsyncHttpClient asyncHttpClient;
+	protected SyncHttpClient syncHttpClient;
+	
 	public synchronized void setisFront(boolean bool) {
 		this.isFront = bool;
 	}
@@ -66,6 +72,9 @@ public class BaseActivity extends Activity {
 				BaseActivity.this.finish();
 			}
 		});
+		
+		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
+		syncHttpClient = ((BaseApplication) getApplication()).getSyncHttpClient();
 	}
 
 	public ActionBar getMyActionBar() {

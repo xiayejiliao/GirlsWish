@@ -1,15 +1,6 @@
 package com.tongjo.girlswish.ui;
 
-import com.tongjo.bean.TJWish;
-import com.tongjo.girlswish.R;
-import com.tongjo.girlswish.widget.CustomeProgressDialog;
-import com.tongjo.girlswish.widget.RefreshableView;
-import com.tongjo.girlwish.data.DataContainer;
-
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -17,10 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
+
+import com.tongjo.bean.TJWish;
+import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
+import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
+import com.tongjo.girlswish.widget.CustomeProgressDialog;
+import com.tongjo.girlswish.widget.RefreshableView;
+import com.tongjo.girlswish.widget.RefreshableView.PullToRefreshListener;
+import com.tongjo.girlwish.data.DataContainer;
 
 /**
  * 心愿墙对应的fragment Copyright 2015
@@ -49,21 +46,20 @@ public class MainTabWishFragment extends BaseFragment {
 		mListView = (ListView)view.findViewById(R.id.listview); 
 		mAdapter = new MainTabWishAdapter(getActivity(),DataContainer.WishList);
 		mListView.setAdapter(mAdapter);
-		mListView.setOnItemClickListener(new OnItemClickListener(){
+		mAdapter.setMItemClickListener(new MItemClickListener(){
+
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+			public void MItemClick(View v, int position) {
 				WishDialogFragment dialog  = new WishDialogFragment();
 				dialog.show(getFragmentManager(), "WishDialogFragment");  
 			}
+			
 		});
 		
-		mListView.setOnItemLongClickListener(new OnItemLongClickListener(){
+		mAdapter.setMItemLongPressListener(new MItemLongPressListener(){
 
 			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				
+			public void MItemLongPress(View v, int position) {
 				final CustomeProgressDialog dialog = new CustomeProgressDialog(getActivity(),"正在加载中");
 				dialog.show();
 				new Handler().postDelayed(new Runnable(){
@@ -74,11 +70,21 @@ public class MainTabWishFragment extends BaseFragment {
 					}
 					
 				}, 3000);
-				
-				return false;
 			}
 			
 		});
+		
+		mRefreshView.setOnRefreshListener(new PullToRefreshListener() {
+			@Override
+			public void onRefresh() {
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				mRefreshView.finishRefreshing();
+			}
+		}, 0);
 		
 	}
 	
