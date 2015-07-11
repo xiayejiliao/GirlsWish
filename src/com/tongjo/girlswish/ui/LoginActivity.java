@@ -109,6 +109,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		// 配置图像下载工具
 		ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(this);
 		ImageLoader.getInstance().init(configuration);
+		setbackBtnListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				setResult(AppConstant.FORRESULT_LOG_CANCANL, new Intent());
+				finish();
+			}
+		});
 	}
 
 	@Override

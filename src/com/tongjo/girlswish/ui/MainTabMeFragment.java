@@ -6,7 +6,10 @@ import java.util.List;
 import org.apache.http.Header;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.PagerTabStrip;
@@ -82,8 +85,23 @@ public class MainTabMeFragment extends BaseFragment {
 				Type type = new TypeToken<TJResponse<Wishs>>() {
 				}.getType();
 				TJResponse<Wishs> mywishs = new Gson().fromJson(arg2, type);
-				if(mywishs.getResult().getCode()==1){
-					ToastUtils.show(getActivity(),mywishs.getResult().getMessage());
+				if (mywishs.getResult().getCode() == 1) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+					builder.setMessage(mywishs.getResult().getMessage()).setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							Intent intent = new Intent(getActivity(), LoginActivity.class);
+							startActivityForResult(intent, AppConstant.FORRESULT_LOG);
+						}
+					}).setNegativeButton("No", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							dialog.cancel();
+						}
+					}).show();
+					AlertDialog alert = builder.create();
+
+				}
+				if(mywishs.getResult().getCode()==0){
+					System.out.println(mywishs.getData().toString());
 				}
 			}
 		}
@@ -91,6 +109,12 @@ public class MainTabMeFragment extends BaseFragment {
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 			System.out.println("========");
+		}
+	};
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode==AppConstant.FORRESULT_LOG&&resultCode==AppConstant.FORRESULT_LOG_OK){
+			asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISHLIST, wishListResponse);
 		}
 	};
 

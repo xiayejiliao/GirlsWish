@@ -24,8 +24,10 @@ public class AppConstant {
 	
 	
 	//intent
-	public static final int FORRESULT_LOG_OK=1001001;
-	public static final int FORRESULT_LOG_CANCEL=1001002;
+	public static final int FORRESULT_LOG=10101;
+	public static final int FORRESULT_LOG_OK=10102;
+	public static final int FORRESULT_LOG_CANCANL=10103;
+	
 	
 	
 }
