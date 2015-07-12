@@ -39,6 +39,8 @@
         </activity>
          <activity android:name="com.tongjo.girlswish.ui.AddWishActivity" >
         </activity>
+         <activity android:name="com.tongjo.girlswish.ui.UserBasicInfoActivity" >
+        </activity>
     </application>
 
 </manifest>

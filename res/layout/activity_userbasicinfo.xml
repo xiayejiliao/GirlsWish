@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tongjo="http://schemas.android.com/apk/res/com.tongjo.girlswish"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rl_fragme_main"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_180"
+        android:background="@color/red" >
+
+        <ImageView
+            android:id="@+id/iv_fragme_icon"
+            android:layout_width="@dimen/margin_70"
+            android:layout_height="@dimen/margin_70"
+            android:layout_centerInParent="true"
+            android:src="@drawable/testimg" />
+
+        <TextView
+            android:id="@+id/tv_fragme_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_fragme_icon"
+            android:layout_centerHorizontal="true"
+            android:text="昵称"
+            android:textSize="@dimen/text_size_18" />
+
+        <TextView
+            android:id="@+id/tv_fragme_school"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_fragme_name"
+            android:layout_centerHorizontal="true"
+            android:text="学校"
+            android:textSize="@dimen/text_size_16" />
+    </RelativeLayout>
+
+    <com.tongjo.girlswish.widget.ArrayLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/margin_20"
+        android:layout_marginRight="@dimen/margin_20"
+        android:orientation="vertical" >
+
+        <com.tongjo.girlswish.widget.ButtonWithArrow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tongjo:iconvisiable="visiable"
+            tongjo:lefttextValue="测试左边"
+            tongjo:righttextValue="测试右边" />
+    </com.tongjo.girlswish.widget.ArrayLayout>
+
+</LinearLayout>

@@ -1,8 +1,5 @@
 package com.tongjo.girlswish.ui;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 import org.apache.http.Header;
 
 import android.os.Bundle;
@@ -13,18 +10,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.tongjo.bean.TJResponse;
-import com.tongjo.bean.TJWish;
-import com.tongjo.bean.TJWishList;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
-import com.tongjo.girlwish.data.DataContainer;
 
 public class AddWishActivity extends BaseActivity {
 	private final String TAG = "AddWishActivity";
