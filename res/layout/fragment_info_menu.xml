@@ -8,9 +8,10 @@
         android:id="@+id/infomenu_delete"
         android:layout_width="@dimen/infomenu_item_width"
         android:layout_height="@dimen/infomenu_item_height"
+        android:background="@drawable/btn_background"
         android:gravity="center_vertical"
-        android:text="@string/delete"
         android:paddingLeft="@dimen/infomenu_item_padding"
+        android:text="@string/delete"
         android:textColor="@color/black" />
 
 </LinearLayout>

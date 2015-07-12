@@ -52,7 +52,6 @@ public class MainTabInfoFragment extends BaseFragment {
 	private SlideListView mListView;
 	private MainTabInfoAdapter mListAdapter = null;
 	private RefreshableView mRefreshableView;
-	private Dao<TJMessage, UUID> mTJMessageDao;
 	WishDialogFragment menuDialog = null;
 	boolean mIsRefreshing;
 
@@ -70,10 +69,10 @@ public class MainTabInfoFragment extends BaseFragment {
 				.findViewById(R.id.info_refreshable_view);
 		mListAdapter = new MainTabInfoAdapter(getActivity(),
 				DataContainer.MessageList);
-		// MockData();
+		MockData();
+		//selectData();
 		mListView.setAdapter(mListAdapter);
-		getMessageData();
-
+		
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -109,6 +108,7 @@ public class MainTabInfoFragment extends BaseFragment {
 					if (menuDialog != null && menuDialog.isVisible()) {
 						menuDialog.dismiss();
 					}
+					getMessageData();
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -157,19 +157,48 @@ public class MainTabInfoFragment extends BaseFragment {
 		mListAdapter.setList(DataContainer.MessageList);
 	}
 
-	private List<TJMessage> selectData() {
+	
+	private void selectData() {
 		try {
-			mTJMessageDao = new OrmLiteHelper(this.getActivity())
-					.getTJMessageDao();
+			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(
+					this.getActivity()).getTJMessageDao();
 			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao
 					.queryBuilder();
 			builder.orderBy("time", false);
 			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
-			return mTJMessageDao.query(preparedQuery);
+			DataContainer.MessageList.addAll(mTJMessageDao.query(preparedQuery));
+	         mListAdapter.notifyDataSetChanged();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Log.e(TAG, e.getStackTrace().toString());
 		}
-		return null;
+	}
+
+	public void deleteMessage(int itemId) {
+
+		if (itemId >= 0 && itemId < DataContainer.MessageList.size()) {
+			try {
+				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(
+						this.getActivity()).getTJMessageDao();
+				mTJMessageDao.delete(DataContainer.MessageList.get(itemId));
+				DataContainer.MessageList.remove(itemId);
+				mListAdapter.notifyDataSetChanged();
+			} catch (SQLException e) {
+				Log.e(TAG, e.getStackTrace().toString());
+			}
+		}
+
+	}
+
+	public void addMessage(List<TJMessage> messageList) {
+		Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(
+				this.getActivity()).getTJMessageDao();
+		for (TJMessage message : messageList) {
+			try {
+				mTJMessageDao.createIfNotExists(message);
+			} catch (SQLException e) {
+				Log.e(TAG, e.getStackTrace().toString());
+			}
+		}
 	}
 
 	/**
@@ -178,7 +207,7 @@ public class MainTabInfoFragment extends BaseFragment {
 	public void getMessageData() {
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("page", "0");
-		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_MESSAGE,
+		syncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_MESSAGE,
 				requestParams, new TextHttpResponseHandler("UTF-8") {
 
 					@Override
@@ -203,6 +232,7 @@ public class MainTabInfoFragment extends BaseFragment {
 								if (response.getData().getMessageList() != null) {
 									Log.d(TAG, response.getData()
 											.getMessageList().toString());
+									addMessage((List<TJMessage>) response.getData().getMessageList());
 									DataContainer.MessageList
 											.addAll((List<TJMessage>) response
 													.getData().getMessageList());
@@ -227,12 +257,6 @@ public class MainTabInfoFragment extends BaseFragment {
 				});
 	}
 
-	public void deleteMessage(int itemId) {
-		if (itemId >= 0 && itemId < DataContainer.MessageList.size()) {
-			DataContainer.MessageList.remove(itemId);
-		}
-	}
-
 	public class WishDialogFragment extends DialogFragment {
 		private Integer mPosition;
 		private TextView mDeleteTextView;
@@ -254,6 +278,7 @@ public class MainTabInfoFragment extends BaseFragment {
 				@Override
 				public void onClick(View arg0) {
 					deleteMessage(mPosition);
+				    menuDialog.dismiss();
 				}
 			});
 			return view;
