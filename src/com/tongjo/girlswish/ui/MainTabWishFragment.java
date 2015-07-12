@@ -73,7 +73,7 @@ public class MainTabWishFragment extends BaseFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_wish, container,
+		View rootView = inflater.inflate(R.layout.fragment_wishs, container,
 				false);
 
 		InitView(rootView);
