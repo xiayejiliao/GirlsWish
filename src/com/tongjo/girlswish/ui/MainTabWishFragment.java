@@ -68,6 +68,7 @@ public class MainTabWishFragment extends BaseFragment {
 	private RefreshableView mRefreshView = null;
 	private ListView mListView = null;
 	private MainTabWishAdapter mAdapter = null;
+	private WishDialogFragment dialog = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,7 +92,7 @@ public class MainTabWishFragment extends BaseFragment {
 			@Override
 			public void MItemClick(View v, int position) {
 				Log.d(TAG, String.valueOf(position));
-				WishDialogFragment dialog = new WishDialogFragment(position);
+				dialog = new WishDialogFragment(position);
 				dialog.show(getFragmentManager(), "WishDialogFragment");
 			}
 
@@ -194,19 +195,43 @@ public class MainTabWishFragment extends BaseFragment {
 
 					@Override
 					public void onSuccess(int arg0, Header[] arg1, String arg2) {
+						if(dialog != null){
+							dialog.dismiss();
+						}
 						if (arg2 == null) {
-							ToastUtils.show(getActivity(), "摘取心愿失败:");
+							ToastUtils.show(getActivity(), "摘取心愿失败");
 							return;
 						}
 						Log.d(TAG, arg2);
 						if (arg0 == 200) {
-							ToastUtils.show(getActivity(), "摘取心愿成功" + arg0);
+							
+							Type type = new TypeToken<TJResponse<Object>>() {
+							}.getType();
+							TJResponse<Object> response = new Gson()
+									.fromJson(arg2, type);
+							if (response == null
+									|| response.getResult() == null
+									|| response.getData() == null) {
+								ToastUtils.show(getActivity(), "摘取心愿失败");
+								return;
+							}
+							if (response.getResult().getCode() == 0) {
+								ToastUtils.show(getActivity(), "摘取心愿成功" + arg0);
+							} else if(response.getResult().getCode() == 0){
+								ToastUtils.show(getActivity(), "没有登录，需要登录" + arg0);
+							}else{
+								ToastUtils.show(getActivity(), "摘取心愿失败:"
+										+ response.getResult().getMessage());
+							}
 						}
 					}
 
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2,
 							Throwable arg3) {
+						if(dialog != null){
+							dialog.dismiss();
+						}
 						ToastUtils.show(getActivity(), "摘取心愿失败" + arg0);
 					}
 				});
