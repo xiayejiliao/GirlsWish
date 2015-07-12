@@ -1,8 +1,10 @@
 package com.tongjo.girlswish;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.SyncHttpClient;
+import com.tongjo.db.OrmLiteHelper;
 
 import android.app.Application;
 
@@ -19,7 +21,6 @@ public class BaseApplication extends Application {
 	private SyncHttpClient syncHttpClient;
 	//持久化在 SharedPreferences里的cookie，每个app只创建一个
 	private PersistentCookieStore persistentCookieStore;
-	
 	@Override
 	public void onCreate() {
 		asyncHttpClient=new AsyncHttpClient();
@@ -27,9 +28,10 @@ public class BaseApplication extends Application {
 		persistentCookieStore=new PersistentCookieStore(getApplicationContext());
 		syncHttpClient.setCookieStore(persistentCookieStore);
 		asyncHttpClient.setCookieStore(persistentCookieStore);
+		OpenHelperManager.getHelper(getApplicationContext(), OrmLiteHelper.class);
 		super.onCreate();
 	}
-
+	
 	public AsyncHttpClient getAsyncHttpClient() {
 		return asyncHttpClient;
 	}
@@ -53,4 +55,5 @@ public class BaseApplication extends Application {
 	public void setPersistentCookieStore(PersistentCookieStore persistentCookieStore) {
 		this.persistentCookieStore = persistentCookieStore;
 	}
+	
 }

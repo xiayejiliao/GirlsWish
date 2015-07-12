@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:orientation="horizontal" >
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <RelativeLayout
+            android:id="@+id/addwish_bg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:background="@color/addwish_greenColor"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/addwish_edit"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:gravity="left|top"
+                android:background="@color/transparent"
+                android:padding="@dimen/margin_6"
+                android:minLines="3"
+                android:layout_marginBottom="@dimen/margin_40"
+                android:textSize="@dimen/text_size_16" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal" >
+
+                <View
+                    android:id="@+id/addwish_btn1"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_40"
+                    android:layout_margin="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/addwish_greenColor"
+                    android:padding="0dp" />
+                <View
+                    android:id="@+id/addwish_btn2"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_40"
+                    android:layout_margin="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/addwish_yellowColor"
+                    android:padding="0dp" />
+                <View
+                    android:id="@+id/addwish_btn3"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_40"
+                    android:layout_margin="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/addwish_redColor"
+                    android:padding="0dp" />
+                <View
+                    android:id="@+id/addwish_btn4"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_40"
+                    android:layout_margin="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/addwish_blueColor"
+                    android:padding="0dp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+</LinearLayout>

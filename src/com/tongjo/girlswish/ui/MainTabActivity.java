@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -82,6 +83,8 @@ public class MainTabActivity extends BaseFragmentActivity {
 		// 设置缓存界面个数，防止反复Create
 		mViewPager.setOffscreenPageLimit(4);
 
+		InitTitleBar();
+		
 		InitView();
 
 		setViewPagerScrollSpeed();
@@ -91,6 +94,20 @@ public class MainTabActivity extends BaseFragmentActivity {
 		setSelectImage(0);
 	}
 
+	public void InitTitleBar(){
+		hideBackBtn();
+		setRightBtn(R.drawable.add);
+		getRightBtnImageView().setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(),AddWishActivity.class);
+				startActivity(intent);
+			}
+			
+		});
+	}
+	
 	/** 加载基本的View文件 */
 	private void InitView() {
 		section1 = (RelativeLayout) findViewById(R.id.viewpage_title_section1);

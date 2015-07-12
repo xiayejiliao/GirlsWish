@@ -10,6 +10,7 @@ package介绍：
 	com.tongjo.girlswish.ui：前端UI界面，主要是各个Activity所在的包，具体会按照功能模块再进行详细的划分
 	com.tongjo.girlswish.utils：自定义的工具类，包括字符串出来，图片处理，时间处理
 	com.tongjo.girlswish.widget：自定义的View组件，包括下拉刷新，等
+	com.tongjo.girlswish.data：临时的数据存储
 
 项目命名规范：
 	不要随便添加package,将每个类放到对应的package下
