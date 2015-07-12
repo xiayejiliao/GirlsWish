@@ -28,4 +28,9 @@
     <string name="title_section2">心愿墙</string>
     <string name="title_section3">我的</string>
 
+    <string name="pull_listview_tap_label">点击刷新...</string>
+    <string name="pull_listview_pull_label">下拉刷新...</string>
+    <string name="pull_listview_release_label">松开刷新...</string>
+    <string name="pull_listview_refreshing_label">正在加载...</string>
+    
 </resources>
