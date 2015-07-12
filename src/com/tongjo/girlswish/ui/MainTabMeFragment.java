@@ -45,6 +45,7 @@ public class MainTabMeFragment extends BaseFragment {
 	private TabPageIndicator tabPageIndicator;
 	private AsyncHttpClient asyncHttpClient;
 	private Context mcontext;
+	private TextView tv_info;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,10 +53,10 @@ public class MainTabMeFragment extends BaseFragment {
 
 		View rootView = inflater.inflate(R.layout.fragment_me, container, false);
 		viewpager = (ViewPager) rootView.findViewById(R.id.viewpage_fragme_wishs);
+		tv_info = (TextView) rootView.findViewById(R.id.tv_fragwork_info);
 		tabPageIndicator = (TabPageIndicator) rootView.findViewById(R.id.indicator_fragme_wishs);
 		viewpager.setAdapter(new MyPages());
 		tabPageIndicator.setViewPager(viewpager);
-
 		return rootView;
 	}
 
@@ -100,7 +101,7 @@ public class MainTabMeFragment extends BaseFragment {
 					AlertDialog alert = builder.create();
 
 				}
-				if(mywishs.getResult().getCode()==0){
+				if (mywishs.getResult().getCode() == 0) {
 					System.out.println(mywishs.getData().toString());
 				}
 			}
@@ -112,9 +113,19 @@ public class MainTabMeFragment extends BaseFragment {
 		}
 	};
 
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode==AppConstant.FORRESULT_LOG&&resultCode==AppConstant.FORRESULT_LOG_OK){
 			asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISHLIST, wishListResponse);
+			tv_info.setVisibility(View.GONE);
+		}
+		if(requestCode==AppConstant.FORRESULT_LOG&&resultCode==AppConstant.FORRESULT_LOG_CANCANL){
+			if(tv_info==null){
+				
+			}
+			tv_info.setVisibility(View.VISIBLE);
+			
+			tv_info.setText("请登陆");
 		}
 	};
 
@@ -142,7 +153,7 @@ public class MainTabMeFragment extends BaseFragment {
 	}
 
 	class MyPages extends PagerAdapter {
-		private final String[] CONTENT = new String[] { "未摘心愿", "已摘心愿", "Albums", "Songs", "Playlists", "Genres" };
+		private final String[] CONTENT = new String[] { "未摘心愿", "已摘心愿",};
 
 		@Override
 		public int getCount() {

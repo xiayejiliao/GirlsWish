@@ -2,6 +2,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <TextView
+        android:id="@+id/tv_fragme_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
     <RelativeLayout
         android:id="@+id/rl_fragme_main"
         android:layout_width="match_parent"
@@ -38,8 +44,8 @@
         android:id="@+id/indicator_fragme_wishs"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:theme="@style/StyledIndicators"
-        android:layout_below="@id/rl_fragme_main">
+        android:layout_below="@id/rl_fragme_main"
+        android:theme="@style/StyledIndicators" >
     </com.viewpagerindicator.TabPageIndicator>
 
     <android.support.v4.view.ViewPager
@@ -50,4 +56,3 @@
     </android.support.v4.view.ViewPager>
 
 </RelativeLayout>
-
