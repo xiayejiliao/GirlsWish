@@ -5,12 +5,12 @@
     android:orientation="vertical" >
 
     <com.tongjo.girlswish.widget.RefreshableView
-        android:id="@+id/refreshable_view"
+        android:id="@+id/info_refreshable_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
         <com.tongjo.girlswish.widget.SlideListView
-            android:id="@+id/list"
+            android:id="@+id/info_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#fff4f7f9"

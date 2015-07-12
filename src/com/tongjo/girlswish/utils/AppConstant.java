@@ -24,6 +24,7 @@ public class AppConstant {
 	public static final String URL_WISH="/wish";
 	public static final String URL_ADDWISH="/wish/create";
 	public static final String URL_PICKWISH="/wish/pick";
+	public static final String URL_MESSAGE="/notice";
 	
 	
 	//intent
