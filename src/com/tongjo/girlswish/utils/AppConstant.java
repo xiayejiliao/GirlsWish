@@ -22,6 +22,7 @@ public class AppConstant {
 	public static final String URL_LOGIN="/login";
 	public static final String URL_WISHLIST="/wish/mylist";
 	public static final String URL_WISH="/wish";
+	public static final String URL_ADDWISH="/wish/create";
 	
 	
 	//intent
