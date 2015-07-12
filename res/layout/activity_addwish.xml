@@ -24,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="5"
-            android:background="@color/lblue"
+            android:background="@color/addwish_greenColor"
             android:orientation="vertical" >
 
             <EditText
@@ -50,7 +50,7 @@
                     android:layout_height="@dimen/margin_40"
                     android:layout_margin="0dp"
                     android:layout_weight="1"
-                    android:background="@color/lblue"
+                    android:background="@color/addwish_greenColor"
                     android:padding="0dp" />
                 <View
                     android:id="@+id/addwish_btn2"
@@ -58,7 +58,7 @@
                     android:layout_height="@dimen/margin_40"
                     android:layout_margin="0dp"
                     android:layout_weight="1"
-                    android:background="@color/lwhite"
+                    android:background="@color/addwish_yellowColor"
                     android:padding="0dp" />
                 <View
                     android:id="@+id/addwish_btn3"
@@ -66,7 +66,7 @@
                     android:layout_height="@dimen/margin_40"
                     android:layout_margin="0dp"
                     android:layout_weight="1"
-                    android:background="@color/lgreen"
+                    android:background="@color/addwish_redColor"
                     android:padding="0dp" />
                 <View
                     android:id="@+id/addwish_btn4"
@@ -74,7 +74,7 @@
                     android:layout_height="@dimen/margin_40"
                     android:layout_margin="0dp"
                     android:layout_weight="1"
-                    android:background="@color/llgreen"
+                    android:background="@color/addwish_blueColor"
                     android:padding="0dp" />
             </LinearLayout>
         </RelativeLayout>

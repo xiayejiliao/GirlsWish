@@ -107,6 +107,23 @@ public class MainTabWishAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
+		TJWish wish = mList.get(arg0);
+		if (wish != null) {
+			if (wish.getContent() != null) {
+				holder.content.setText(wish.getContent());
+			}
+
+			if (wish.getCreatorUser() != null
+					&& wish.getCreatorUser().getNickname() != null) {
+				holder.nickname.setText(wish.getCreatorUser().getNickname());
+			}
+			if (wish.getCreatorUser() != null
+					&& wish.getCreatorUser().getSchool() != null
+					&& wish.getCreatorUser().getSchool().getName() != null) {
+				holder.school.setText(wish.getCreatorUser().getSchool()
+						.getName());
+			}
+		}
 		convertView.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				// 直接的手势操作
