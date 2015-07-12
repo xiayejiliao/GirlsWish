@@ -17,7 +17,9 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -46,6 +48,7 @@ public class MainTabMeFragment extends BaseFragment {
 	private AsyncHttpClient asyncHttpClient;
 	private Context mcontext;
 	private TextView tv_info;
+	private ImageView avatar;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,6 +60,18 @@ public class MainTabMeFragment extends BaseFragment {
 		tabPageIndicator = (TabPageIndicator) rootView.findViewById(R.id.indicator_fragme_wishs);
 		viewpager.setAdapter(new MyPages());
 		tabPageIndicator.setViewPager(viewpager);
+		
+		avatar = (ImageView)rootView.findViewById(R.id.iv_fragme_icon);
+		avatar.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(),UserBasicInfoActivity.class);
+				startActivity(intent);
+			}
+			
+		});
+		
 		return rootView;
 	}
 
