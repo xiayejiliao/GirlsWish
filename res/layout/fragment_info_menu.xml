@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/infomenu_delete"
+        android:layout_width="@dimen/infomenu_item_width"
+        android:layout_height="@dimen/infomenu_item_height"
+        android:gravity="center_vertical"
+        android:text="@string/delete"
+        android:paddingLeft="@dimen/infomenu_item_padding"
+        android:textColor="@color/black" />
+
+</LinearLayout>
