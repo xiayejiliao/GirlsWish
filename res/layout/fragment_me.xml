@@ -6,12 +6,14 @@
         android:id="@+id/tv_fragme_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/rl_fragme_main"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_below="@id/tv_fragme_info"
         android:background="@color/red" >
 
         <ImageView

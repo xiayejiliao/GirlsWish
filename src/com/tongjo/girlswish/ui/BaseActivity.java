@@ -1,5 +1,14 @@
 package com.tongjo.girlswish.ui;
 
+import java.util.UUID;
+
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+import com.tongjo.bean.TJMessage;
+import com.tongjo.bean.TJSchool;
+import com.tongjo.bean.TJUserInfo;
+import com.tongjo.bean.TJWish;
+import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.widget.TextWithImageButton;
 
@@ -13,9 +22,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 /**
- * 基本Activity，主要是提供了操作ActionBar的方法
- * Copyright 2015 
+ * 基本Activity，主要是提供了操作ActionBar的方法 Copyright 2015
+ * 
  * @author preparing
  * @date 2015-6-14
  */
@@ -23,6 +33,13 @@ public class BaseActivity extends Activity {
 	/** 主要用来判断当前Activity是否在前端 */
 	public static boolean isFront = false;
 
+	/**数据持久化框架*/
+	public OrmLiteHelper ormLiteHelper;
+	public Dao<TJUserInfo, UUID> tjuserinfoDao;
+	public Dao<TJSchool, UUID> tjschoolDao;
+	public Dao<TJWish, UUID> tjwishDao;
+	public Dao<TJMessage, UUID> tjmessageDao;
+	
 	public synchronized void setisFront(boolean bool) {
 		this.isFront = bool;
 	}
@@ -50,8 +67,7 @@ public class BaseActivity extends Activity {
 		actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayShowHomeEnabled(false);
-		View addView = getLayoutInflater().inflate(R.layout.titlebar_custom,
-				null);
+		View addView = getLayoutInflater().inflate(R.layout.titlebar_custom, null);
 		actionBar.setCustomView(addView);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 		centerText = (TextView) findViewById(R.id.titlebar_text_center);
@@ -66,6 +82,11 @@ public class BaseActivity extends Activity {
 				BaseActivity.this.finish();
 			}
 		});
+		ormLiteHelper = OpenHelperManager.getHelper(getApplicationContext(), OrmLiteHelper.class);
+		tjuserinfoDao = ormLiteHelper.getTJUserInfoDao();
+		tjmessageDao=ormLiteHelper.getTJMessageDao();
+		tjschoolDao=ormLiteHelper.getTJSchoolDao();
+		tjwishDao=ormLiteHelper.getTJWishDao();
 	}
 
 	public ActionBar getMyActionBar() {
@@ -86,7 +107,6 @@ public class BaseActivity extends Activity {
 		}
 	}
 
-
 	/** 设置左边显示返回按钮,默认文字和图片都显示 */
 	public void setBackBtn() {
 		if (leftBtnContainer != null) {
@@ -96,7 +116,7 @@ public class BaseActivity extends Activity {
 			backBtnContainer.setVisibility(View.VISIBLE);
 		}
 	}
-	
+
 	/** 设置返回的文字 */
 	public void setBackBtnText(String title) {
 		setBackBtn();
@@ -136,21 +156,18 @@ public class BaseActivity extends Activity {
 			backText.setVisibility(View.GONE);
 		}
 	}
-	
-	
-	
-	
-	/** 返回左边按钮的ImageView*/
-	public ImageView getLeftBtnImageView(){
-		if(leftBtnContainer != null){
+
+	/** 返回左边按钮的ImageView */
+	public ImageView getLeftBtnImageView() {
+		if (leftBtnContainer != null) {
 			return ((ImageView) leftBtnContainer.getChildAt(0));
 		}
 		return null;
 	}
-	
-	/** 返回左边按钮的TextView*/
-	public TextView getLeftBtnTextView(){
-		if(leftBtnContainer != null){
+
+	/** 返回左边按钮的TextView */
+	public TextView getLeftBtnTextView() {
+		if (leftBtnContainer != null) {
 			return ((TextView) leftBtnContainer.getChildAt(1));
 		}
 		return null;
@@ -158,7 +175,7 @@ public class BaseActivity extends Activity {
 
 	/** 设置leftBtn的文字,不显示返回按钮 */
 	public void setLeftBtn(String leftBtnText) {
-		 hideBackBtn();
+		hideBackBtn();
 
 		if (leftBtnContainer == null) {
 			leftBtnContainer = (ViewGroup) findViewById(R.id.titlebar_leftbtn_container);
@@ -179,28 +196,24 @@ public class BaseActivity extends Activity {
 			leftBtnContainer = (ViewGroup) findViewById(R.id.titlebar_leftbtn_container);
 		}
 		if (leftBtnContainer != null) {
-			((ImageView) leftBtnContainer.getChildAt(0))
-					.setImageDrawable(drawable);
+			((ImageView) leftBtnContainer.getChildAt(0)).setImageDrawable(drawable);
 			leftBtnContainer.getChildAt(0).setVisibility(View.VISIBLE);
 			leftBtnContainer.getChildAt(1).setVisibility(View.GONE);
 			leftBtnContainer.setVisibility(View.VISIBLE);
 		}
 	}
 
-	
-	
-	
-	/** 返回左边按钮的ImageView*/
-	public ImageView getRightBtnImageView(){
-		if(rightBtnContainer != null){
+	/** 返回左边按钮的ImageView */
+	public ImageView getRightBtnImageView() {
+		if (rightBtnContainer != null) {
 			return ((ImageView) rightBtnContainer.getChildAt(1));
 		}
 		return null;
 	}
-	
-	/** 返回左边按钮的TextView*/
-	public TextView getRightBtnTextView(){
-		if(rightBtnContainer != null){
+
+	/** 返回左边按钮的TextView */
+	public TextView getRightBtnTextView() {
+		if (rightBtnContainer != null) {
 			return ((TextView) rightBtnContainer.getChildAt(0));
 		}
 		return null;
@@ -216,8 +229,7 @@ public class BaseActivity extends Activity {
 			rightBtnContainer = (ViewGroup) findViewById(R.id.titlebar_rightbtn_container);
 		}
 		if (rightBtnContainer != null) {
-			((ImageView) rightBtnContainer.getChildAt(1))
-					.setImageDrawable(drawable);
+			((ImageView) rightBtnContainer.getChildAt(1)).setImageDrawable(drawable);
 			rightBtnContainer.getChildAt(0).setVisibility(View.GONE);
 			rightBtnContainer.getChildAt(1).setVisibility(View.VISIBLE);
 			rightBtnContainer.setVisibility(View.VISIBLE);
