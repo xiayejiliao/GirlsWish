@@ -64,7 +64,7 @@ public class BaseApplication extends Application {
 			int sex = (Integer) SpUtils.get(getApplicationContext(),
 					AppConstant.USER_SEX, 0);
 			String name = (String)SpUtils.get(getApplicationContext(),
-					AppConstant.USER_NAME, "ffg");
+					AppConstant.USER_NAME, "Name");
 
 			String avatar = (String) SpUtils.get(getApplicationContext(),
 					AppConstant.USER_ICONPATH, null);

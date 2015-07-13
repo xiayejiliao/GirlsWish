@@ -42,19 +42,39 @@
             android:textSize="14dp" />
     </RelativeLayout>
 
-    <com.viewpagerindicator.TabPageIndicator
-        android:id="@+id/indicator_fragme_wishs"
+    <RadioGroup
+        android:id="@+id/rg_fragme_chose"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="50dp"
         android:layout_below="@id/rl_fragme_main"
-        android:theme="@style/StyledIndicators" >
-    </com.viewpagerindicator.TabPageIndicator>
+        android:background="@color/lblue"
+        android:orientation="horizontal" >
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpage_fragme_wishs"
+        <RadioButton
+            android:id="@+id/rb_fragme_first"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:text="未摘心愿" 
+            android:background="@drawable/rb_background_mywish"/>
+
+        <RadioButton
+            android:id="@+id/rb_fragme_second"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center" 
+            android:text="已摘心愿"
+            android:background="@drawable/rb_background_mywish"/>
+    </RadioGroup>
+	
+    <FrameLayout
+        android:id="@+id/fragment_mewhis"
+        android:layout_below="@id/rg_fragme_chose"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/indicator_fragme_wishs" >
-    </android.support.v4.view.ViewPager>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

@@ -1,8 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/lblue"
+    android:gravity="center_vertical"
     android:orientation="vertical" >
-    
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_mewishitem_icon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/testimg" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/iv_mewishitem_icon"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_mewishitem_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="昵称" />
+
+        <TextView
+            android:id="@+id/tv_mewishitem_school"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="学校" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_mewishitem_color"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="@color/red" />
+
+    <TextView
+        android:id="@+id/tv_mewishitem_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/view_mewishitem_color"
+        android:text="djfkd" />
+
+</RelativeLayout>

@@ -161,12 +161,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 							// 将手机号、密码、登陆状态，登陆用户的uuid保存到SharedPreferences
 							SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, tel);
 							SpUtils.put(getApplicationContext(), AppConstant.USER_PASSWORD, password);
-							SpUtils.put(getApplicationContext(), AppConstant.USER_LOGINSTATE, LoginState.LOGIN);
+							SpUtils.put(getApplicationContext(), AppConstant.USER_LOGINSTATE, 1);
 							SpUtils.put(getApplicationContext(), AppConstant.USER_ID, response.getData().get_id().toString());
 							SpUtils.put(getApplicationContext(), AppConstant.USER_NAME, response.getData().getNickname());
 							
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, response.getData().getGender());
-			
+
 							final String imagepath = getFilesDir().toString() + "/image/";
 							final String iconname = "usericon.jpg";
 							SpUtils.put(getApplicationContext(), AppConstant.USER_ICONPATH, imagepath + iconname);
