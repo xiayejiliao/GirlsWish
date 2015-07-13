@@ -157,24 +157,5 @@ public class ImageUtils {
 		matrix.postScale(scaleWidth, scaleHeight);
 		return Bitmap.createBitmap(org, 0, 0, org.getWidth(), org.getHeight(), matrix, true);
 	}
-	
-	/**
-	 * 从本地读取图片
-	 * @param url
-	 * @return
-	 */
-	public static Bitmap readBitmapFromLocal(String path){
-		Bitmap bitmap = null;
-		if (path == null) {
-			return null;
-		}
-		try {
-			bitmap = BitmapFactory.decodeFile(path);
-			System.out.println("获取到的图片的长度为:" + bitmap.getHeight());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return bitmap;
-	}
 
 }
