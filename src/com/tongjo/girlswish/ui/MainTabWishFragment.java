@@ -1,24 +1,13 @@
 package com.tongjo.girlswish.ui;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.Type;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.http.Header;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -137,8 +126,13 @@ public class MainTabWishFragment extends BaseFragment {
 						if (arg0 == 200) {
 							Type type = new TypeToken<TJResponse<TJWishList>>() {
 							}.getType();
-							TJResponse<TJWishList> response = new Gson()
-									.fromJson(arg2, type);
+							TJResponse<TJWishList> response = null;
+							try {
+								response = new Gson().fromJson(arg2, type);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
 							if (response == null
 									|| response.getResult() == null
 									|| response.getData() == null) {
@@ -186,7 +180,7 @@ public class MainTabWishFragment extends BaseFragment {
 
 					@Override
 					public void onSuccess(int arg0, Header[] arg1, String arg2) {
-						if(dialog != null){
+						if (dialog != null) {
 							dialog.dismiss();
 						}
 						if (arg2 == null) {
@@ -195,11 +189,15 @@ public class MainTabWishFragment extends BaseFragment {
 						}
 						Log.d(TAG, arg2);
 						if (arg0 == 200) {
-							
+
 							Type type = new TypeToken<TJResponse<Object>>() {
 							}.getType();
-							TJResponse<Object> response = new Gson()
-									.fromJson(arg2, type);
+							TJResponse<Object> response = null;
+							try {
+								response = new Gson().fromJson(arg2, type);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 							if (response == null
 									|| response.getResult() == null
 									|| response.getData() == null) {
@@ -208,9 +206,10 @@ public class MainTabWishFragment extends BaseFragment {
 							}
 							if (response.getResult().getCode() == 0) {
 								ToastUtils.show(getActivity(), "摘取心愿成功" + arg0);
-							} else if(response.getResult().getCode() == 0){
-								ToastUtils.show(getActivity(), "没有登录，需要登录" + arg0);
-							}else{
+							} else if (response.getResult().getCode() == 0) {
+								ToastUtils.show(getActivity(), "没有登录，需要登录"
+										+ arg0);
+							} else {
 								ToastUtils.show(getActivity(), "摘取心愿失败:"
 										+ response.getResult().getMessage());
 							}
@@ -220,7 +219,7 @@ public class MainTabWishFragment extends BaseFragment {
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2,
 							Throwable arg3) {
-						if(dialog != null){
+						if (dialog != null) {
 							dialog.dismiss();
 						}
 						ToastUtils.show(getActivity(), "摘取心愿失败" + arg0);
