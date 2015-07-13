@@ -2,27 +2,31 @@ package com.tongjo.girlswish.ui;
 
 import java.lang.reflect.Type;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.http.Header;
 
+import android.R.raw;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.PagerTabStrip;
-import android.support.v4.view.ViewPager;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -30,16 +34,19 @@ import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.dao.Dao;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.model.LoginState;
 import com.tongjo.girlswish.model.UserSex;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
+import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
-import com.viewpagerindicator.TabPageIndicator;
 
 /**
  * 我的对应的fragment Copyright 2015
@@ -48,44 +55,143 @@ import com.viewpagerindicator.TabPageIndicator;
  * @date 2015-6-14
  */
 public class MainTabMeFragment extends BaseFragment {
+	private final static int MESSAGE_WHAT_UPDATE_INFO = 123;
+	private final static int MESSAGE_WHAT_UPDATE_WHISH = 1234;
+
 	private static final String TAG = "MainTabMeFragment";
-	private ViewPager viewpager;
-	private TabPageIndicator tabPageIndicator;
-	private AsyncHttpClient asyncHttpClient;
 	private Context mcontext;
 	private TextView tv_info;
 	private ImageView avatar;
+	private TextView tv_name;
+	private TextView tv_school;
+	private ImageView iv_icon;
+	private List<TJWish> tjWishs;
+	private RadioGroup radioGroup;
+	private RadioButton RadioButtonfirst;
+	private RadioButton RadioButtonsecond;
+	private int sex;
+	private int loginstate;
+	List<TJWish> wishfirst = new ArrayList<TJWish>();
+	List<TJWish> wishsecond = new ArrayList<TJWish>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mcontext = getActivity().getApplicationContext();
 
 		View rootView = inflater.inflate(R.layout.fragment_me, container, false);
-		viewpager = (ViewPager) rootView.findViewById(R.id.viewpage_fragme_wishs);
 		tv_info = (TextView) rootView.findViewById(R.id.tv_fragme_info);
-		tabPageIndicator = (TabPageIndicator) rootView.findViewById(R.id.indicator_fragme_wishs);
-		viewpager.setAdapter(new MyPages());
-		tabPageIndicator.setViewPager(viewpager);
+		radioGroup=(RadioGroup)rootView.findViewById(R.id.rg_fragme_chose);
+		RadioButtonfirst=(RadioButton)rootView.findViewById(R.id.rb_fragme_first);
+		RadioButtonsecond=(RadioButton)rootView.findViewById(R.id.rb_fragme_second);
+		tv_name=(TextView)rootView.findViewById(R.id.tv_fragme_name);
+		tv_school=(TextView)rootView.findViewById(R.id.tv_fragme_school);
+		iv_icon=(ImageView)rootView.findViewById(R.id.iv_fragme_icon);
 		
-		avatar = (ImageView)rootView.findViewById(R.id.iv_fragme_icon);
-		avatar.setOnClickListener(new OnClickListener(){
+		avatar = (ImageView) rootView.findViewById(R.id.iv_fragme_icon);
+		avatar.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(getActivity(),UserBasicInfoActivity.class);
+				Intent intent = new Intent(getActivity(), UserBasicInfoActivity.class);
 				startActivity(intent);
 			}
-			
 		});
-		
+		initRadioGroup();
 		return rootView;
 	}
+	private void initinfo(){
+		if(loginstate==1){
+			String uuidString=(String) SpUtils.get(mcontext, AppConstant.USER_ID, "11");
+			try {
+			TJUserInfo tjUserInfo=	tjuserinfoDao.queryForId(UUID.fromString(uuidString));
+			tv_name.setText(tjUserInfo.getRealname());
+			tv_name.setText(tjUserInfo.getSchool().getName());
+			String iconurl= tjUserInfo.getAvatarUrl();
+			ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mcontext);
+			ImageLoader.getInstance().init(configuration);
+			ImageLoader.getInstance().displayImage(iconurl, iv_icon);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	private void initRadioGroup() {
+		if (sex == 0) {
+			RadioButtonfirst.setText("未摘取");
+			RadioButtonsecond.setText("已摘取");
+		} else if (sex == 1) {
+			RadioButtonfirst.setText("未完成");
+			RadioButtonsecond.setText("已完成");
+		}
+		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				// TODO Auto-generated method stub
+				System.out.println("chechk");
+				loginstate= (Integer) SpUtils.get(mcontext, AppConstant.USER_LOGINSTATE, 0);
+				System.out.println("loginstate:"+loginstate);
+				if (loginstate != 1) {
+					return;
+				}
+				switch (checkedId) {
+				case R.id.rb_fragme_first:
+					setFragment(new MeWishFragment(wishfirst));
+					break;
+				case R.id.rb_fragme_second:
+					setFragment(new MeWishFragment(wishsecond));
+					break;
+
+				default:
+					break;
+				}
+			}
+		});
+	}
+
+	Handler handler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case MESSAGE_WHAT_UPDATE_INFO:
+
+				break;
+			case MESSAGE_WHAT_UPDATE_WHISH:
+				if(!radioGroup.isActivated()){
+					radioGroup.check(R.id.rb_fragme_first);
+				}
+				switch (radioGroup.getCheckedRadioButtonId()) {
+				case R.id.rb_fragme_first:
+					System.out.println("frist");
+					setFragment(new MeWishFragment(wishfirst));
+					break;
+				case R.id.rb_fragme_second:
+					System.out.println("second");
+					setFragment(new MeWishFragment(wishsecond));
+					break;
+				default:
+					break;
+				}
+				break;
+
+			default:
+				break;
+			}
+		}
+
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		asyncHttpClient = ((BaseApplication) getActivity().getApplication()).getAsyncHttpClient();
+
+		sex = 1;
+		loginstate = 0;
+		
 
 	}
 
@@ -123,22 +229,30 @@ public class MainTabMeFragment extends BaseFragment {
 
 				}
 				if (mywishs.getResult().getCode() == 0) {
-					List<TJWish> tjWishs=mywishs.getData().getWishList();
-					System.out.println("777777777777");
-					for (TJWish tjWish : tjWishs) {
-						try {
-							tjwishDao.createOrUpdate(tjWish);
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+					tjWishs = mywishs.getData().getWishList();
+					wishfirst.clear();
+					wishsecond.clear();
+					if (tjWishs != null) {
+						if (sex == 0) {
+							for (TJWish tjWish : tjWishs) {
+								if (tjWish.getIsPicked() == 0) {
+									wishfirst.add(tjWish);
+								} else {
+									wishsecond.add(tjWish);
+								}
+							}
+						} else if (sex == 1) {
+							for (TJWish tjWish : tjWishs) {
+								if (tjWish.getIsCompleted() == 0) {
+									wishfirst.add(tjWish);
+								} else {
+									wishsecond.add(tjWish);
+								}
+							}
 						}
 					}
-					try {
-						System.out.println(tjwishDao.queryForAll().size());
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					System.out.println("777777777777");
+					handler.obtainMessage(MESSAGE_WHAT_UPDATE_WHISH).sendToTarget();
 				}
 			}
 		}
@@ -184,44 +298,9 @@ public class MainTabMeFragment extends BaseFragment {
 
 	}
 
-	class MyPages extends PagerAdapter {
-		private final String[] CONTENTMAN = new String[] { "未完成", "已完成", };
-		private final String[] CONTENTWOMEN = new String[] { "未摘心愿", "已摘心愿", };
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return 2;
-		}
-
-		@Override
-		public boolean isViewFromObject(View arg0, Object arg1) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public CharSequence getPageTitle(int position) {
-			// TODO Auto-generated method stub
-			UserSex sex = (UserSex) SpUtils.get(mcontext, AppConstant.USER_SEX, UserSex.MAN);
-			if (sex == UserSex.MAN) {
-				return CONTENTMAN[position];
-			} else {
-				return CONTENTWOMEN[position];
-			}
-		}
-
-		@Override
-		public Object instantiateItem(ViewGroup container, int position) {
-			// TODO Auto-generated method stub
-			
-			return new Fragment();
-		}
-
-		@Override
-		public void destroyItem(ViewGroup container, int position, Object object) {
-			// TODO Auto-generated method stub
-			super.destroyItem(container, position, object);
-		}
+	private void setFragment(MeWishFragment meWishFragment) {
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.fragment_mewhis, meWishFragment);
+		transaction.commit();
 	}
 }
