@@ -3,18 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <com.tongjo.girlswish.widget.RefreshableView 
+
+<!--     <com.tongjo.girlswish.widget.RefreshableView
         android:id="@+id/refresh_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" 
-        >
-        <ListView 
+        android:orientation="vertical" >
+
+        <ListView
             android:id="@+id/listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
-            />
-    </com.tongjo.girlswish.widget.RefreshableView>
+            android:divider="@null" />
+    </com.tongjo.girlswish.widget.RefreshableView> -->
+
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/listview"
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="#00000000"
+        android:divider="#19000000"
+        android:dividerHeight="4dp"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:smoothScrollbar="true"
+         >
+    </com.handmark.pulltorefresh.library.PullToRefreshListView>
 
 </LinearLayout>
