@@ -1,4 +1,7 @@
 package com.tongjo.girlswish.utils;
+
+import android.os.Environment;
+
 /**
  * 存放一些常量
  * @author 16ren
@@ -6,6 +9,7 @@ package com.tongjo.girlswish.utils;
  */
 public class AppConstant {
 	//path
+	public static final String path = Environment.getExternalStorageDirectory().getPath()+"/girlWish";
 	
 	//SharedPreferences
 	public static final String USER_PHONE="user_pohone";
@@ -16,6 +20,7 @@ public class AppConstant {
 	public static final String USER_SEX="user_sex";
 	public static final String USER_NAME="user_name";
 	public static final String USER_ID="user_id";
+	public static final String USER_SCHOOL="user_school";
 	
 	
 	//web 

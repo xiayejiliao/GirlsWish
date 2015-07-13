@@ -166,8 +166,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 							SpUtils.put(getApplicationContext(), AppConstant.USER_NAME, response.getData().getNickname());
 							
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, response.getData().getGender());
+							if(response.getData().getSchool() != null){
+								SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOL, response.getData().getSchool().getName());
+							}
 
-							final String imagepath = getFilesDir().toString() + "/image/";
+							final String imagepath = AppConstant.path + "/image/";
 							final String iconname = "usericon.jpg";
 							SpUtils.put(getApplicationContext(), AppConstant.USER_ICONPATH, imagepath + iconname);
 							asyncHttpClient.post(AppConstant.URL_BASE+AppConstant.URL_WISHLIST, new TextHttpResponseHandler("UTF-8") {

@@ -42,7 +42,6 @@ public class UserBasicInfoActivity extends BaseActivity {
 		setTitle(getResources().getString(R.string.basicinfo));
 		InitView();
 		InitData();
-		LoadLocalUserInfo();
 	}
 
 	public void InitView(){
@@ -64,42 +63,17 @@ public class UserBasicInfoActivity extends BaseActivity {
 			}
 			mSex.setRightText(SexUtils.getSexString(DataContainer.userInfo.getGender()));
 			
+			if(!StringUtils.isBlank(DataContainer.userInfo.getSchoolName())){
+				mSchool.setRightText(DataContainer.userInfo.getSchoolName());
+			}
+			
 			if(!StringUtils.isBlank(DataContainer.userInfo.getAvatarUrl())){
 				Bitmap bit = ImageUtils.readBitmapFromLocal(DataContainer.userInfo.getAvatarUrl());
 				if(bit != null){
-					avatar.setImageBitmap(ImageUtils.getRoundCornerDrawable(bit, 360));
+					avatar.setImageBitmap(ImageUtils.getRoundCornerDrawable(bit, 2000));
 				}
 			}
 		}
-	}
-	
-	public TJLocalUserInfo LoadLocalUserInfo() {
-		TJLocalUserInfo user = new TJLocalUserInfo();
-		try {
-			String tel = (String) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_PHONE, "12");
-			String login = (String) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_LOGINSTATE, LoginState.LOGIN);
-			UUID userId = (UUID) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_ID, "");
-			int sex = (Integer) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_SEX, 0);
-			String name = (String)SpUtils.get(getApplicationContext(),
-					AppConstant.USER_NAME, "ffg");
-
-			String avatar = (String) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_ICONPATH, null);
-			user.set_id(userId);
-			user.setAvatarUrl(avatar);
-			user.setTel(tel);
-			user.setGender(sex);
-			user.setLoginStatus(login);
-			user.setNickname(name);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		Log.d(TAG, user.toString());
-		return user;
 	}
 
 }

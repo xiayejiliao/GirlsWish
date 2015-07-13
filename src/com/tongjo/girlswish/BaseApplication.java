@@ -44,12 +44,14 @@ public class BaseApplication extends Application {
 		OpenHelperManager.getHelper(getApplicationContext(),
 				OrmLiteHelper.class);
 		super.onCreate();
-		
+
 		DataContainer.userInfo = LoadLocalUserInfo();
 	}
 
 	/**
 	 * 从本地加载用户数据
+	 * 设置多个try/catch在于防止前面一个数据读取出错，后面的数据全部无法读取
+	 * 
 	 * @return
 	 */
 	public TJLocalUserInfo LoadLocalUserInfo() {
@@ -57,23 +59,50 @@ public class BaseApplication extends Application {
 		try {
 			String tel = (String) SpUtils.get(getApplicationContext(),
 					AppConstant.USER_PHONE, "12");
+			user.setTel(tel);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
 			String login = (String) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_LOGINSTATE,LoginState.LOGIN);
-			UUID userId = (UUID) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_ID, "12345234");
+					AppConstant.USER_LOGINSTATE, LoginState.LOGIN);
+			user.setLoginStatus(login);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			String userId = (String) SpUtils.get(getApplicationContext(),
+					AppConstant.USER_ID, "7d1bc94c-1019-11e5-bb7f-525400271610");
+			user.set_id(UUID.fromString(userId));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
 			int sex = (Integer) SpUtils.get(getApplicationContext(),
 					AppConstant.USER_SEX, 0);
-			String name = (String)SpUtils.get(getApplicationContext(),
-					AppConstant.USER_NAME, "Name");
-
-			String avatar = (String) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_ICONPATH, null);
-			user.set_id(userId);
-			user.setAvatarUrl(avatar);
-			user.setTel(tel);
 			user.setGender(sex);
-			user.setLoginStatus(login);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			String name = (String) SpUtils.get(getApplicationContext(),
+					AppConstant.USER_NAME, "Name");
 			user.setNickname(name);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			String school = (String) SpUtils.get(getApplicationContext(),
+					AppConstant.USER_SCHOOL, "School");
+			user.setSchoolName(school);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			String avatar = (String) SpUtils.get(getApplicationContext(),
+					AppConstant.USER_ICONPATH, "");
+			user.setAvatarUrl(avatar);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

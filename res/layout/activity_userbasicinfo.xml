@@ -8,14 +8,14 @@
     <RelativeLayout
         android:id="@+id/rl_fragme_main"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_140"
+        android:layout_height="@dimen/margin_160"
         android:layout_alignParentTop="true"
         android:background="@color/red" >
 
         <ImageView
             android:id="@+id/avatar"
-            android:layout_width="@dimen/margin_70"
-            android:layout_height="@dimen/margin_70"
+            android:layout_width="@dimen/margin_100"
+            android:layout_height="@dimen/margin_100"
             android:layout_centerInParent="true"
             android:src="@drawable/testimg" />
     </RelativeLayout>

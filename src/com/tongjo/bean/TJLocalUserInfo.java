@@ -9,6 +9,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName="userinfo")
 public class TJLocalUserInfo extends TJUserInfo{
 	private String loginStatus;
+	private String schoolName;
 	public TJLocalUserInfo() {
 		super();
 	}
@@ -18,6 +19,14 @@ public class TJLocalUserInfo extends TJUserInfo{
 	}
 	public void setLoginStatus(String loginStatus) {
 		this.loginStatus = loginStatus;
+	}
+
+	public String getSchoolName() {
+		return schoolName;
+	}
+
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
 	}
 
 	@Override
