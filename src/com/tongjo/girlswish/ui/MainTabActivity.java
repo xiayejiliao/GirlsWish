@@ -443,7 +443,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 
 		/**
 		 * 通过查看源代码，这边在滚动时会回调，滚动结束的标志也基本是在这边设置的
-		 * 其他一些手动设置滚动结束的情况还不清楚是否会执行该函数
+		 * 其他一些手动设置滚动结束的情况还不清楚是否会执行该函数，暂时先使用该方法
 		 */
 		@Override
 		public boolean computeScrollOffset(){

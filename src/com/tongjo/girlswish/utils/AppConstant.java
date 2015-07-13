@@ -21,6 +21,10 @@ public class AppConstant {
 	public static final String URL_BASE="http://api.wish.tongjo.com";
 	public static final String URL_LOGIN="/login";
 	public static final String URL_WISHLIST="/wish/mylist";
+	public static final String URL_WISH="/wish";
+	public static final String URL_ADDWISH="/wish/create";
+	public static final String URL_PICKWISH="/wish/pick";
+	public static final String URL_MESSAGE="/notice";
 	
 	
 	//intent
@@ -28,6 +32,8 @@ public class AppConstant {
 	public static final int FORRESULT_LOG_OK=10102;
 	public static final int FORRESULT_LOG_CANCANL=10103;
 	
-	
+	//refreshView
+	public static final int REFRESH_WISH = 0x100;
+	public static final int REFRESH_INFO = 0x101;
 	
 }

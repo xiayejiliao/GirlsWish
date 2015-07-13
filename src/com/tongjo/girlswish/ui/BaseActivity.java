@@ -1,5 +1,6 @@
 package com.tongjo.girlswish.ui;
 
+
 import java.util.UUID;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -9,6 +10,11 @@ import com.tongjo.bean.TJSchool;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
 import com.tongjo.db.OrmLiteHelper;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.SyncHttpClient;
+import com.tongjo.girlswish.BaseApplication;
+
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.widget.TextWithImageButton;
 
@@ -39,6 +45,10 @@ public class BaseActivity extends Activity {
 	public Dao<TJSchool, UUID> tjschoolDao;
 	public Dao<TJWish, UUID> tjwishDao;
 	public Dao<TJMessage, UUID> tjmessageDao;
+
+	protected AsyncHttpClient asyncHttpClient;
+	protected SyncHttpClient syncHttpClient;
+
 	
 	public synchronized void setisFront(boolean bool) {
 		this.isFront = bool;
@@ -82,11 +92,17 @@ public class BaseActivity extends Activity {
 				BaseActivity.this.finish();
 			}
 		});
+
 		ormLiteHelper = OpenHelperManager.getHelper(getApplicationContext(), OrmLiteHelper.class);
 		tjuserinfoDao = ormLiteHelper.getTJUserInfoDao();
 		tjmessageDao=ormLiteHelper.getTJMessageDao();
 		tjschoolDao=ormLiteHelper.getTJSchoolDao();
 		tjwishDao=ormLiteHelper.getTJWishDao();
+
+		
+		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
+		syncHttpClient = ((BaseApplication) getApplication()).getSyncHttpClient();
+
 	}
 
 	public ActionBar getMyActionBar() {

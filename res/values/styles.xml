@@ -27,8 +27,8 @@
          <item name="android:windowNoTitle">true</item>
          <item name="android:windowFrame">@null</item>
          <item name="android:windowIsTranslucent">false</item>
-         <item name="android:paddingLeft">10dip</item>  
-         <item name="android:paddingRight">10dip</item>     
+         <item name="android:paddingLeft">@dimen/margin_4</item>  
+         <item name="android:paddingRight">@dimen/margin_4</item>     
          <item name="android:textColor">@color/lblack</item>  
      </style>
     

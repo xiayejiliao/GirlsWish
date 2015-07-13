@@ -1,5 +1,6 @@
 package com.tongjo.girlswish.ui;
 
+
 import java.util.UUID;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -11,6 +12,12 @@ import com.tongjo.bean.TJWish;
 import com.tongjo.db.OrmLiteHelper;
 
 import android.content.Context;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.SyncHttpClient;
+import com.tongjo.girlswish.BaseApplication;
+
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -21,12 +28,15 @@ import android.support.v4.app.Fragment;
  * @author preparing
  * @date 2015-6-14
  */
+
 public class BaseFragment extends Fragment {
 	protected OrmLiteHelper ormLiteHelper;
 	protected Dao<TJUserInfo, UUID> tjuserinfoDao;
 	protected Dao<TJSchool, UUID> tjschoolDao;
 	protected Dao<TJWish, UUID> tjwishDao;
 	protected Dao<TJMessage, UUID> tjmessageDao;
+	protected AsyncHttpClient asyncHttpClient;
+	protected SyncHttpClient syncHttpClient;
 	protected Context context;
 
 	@Override
@@ -38,8 +48,11 @@ public class BaseFragment extends Fragment {
 		tjmessageDao = ormLiteHelper.getTJMessageDao();
 		tjschoolDao = ormLiteHelper.getTJSchoolDao();
 		tjwishDao = ormLiteHelper.getTJWishDao();
+		asyncHttpClient = ((BaseApplication)getActivity().getApplication()).getAsyncHttpClient();
+		syncHttpClient = ((BaseApplication)getActivity().getApplication()).getSyncHttpClient();
 	}
 	protected Context getContext() {
 		return context;
 	}
+
 }

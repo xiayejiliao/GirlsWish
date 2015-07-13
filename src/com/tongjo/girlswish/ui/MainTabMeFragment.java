@@ -3,6 +3,7 @@ package com.tongjo.girlswish.ui;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.http.Header;
 
@@ -19,11 +20,14 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.j256.ormlite.dao.Dao;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tongjo.bean.TJResponse;
@@ -50,6 +54,7 @@ public class MainTabMeFragment extends BaseFragment {
 	private AsyncHttpClient asyncHttpClient;
 	private Context mcontext;
 	private TextView tv_info;
+	private ImageView avatar;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,6 +66,18 @@ public class MainTabMeFragment extends BaseFragment {
 		tabPageIndicator = (TabPageIndicator) rootView.findViewById(R.id.indicator_fragme_wishs);
 		viewpager.setAdapter(new MyPages());
 		tabPageIndicator.setViewPager(viewpager);
+		
+		avatar = (ImageView)rootView.findViewById(R.id.iv_fragme_icon);
+		avatar.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(),UserBasicInfoActivity.class);
+				startActivity(intent);
+			}
+			
+		});
+		
 		return rootView;
 	}
 

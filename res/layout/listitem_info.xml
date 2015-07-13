@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal" 
+    android:background="@color/lblue">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,7 +19,8 @@
             android:id="@+id/info_list_icon"
             android:layout_width="@dimen/info_list_img_width"
             android:layout_height="@dimen/info_list_img_height"
-            android:src="@drawable/wechat_icon" />
+            android:paddingRight="@dimen/info_list_padding_left_right"
+            android:src="@drawable/wish" />
 
         <TextView
             android:id="@+id/info_list_title"
@@ -50,7 +52,7 @@
         android:id="@+id/holder"
         android:layout_width="120dp"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_holder"
+        android:background="@drawable/btn_background"
         android:clickable="true" >
 
         <TextView
