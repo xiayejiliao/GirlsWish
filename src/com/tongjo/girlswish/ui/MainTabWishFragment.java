@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tongjo.bean.TJResponse;
@@ -33,8 +38,8 @@ import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
-import com.tongjo.girlswish.widget.RefreshableView;
-import com.tongjo.girlswish.widget.RefreshableView.PullToRefreshListener;
+import com.tongjo.girlswish.widget.DeleteConfirmDialog;
+import com.tongjo.girlswish.widget.DeleteConfirmDialog.DialogClickListener;
 import com.tongjo.girlwish.data.DataContainer;
 
 /**
@@ -45,8 +50,9 @@ import com.tongjo.girlwish.data.DataContainer;
  */
 public class MainTabWishFragment extends BaseFragment {
 	private final String TAG = "MainTabWishFragment";
-	private RefreshableView mRefreshView = null;
-	private ListView mListView = null;
+	/* private RefreshableView mRefreshView = null; */
+	private PullToRefreshListView mListView = null;
+	/* private ListView mListView = null; */
 	private MainTabWishAdapter mAdapter = null;
 	private WishDialogFragment dialog = null;
 
@@ -54,18 +60,21 @@ public class MainTabWishFragment extends BaseFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View rootView = inflater.inflate(R.layout.fragment_wishs, container,false);
-
+		View rootView = inflater.inflate(R.layout.fragment_wishs, container,
+				false);
 
 		InitView(rootView);
-		/* MockData(); */
+		/*MockData(); */
 		getWishData();
 		return rootView;
 	}
 
 	public void InitView(View view) {
-		mRefreshView = (RefreshableView) view.findViewById(R.id.refresh_view);
-		mListView = (ListView) view.findViewById(R.id.listview);
+		/*
+		 * mRefreshView = (RefreshableView)
+		 * view.findViewById(R.id.refresh_view);
+		 */
+		mListView = (PullToRefreshListView) view.findViewById(R.id.listview);
 		mAdapter = new MainTabWishAdapter(getActivity(), DataContainer.WishList);
 		mListView.setAdapter(mAdapter);
 		mAdapter.setMItemClickListener(new MItemClickListener() {
@@ -83,24 +92,43 @@ public class MainTabWishFragment extends BaseFragment {
 
 			@Override
 			public void MItemLongPress(View v, int position) {
-				getWishData();
+				DeleteConfirmDialog newFragment = DeleteConfirmDialog
+						.newInstance("确定删除心愿", "删除心愿",null,mListener);
+				newFragment.show(getActivity()
+						.getFragmentManager(), "dialog");
 			}
 
 		});
 
-		mRefreshView.setOnRefreshListener(new PullToRefreshListener() {
+		mListView.setMode(Mode.BOTH);
+		mListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
-			public void onRefresh() {
-				/*
-				 * Looper.prepare(); getWishData();
-				 */
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				String label = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
+				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
+				
+				getWishData();
 			}
-		}, AppConstant.REFRESH_WISH);
+		});
 
 	}
 
+	/** 长按按钮弹出的对话框的按键操作 */
+	private DialogClickListener mListener = new DialogClickListener() {
+		@Override
+		public void doPositiveClick() {
+
+		}
+
+		@Override
+		public void doNegativeClick() {
+
+		}
+	};
+	
 	public void MockData() {
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 35; i++) {
 			TJWish wish = new TJWish();
 			DataContainer.WishList.add(wish);
 		}
@@ -118,7 +146,7 @@ public class MainTabWishFragment extends BaseFragment {
 
 					@Override
 					public void onSuccess(int arg0, Header[] arg1, String arg2) {
-						mRefreshView.finishRefreshing();
+						mListView.onRefreshComplete();
 						if (arg2 == null) {
 							ToastUtils.show(getActivity(), "心愿列表获取失败:");
 							return;
@@ -144,10 +172,12 @@ public class MainTabWishFragment extends BaseFragment {
 								if (response.getData().getWishes() != null) {
 									Log.d(TAG, response.getData().getWishes()
 											.toString());
+									DataContainer.WishList.clear();
 									DataContainer.WishList
 											.addAll((List<TJWish>) response
 													.getData().getWishes());
 									mAdapter.notifyDataSetChanged();
+									ToastUtils.show(getActivity(), "心愿列表获取成功");
 								}
 							} else {
 								ToastUtils.show(getActivity(), "心愿列表获取失败:"
@@ -161,7 +191,7 @@ public class MainTabWishFragment extends BaseFragment {
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2,
 							Throwable arg3) {
-						mRefreshView.finishRefreshing();
+						mListView.onRefreshComplete();
 						Toast.makeText(getActivity(), "心愿列表获取失败" + arg0,
 								Toast.LENGTH_LONG).show();
 					}

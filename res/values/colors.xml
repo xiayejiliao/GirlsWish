@@ -11,13 +11,18 @@
     <color name="lwhite">#f6f6f6</color>
     <color name="llwhite">#d6d6d6</color>
 
+    <!-- 蓝色定义 -->
+    <color name="lblue">#aaccee</color>
+    
     <!-- 透明色彩 -->
     <color name="transparent">#00ffffff</color>
+    
     <!-- 红色系列 -->
     <color name="red">#FF0000</color>
-    <color name="lred">#FF9999</color>
+    <color name="lred">#FF3333</color>
+    <color name="llred">#cc3333</color>
+    
     <!-- drawable资源文件中使用的颜色 -->
-    <color name="lblue">#aaccee</color>
     <color name="rectangle_border">#c2c2c2</color>
     <color name="head_text">#0e5986</color>
     <color name="line">#ff888888</color>
@@ -26,6 +31,8 @@
     <color name="lgreen">#00bb00</color>
     <color name="green">#00ff00</color>
     <color name="llgreen">#00CC99</color>
+    
+    <!-- 其他颜色 -->
     <color name="colorPrimary">#F50057</color>
     <color name="colorPrimaryDark">#C51162</color>
     <color name="textColorPrimary">#FFFFFF</color>
