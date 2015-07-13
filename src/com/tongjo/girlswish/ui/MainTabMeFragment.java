@@ -1,12 +1,15 @@
 package com.tongjo.girlswish.ui;
 
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.http.Header;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.j256.ormlite.dao.Dao;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tongjo.bean.TJResponse;
@@ -31,7 +35,9 @@ import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.model.UserSex;
 import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -56,7 +62,7 @@ public class MainTabMeFragment extends BaseFragment {
 
 		View rootView = inflater.inflate(R.layout.fragment_me, container, false);
 		viewpager = (ViewPager) rootView.findViewById(R.id.viewpage_fragme_wishs);
-		tv_info = (TextView) rootView.findViewById(R.id.tv_fragwork_info);
+		tv_info = (TextView) rootView.findViewById(R.id.tv_fragme_info);
 		tabPageIndicator = (TabPageIndicator) rootView.findViewById(R.id.indicator_fragme_wishs);
 		viewpager.setAdapter(new MyPages());
 		tabPageIndicator.setViewPager(viewpager);
@@ -117,7 +123,22 @@ public class MainTabMeFragment extends BaseFragment {
 
 				}
 				if (mywishs.getResult().getCode() == 0) {
-					System.out.println(mywishs.getData().toString());
+					List<TJWish> tjWishs=mywishs.getData().getWishList();
+					System.out.println("777777777777");
+					for (TJWish tjWish : tjWishs) {
+						try {
+							tjwishDao.createOrUpdate(tjWish);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					try {
+						System.out.println(tjwishDao.queryForAll().size());
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -130,16 +151,12 @@ public class MainTabMeFragment extends BaseFragment {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode==AppConstant.FORRESULT_LOG&&resultCode==AppConstant.FORRESULT_LOG_OK){
+		if (requestCode == AppConstant.FORRESULT_LOG && resultCode == AppConstant.FORRESULT_LOG_OK) {
 			asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISHLIST, wishListResponse);
 			tv_info.setVisibility(View.GONE);
 		}
-		if(requestCode==AppConstant.FORRESULT_LOG&&resultCode==AppConstant.FORRESULT_LOG_CANCANL){
-			if(tv_info==null){
-				
-			}
+		if (requestCode == AppConstant.FORRESULT_LOG && resultCode == AppConstant.FORRESULT_LOG_CANCANL) {
 			tv_info.setVisibility(View.VISIBLE);
-			
 			tv_info.setText("请登陆");
 		}
 	};
@@ -168,7 +185,8 @@ public class MainTabMeFragment extends BaseFragment {
 	}
 
 	class MyPages extends PagerAdapter {
-		private final String[] CONTENT = new String[] { "未摘心愿", "已摘心愿",};
+		private final String[] CONTENTMAN = new String[] { "未完成", "已完成", };
+		private final String[] CONTENTWOMEN = new String[] { "未摘心愿", "已摘心愿", };
 
 		@Override
 		public int getCount() {
@@ -185,13 +203,19 @@ public class MainTabMeFragment extends BaseFragment {
 		@Override
 		public CharSequence getPageTitle(int position) {
 			// TODO Auto-generated method stub
-			return CONTENT[position];
+			UserSex sex = (UserSex) SpUtils.get(mcontext, AppConstant.USER_SEX, UserSex.MAN);
+			if (sex == UserSex.MAN) {
+				return CONTENTMAN[position];
+			} else {
+				return CONTENTWOMEN[position];
+			}
 		}
 
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
 			// TODO Auto-generated method stub
-			return new TextView(getActivity());
+			
+			return new Fragment();
 		}
 
 		@Override
