@@ -163,11 +163,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 							SpUtils.put(getApplicationContext(), AppConstant.USER_PASSWORD, password);
 							SpUtils.put(getApplicationContext(), AppConstant.USER_LOGINSTATE, LoginState.LOGIN);
 							SpUtils.put(getApplicationContext(), AppConstant.USER_ID, response.getData().get_id().toString());
-							if(response.getData().getGender()==0){
-								SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, UserSex.WOMEN);
-							}else if(response.getData().getGender()==1) {
-								SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, UserSex.MAN);
-							}
+							SpUtils.put(getApplicationContext(), AppConstant.USER_NAME, response.getData().getNickname());
+							
+							SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, response.getData().getGender());
+			
 							final String imagepath = getFilesDir().toString() + "/image/";
 							final String iconname = "usericon.jpg";
 							SpUtils.put(getApplicationContext(), AppConstant.USER_ICONPATH, imagepath + iconname);

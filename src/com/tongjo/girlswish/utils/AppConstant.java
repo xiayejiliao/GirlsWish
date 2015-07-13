@@ -14,6 +14,7 @@ public class AppConstant {
 	public static final String USER_ICONPATH="user_iconpath";
 	public static final String USER_ISREMEMBER="user_isremeber";
 	public static final String USER_SEX="user_sex";
+	public static final String USER_NAME="user_name";
 	public static final String USER_ID="user_id";
 	
 	

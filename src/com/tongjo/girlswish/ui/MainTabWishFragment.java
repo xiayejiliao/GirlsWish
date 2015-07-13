@@ -50,11 +50,10 @@ import com.tongjo.girlwish.data.DataContainer;
  */
 public class MainTabWishFragment extends BaseFragment {
 	private final String TAG = "MainTabWishFragment";
-	/* private RefreshableView mRefreshView = null; */
 	private PullToRefreshListView mListView = null;
-	/* private ListView mListView = null; */
 	private MainTabWishAdapter mAdapter = null;
 	private WishDialogFragment dialog = null;
+	private ViewGroup mEmptyView = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,17 +63,15 @@ public class MainTabWishFragment extends BaseFragment {
 				false);
 
 		InitView(rootView);
-		/*MockData(); */
+		updateUi(true);
+		/* MockData(); */
 		getWishData();
 		return rootView;
 	}
 
 	public void InitView(View view) {
-		/*
-		 * mRefreshView = (RefreshableView)
-		 * view.findViewById(R.id.refresh_view);
-		 */
 		mListView = (PullToRefreshListView) view.findViewById(R.id.listview);
+		mEmptyView = (ViewGroup)view.findViewById(R.id.empty_view);
 		mAdapter = new MainTabWishAdapter(getActivity(), DataContainer.WishList);
 		mListView.setAdapter(mAdapter);
 		mAdapter.setMItemClickListener(new MItemClickListener() {
@@ -93,9 +90,8 @@ public class MainTabWishFragment extends BaseFragment {
 			@Override
 			public void MItemLongPress(View v, int position) {
 				DeleteConfirmDialog newFragment = DeleteConfirmDialog
-						.newInstance("确定删除心愿", "删除心愿",null,mListener);
-				newFragment.show(getActivity()
-						.getFragmentManager(), "dialog");
+						.newInstance("确定删除心愿", "删除心愿", null, mListener);
+				newFragment.show(getActivity().getFragmentManager(), "dialog");
 			}
 
 		});
@@ -104,16 +100,34 @@ public class MainTabWishFragment extends BaseFragment {
 		mListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-				String label = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(),
-						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
+				String label = DateUtils.formatDateTime(getActivity(),
+						System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
 				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-				
+
 				getWishData();
 			}
 		});
 
 	}
 
+	public void updateUi(boolean isEmpty){
+		if(isEmpty){
+			mEmptyView.setVisibility(View.VISIBLE);
+			mListView.setVisibility(View.GONE);
+		}
+		
+		if(DataContainer.WishList.size() <1){
+			mEmptyView.setVisibility(View.VISIBLE);
+			mListView.setVisibility(View.GONE);
+		}else{
+			mEmptyView.setVisibility(View.GONE);
+			mListView.setVisibility(View.VISIBLE);
+			mAdapter.notifyDataSetChanged();
+		}
+	}
+	
 	/** 长按按钮弹出的对话框的按键操作 */
 	private DialogClickListener mListener = new DialogClickListener() {
 		@Override
@@ -126,7 +140,7 @@ public class MainTabWishFragment extends BaseFragment {
 
 		}
 	};
-	
+
 	public void MockData() {
 		for (int i = 0; i < 35; i++) {
 			TJWish wish = new TJWish();
@@ -176,7 +190,7 @@ public class MainTabWishFragment extends BaseFragment {
 									DataContainer.WishList
 											.addAll((List<TJWish>) response
 													.getData().getWishes());
-									mAdapter.notifyDataSetChanged();
+									updateUi(false);
 									ToastUtils.show(getActivity(), "心愿列表获取成功");
 								}
 							} else {
