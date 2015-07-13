@@ -54,7 +54,7 @@ public class MainTabWishFragment extends BaseFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		View rootView = inflater.inflate(R.layout.fragment_wishs, null);
+		View rootView = inflater.inflate(R.layout.fragment_wishs, container,false);
 
 
 		InitView(rootView);
