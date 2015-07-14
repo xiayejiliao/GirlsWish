@@ -7,7 +7,7 @@
     <color name="black">#000000</color>
 
     <!-- 白色色系定义 -->
-    <color name="white">#ffffff</color>
+    <color name="white">#FFFFFF</color>
     <color name="lwhite">#f6f6f6</color>
     <color name="llwhite">#d6d6d6</color>
 
@@ -64,5 +64,7 @@
     <color name="addwish_yellowColor">#F1F1BC</color>
     <color name="addwish_redColor">#EBD0E6</color>
     <color name="addwish_blueColor">#9AB8D8</color>
+    <!-- 我的界面颜色 -->
     
+    <color name="me_info_bg">#ECB7B3</color>
 </resources>

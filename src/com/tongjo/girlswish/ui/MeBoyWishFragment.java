@@ -16,8 +16,8 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.tongjo.bean.TJWish;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.model.UserSex;
-import com.tongjo.girlswish.ui.MeWishFragment.ViewHolder;
 import com.tongjo.girlswish.utils.RandomUtils;
+import com.tongjo.girlswish.utils.TimeUtils;
 
 import android.R.raw;
 import android.app.Activity;
@@ -182,7 +182,7 @@ public class MeBoyWishFragment extends BaseFragment {
 				viewHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_mewishitem_name);
 				viewHolder.tv_school = (TextView) convertView.findViewById(R.id.tv_mewishitem_school);
 				viewHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_mewishitem_time);
-				viewHolder.view_color = (View) convertView.findViewById(R.id.view_mewishitem_color);
+				viewHolder.view_color = (View) convertView.findViewById(R.id.tv_mewishitem_color);
 				convertView.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
@@ -190,8 +190,9 @@ public class MeBoyWishFragment extends BaseFragment {
 			TJWish tjWish = wishs.get(position);
 			viewHolder.tv_name.setText(tjWish.getCreatorUser().getRealname());
 			viewHolder.tv_school.setText(tjWish.getCreatorUser().getSchool().getName());
-			viewHolder.tv_time.setText(tjWish.getCreatedTime());
-			viewHolder.view_color.setBackgroundColor(Color.rgb(RandomUtils.getRandom(255), RandomUtils.getRandom(255), RandomUtils.getRandom(255)));
+			String current=TimeUtils.getCurrentTimeInString();
+			viewHolder.tv_time.setText(TimeUtils.minuteCompare(current, tjWish.getPickedTime())+"min");
+			viewHolder.view_color.setBackgroundColor(Color.parseColor("#"+tjWish.getBackgroundColor()));
 			imageLoader.displayImage(tjWish.getCreatorUser().getAvatarUrl(), viewHolder.iv_icon, displayImageOptions, animateFirstDisplayListener);
 			return convertView;
 		}
@@ -203,6 +204,7 @@ public class MeBoyWishFragment extends BaseFragment {
 		public TextView tv_school;
 		public TextView tv_time;
 		public View view_color;
+		
 	}
 
 	private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {

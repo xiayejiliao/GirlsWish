@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_below="@id/tv_fragme_info"
-        android:background="@color/red" >
+        android:background="@color/me_info_bg" >
 
         <ImageView
             android:id="@+id/iv_fragme_icon"

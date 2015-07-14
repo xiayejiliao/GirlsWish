@@ -147,7 +147,8 @@ public class MainTabWishAdapter extends BaseAdapter {
 				int red = color >> 4;
 				int green = (color >> 2) % 256;
 				int blue = color % 256;
-				holder.bottomBg.setBackgroundColor(Color.rgb(red, green, blue));
+				//holder.bottomBg.setBackgroundColor(Color.rgb(red, green, blue));
+				holder.bottomBg.setBackgroundColor(Color.parseColor("#"+wish.getBackgroundColor()));
 			}
 
 			final ViewHolder finalholder = holder;

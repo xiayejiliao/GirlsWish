@@ -177,7 +177,7 @@ public class MeGirlWishFragment extends BaseFragment {
 				viewHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_mewishitem_name);
 				viewHolder.tv_school = (TextView) convertView.findViewById(R.id.tv_mewishitem_school);
 				viewHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_mewishitem_time);
-				viewHolder.view_color = (View) convertView.findViewById(R.id.view_mewishitem_color);
+				viewHolder.view_color = (View) convertView.findViewById(R.id.tv_mewishitem_color);
 				convertView.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
@@ -187,7 +187,8 @@ public class MeGirlWishFragment extends BaseFragment {
 			viewHolder.tv_school.setText(tjWish.getCreatorUser().getSchool().getName());
 			String current=TimeUtils.getCurrentTimeInString();
 			viewHolder.tv_time.setText(TimeUtils.minuteCompare(current, tjWish.getPickedTime())+"min");
-			viewHolder.view_color.setBackgroundColor(Color.RED);
+			System.out.println(viewHolder.tv_time.getX());
+			viewHolder.view_color.setBackgroundColor(Color.parseColor("#"+tjWish.getBackgroundColor()));
 			imageLoader.displayImage(tjWish.getCreatorUser().getAvatarUrl(), viewHolder.iv_icon, displayImageOptions, animateFirstDisplayListener);
 			return convertView;
 		}
