@@ -16,14 +16,17 @@ import com.tongjo.bean.TJWish;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.model.UserSex;
 import com.tongjo.girlswish.ui.MeBoyWishFragment.ViewHolder;
+import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.RandomUtils;
 import com.tongjo.girlswish.utils.TimeUtils;
 
+import de.greenrobot.event.EventBus;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,8 +111,10 @@ public class MeGirlWishFragment extends BaseFragment {
 
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-			TJWish tjWish= (TJWish) parent.getItemAtPosition(position);
-			Log.d(TAG, tjWish.toString());
+			Message message=new Message();
+			message.what=AppConstant.MESSAGE_WHAT_MEWISHLONGCLICK;
+			message.obj=parent.getItemAtPosition(position);
+			EventBus.getDefault().post(message);
 			return true;
 		}
 	};
@@ -187,7 +192,6 @@ public class MeGirlWishFragment extends BaseFragment {
 			viewHolder.tv_school.setText(tjWish.getCreatorUser().getSchool().getName());
 			String current=TimeUtils.getCurrentTimeInString();
 			viewHolder.tv_time.setText(TimeUtils.minuteCompare(current, tjWish.getPickedTime())+"min");
-			System.out.println(viewHolder.tv_time.getX());
 			viewHolder.view_color.setBackgroundColor(Color.parseColor("#"+tjWish.getBackgroundColor()));
 			imageLoader.displayImage(tjWish.getCreatorUser().getAvatarUrl(), viewHolder.iv_icon, displayImageOptions, animateFirstDisplayListener);
 			return convertView;

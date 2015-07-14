@@ -28,6 +28,7 @@ public class AppConstant {
 	public static final String URL_BASE = "http://api.wish.tongjo.com";
 	public static final String URL_LOGIN = "/login";
 	public static final String URL_LOGOUT = "/logout";
+	public static final String URL_WISHDEL = "/wish/delete";
 
 	public static final String URL_WISHLIST = "/wish/mylist";
 	public static final String URL_WISH = "/wish";
@@ -45,5 +46,9 @@ public class AppConstant {
 	// refreshView
 	public static final int REFRESH_WISH = 0x100;
 	public static final int REFRESH_INFO = 0x101;
+	
+	//evenbus
+	public static final int MESSAGE_WHAT_MEWISHLONGCLICK=10301;
+	public static final int MESSAGE_WHAT_MEWISHCLICK=10302;
 
 }

@@ -53,6 +53,8 @@ import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 
+import de.greenrobot.event.EventBus;
+
 /**
  * 我的对应的fragment Copyright 2015
  * 
@@ -127,6 +129,7 @@ public class MainTabMeFragment extends BaseFragment {
 				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
 				.displayer(new RoundedBitmapDisplayer(20))// 设置成圆角图片
 				.build(); // 创建配置过得DisplayImageOption对象
+		EventBus.getDefault().register(this);
 	}
 
 	@Override
@@ -135,6 +138,13 @@ public class MainTabMeFragment extends BaseFragment {
 		super.onAttach(activity);
 
 		Log.d(TAG, "on attach");
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		EventBus.getDefault().unregister(this);
 	}
 
 	@Override
@@ -182,7 +192,7 @@ public class MainTabMeFragment extends BaseFragment {
 				}
 				if (mywishs.getResult().getCode() == 0) {
 					tjWishs = mywishs.getData().getWishList();
-					Log.d(TAG, "wishs size:"+tjWishs.size());
+					Log.d(TAG, "wishs size:" + tjWishs.size());
 					handler.obtainMessage(MESSAGE_WHAT_UPDATE_WHISH).sendToTarget();
 				}
 			}
@@ -205,7 +215,7 @@ public class MainTabMeFragment extends BaseFragment {
 			tv_info.setVisibility(View.VISIBLE);
 			tv_info.setText("请登陆");
 		}
-		if(requestCode==AppConstant.FORRESULT_MEINFO&&requestCode==AppConstant.FORRESULT_MEINFO_LOGOUT){
+		if (requestCode == AppConstant.FORRESULT_MEINFO && requestCode == AppConstant.FORRESULT_MEINFO_LOGOUT) {
 			handler.obtainMessage(MESSAGE_WHAT_UPDATE_INFO).sendToTarget();
 			tjWishs.clear();
 			handler.obtainMessage(MESSAGE_WHAT_UPDATE_WHISH).sendToTarget();
@@ -229,9 +239,9 @@ public class MainTabMeFragment extends BaseFragment {
 	}
 
 	private void updateinfo() {
-		String name= (String) SpUtils.get(mcontext, AppConstant.USER_NAME, "--");
-		String school= (String) SpUtils.get(mcontext, AppConstant.USER_SCHOOL, "----");
-		String iconurl= (String) SpUtils.get(mcontext, AppConstant.USER_ICONURL, "----");
+		String name = (String) SpUtils.get(mcontext, AppConstant.USER_NAME, "--");
+		String school = (String) SpUtils.get(mcontext, AppConstant.USER_SCHOOL, "----");
+		String iconurl = (String) SpUtils.get(mcontext, AppConstant.USER_ICONURL, "----");
 		tv_name.setText(name);
 		tv_school.setText(school);
 		imageLoader.displayImage(iconurl, iv_icon, displayImageOptions);
@@ -272,4 +282,39 @@ public class MainTabMeFragment extends BaseFragment {
 
 	}
 
+	public void onEventMainThread(Message msg) {
+		switch (msg.what) {
+		case AppConstant.MESSAGE_WHAT_MEWISHLONGCLICK:
+			TJWish tjWish = (TJWish) msg.obj;
+			if (tjWish.getIsPicked() == 0 && tjWish.getIsCompleted() == 1) {
+				
+			}
+			if (tjWish.getIsPicked() == 0 && tjWish.getIsCompleted() == 1) {
+
+			}
+			if (tjWish.getIsPicked() == 0 && tjWish.getIsCompleted() == 1) {
+
+			}
+			if (tjWish.getIsPicked() == 0 && tjWish.getIsCompleted() == 1) {
+
+			}
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setMessage("确定").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					Intent intent = new Intent(getActivity(), LoginActivity.class);
+					startActivityForResult(intent, AppConstant.FORRESULT_LOG);
+				}
+			}).setNegativeButton("No", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			}).show();
+			AlertDialog alert = builder.create();
+			break;
+
+		default:
+			break;
+		}
+	}
 }
