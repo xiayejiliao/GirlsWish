@@ -10,11 +10,11 @@ import com.tongjo.bean.TJSchool;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
 import com.tongjo.db.OrmLiteHelper;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.SyncHttpClient;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tongjo.girlswish.BaseApplication;
-
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.widget.TextWithImageButton;
 
@@ -102,7 +102,6 @@ public class BaseActivity extends Activity {
 		
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 		syncHttpClient = ((BaseApplication) getApplication()).getSyncHttpClient();
-
 	}
 
 	public ActionBar getMyActionBar() {

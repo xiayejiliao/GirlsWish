@@ -166,6 +166,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 							SpUtils.put(getApplicationContext(), AppConstant.USER_NAME, response.getData().getNickname());
 							
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, response.getData().getGender());
+							SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, response.getData().getAvatarUrl());
 							if(response.getData().getSchool() != null){
 								SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOL, response.getData().getSchool().getName());
 							}

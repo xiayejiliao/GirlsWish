@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -28,9 +30,17 @@ public class MeWishFragment extends BaseFragment {
 		View view = inflater.inflate(R.layout.fragment_mewish, null);
 		lv_mewhis = (ListView) view.findViewById(R.id.lv_fragmewhish_wish);
 		lv_mewhis.setAdapter(new MyAdapter());
+		lv_mewhis.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
 		return view;
 	}
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

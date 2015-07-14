@@ -14,6 +14,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,8 +36,11 @@ import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.dao.Dao;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
@@ -55,10 +60,10 @@ import com.tongjo.girlswish.utils.ToastUtils;
  * @date 2015-6-14
  */
 public class MainTabMeFragment extends BaseFragment {
+	private final static String TAG = "MainTabMeFragment";
 	private final static int MESSAGE_WHAT_UPDATE_INFO = 123;
 	private final static int MESSAGE_WHAT_UPDATE_WHISH = 1234;
 
-	private static final String TAG = "MainTabMeFragment";
 	private Context mcontext;
 	private TextView tv_info;
 	private ImageView avatar;
@@ -66,13 +71,9 @@ public class MainTabMeFragment extends BaseFragment {
 	private TextView tv_school;
 	private ImageView iv_icon;
 	private List<TJWish> tjWishs;
-	private RadioGroup radioGroup;
-	private RadioButton RadioButtonfirst;
-	private RadioButton RadioButtonsecond;
 	private int sex;
 	private int loginstate;
-	List<TJWish> wishfirst = new ArrayList<TJWish>();
-	List<TJWish> wishsecond = new ArrayList<TJWish>();
+	private DisplayImageOptions displayImageOptions;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,13 +81,9 @@ public class MainTabMeFragment extends BaseFragment {
 
 		View rootView = inflater.inflate(R.layout.fragment_me, container, false);
 		tv_info = (TextView) rootView.findViewById(R.id.tv_fragme_info);
-		radioGroup=(RadioGroup)rootView.findViewById(R.id.rg_fragme_chose);
-		RadioButtonfirst=(RadioButton)rootView.findViewById(R.id.rb_fragme_first);
-		RadioButtonsecond=(RadioButton)rootView.findViewById(R.id.rb_fragme_second);
-		tv_name=(TextView)rootView.findViewById(R.id.tv_fragme_name);
-		tv_school=(TextView)rootView.findViewById(R.id.tv_fragme_school);
-		iv_icon=(ImageView)rootView.findViewById(R.id.iv_fragme_icon);
-		
+		tv_name = (TextView) rootView.findViewById(R.id.tv_fragme_name);
+		tv_school = (TextView) rootView.findViewById(R.id.tv_fragme_school);
+		iv_icon = (ImageView) rootView.findViewById(R.id.iv_fragme_icon);
 		avatar = (ImageView) rootView.findViewById(R.id.iv_fragme_icon);
 		avatar.setOnClickListener(new OnClickListener() {
 
@@ -96,58 +93,9 @@ public class MainTabMeFragment extends BaseFragment {
 				startActivity(intent);
 			}
 		});
-		initRadioGroup();
+		updateinfo();
+		Log.d(TAG, "oncreatview");
 		return rootView;
-	}
-	private void initinfo(){
-		if(loginstate==1){
-			String uuidString=(String) SpUtils.get(mcontext, AppConstant.USER_ID, "11");
-			try {
-			TJUserInfo tjUserInfo=	tjuserinfoDao.queryForId(UUID.fromString(uuidString));
-			tv_name.setText(tjUserInfo.getRealname());
-			tv_name.setText(tjUserInfo.getSchool().getName());
-			String iconurl= tjUserInfo.getAvatarUrl();
-			ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mcontext);
-			ImageLoader.getInstance().init(configuration);
-			ImageLoader.getInstance().displayImage(iconurl, iv_icon);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	private void initRadioGroup() {
-		if (sex == 0) {
-			RadioButtonfirst.setText("未摘取");
-			RadioButtonsecond.setText("已摘取");
-		} else if (sex == 1) {
-			RadioButtonfirst.setText("未完成");
-			RadioButtonsecond.setText("已完成");
-		}
-		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				// TODO Auto-generated method stub
-				System.out.println("chechk");
-				loginstate= (Integer) SpUtils.get(mcontext, AppConstant.USER_LOGINSTATE, 0);
-				System.out.println("loginstate:"+loginstate);
-				if (loginstate != 1) {
-					return;
-				}
-				switch (checkedId) {
-				case R.id.rb_fragme_first:
-					setFragment(new MeWishFragment(wishfirst));
-					break;
-				case R.id.rb_fragme_second:
-					setFragment(new MeWishFragment(wishsecond));
-					break;
-
-				default:
-					break;
-				}
-			}
-		});
 	}
 
 	Handler handler = new Handler() {
@@ -157,42 +105,36 @@ public class MainTabMeFragment extends BaseFragment {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case MESSAGE_WHAT_UPDATE_INFO:
-
+				updateinfo();
 				break;
 			case MESSAGE_WHAT_UPDATE_WHISH:
-				if(!radioGroup.isActivated()){
-					radioGroup.check(R.id.rb_fragme_first);
-				}
-				switch (radioGroup.getCheckedRadioButtonId()) {
-				case R.id.rb_fragme_first:
-					System.out.println("frist");
-					setFragment(new MeWishFragment(wishfirst));
-					break;
-				case R.id.rb_fragme_second:
-					System.out.println("second");
-					setFragment(new MeWishFragment(wishsecond));
-					break;
-				default:
-					break;
-				}
+				updateWish(tjWishs);
 				break;
 
 			default:
 				break;
 			}
 		}
-
 	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.testimg) // 设置图片下载期间显示的图片
+				.showImageForEmptyUri(R.drawable.testimg) // 设置图片Uri为空或是错误的时候显示的图片
+				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
+				.cacheInMemory(true) // 设置下载的图片是否缓存在内存中
+				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
+				.displayer(new RoundedBitmapDisplayer(20))// 设置成圆角图片
+				.build(); // 创建配置过得DisplayImageOption对象
+	}
 
-		sex = 1;
-		loginstate = 0;
-		
+	@Override
+	public void onAttach(Activity activity) {
+		// TODO Auto-generated method stub
+		super.onAttach(activity);
 
+		Log.d(TAG, "on attach");
 	}
 
 	@Override
@@ -200,6 +142,16 @@ public class MainTabMeFragment extends BaseFragment {
 		super.setUserVisibleHint(isVisibleToUser);
 		if (isVisibleToUser == true) {
 			asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISHLIST, wishListResponse);
+			ImageLoader.getInstance().loadImage((String) SpUtils.get(mcontext, AppConstant.USER_ICONURL, ""), new SimpleImageLoadingListener() {
+				@Override
+				public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+					// TODO Auto-generated method stub
+					super.onLoadingComplete(imageUri, view, loadedImage);
+					iv_icon.setImageBitmap(loadedImage);
+				}
+			});
+			tv_name.setText((String) SpUtils.get(mcontext, AppConstant.USER_NAME, ""));
+			tv_school.setText((String) SpUtils.get(mcontext, AppConstant.USER_SCHOOL, ""));
 		} else {
 
 		}
@@ -230,28 +182,7 @@ public class MainTabMeFragment extends BaseFragment {
 				}
 				if (mywishs.getResult().getCode() == 0) {
 					tjWishs = mywishs.getData().getWishList();
-					wishfirst.clear();
-					wishsecond.clear();
-					if (tjWishs != null) {
-						if (sex == 0) {
-							for (TJWish tjWish : tjWishs) {
-								if (tjWish.getIsPicked() == 0) {
-									wishfirst.add(tjWish);
-								} else {
-									wishsecond.add(tjWish);
-								}
-							}
-						} else if (sex == 1) {
-							for (TJWish tjWish : tjWishs) {
-								if (tjWish.getIsCompleted() == 0) {
-									wishfirst.add(tjWish);
-								} else {
-									wishsecond.add(tjWish);
-								}
-							}
-						}
-					}
-					System.out.println("777777777777");
+					Log.d(TAG, "wishs size:"+tjWishs.size());
 					handler.obtainMessage(MESSAGE_WHAT_UPDATE_WHISH).sendToTarget();
 				}
 			}
@@ -259,7 +190,7 @@ public class MainTabMeFragment extends BaseFragment {
 
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-			System.out.println("========");
+
 		}
 	};
 
@@ -268,12 +199,49 @@ public class MainTabMeFragment extends BaseFragment {
 		if (requestCode == AppConstant.FORRESULT_LOG && resultCode == AppConstant.FORRESULT_LOG_OK) {
 			asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISHLIST, wishListResponse);
 			tv_info.setVisibility(View.GONE);
+			handler.obtainMessage(MESSAGE_WHAT_UPDATE_INFO).sendToTarget();
 		}
 		if (requestCode == AppConstant.FORRESULT_LOG && resultCode == AppConstant.FORRESULT_LOG_CANCANL) {
 			tv_info.setVisibility(View.VISIBLE);
 			tv_info.setText("请登陆");
 		}
 	};
+
+	private void updateWish(List<TJWish> tjWishs) {
+		int sex = (Integer) SpUtils.get(mcontext, AppConstant.USER_SEX, 0);
+		switch (sex) {
+		case 0:
+			setGirlWish(tjWishs);
+			break;
+		case 1:
+			setBoyWish(tjWishs);
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	private void updateinfo() {
+		String name= (String) SpUtils.get(mcontext, AppConstant.USER_NAME, "--");
+		String school= (String) SpUtils.get(mcontext, AppConstant.USER_SCHOOL, "----");
+		String iconurl= (String) SpUtils.get(mcontext, AppConstant.USER_ICONURL, "----");
+		tv_name.setText(name);
+		tv_school.setText(school);
+		imageLoader.displayImage(iconurl, iv_icon, displayImageOptions);
+	}
+
+	private void setGirlWish(List<TJWish> tjWishs) {
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.fragment_mewhis, new MeGirlWishFragment(tjWishs));
+		transaction.commit();
+	}
+
+	private void setBoyWish(List<TJWish> tjWishs) {
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.fragment_mewhis, new MeBoyWishFragment(tjWishs));
+		transaction.commit();
+	}
 
 	class Wishs {
 		private List<TJWish> wishList;
@@ -298,9 +266,4 @@ public class MainTabMeFragment extends BaseFragment {
 
 	}
 
-	private void setFragment(MeWishFragment meWishFragment) {
-		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(R.id.fragment_mewhis, meWishFragment);
-		transaction.commit();
-	}
 }

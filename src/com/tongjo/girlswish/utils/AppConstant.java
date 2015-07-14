@@ -16,6 +16,7 @@ public class AppConstant {
 	public static final String USER_PASSWORD="user_password";
 	public static final String USER_LOGINSTATE="user_loginstate";
 	public static final String USER_ICONPATH="user_iconpath";
+	public static final String USER_ICONURL="user_iconurl";
 	public static final String USER_ISREMEMBER="user_isremeber";
 	public static final String USER_SEX="user_sex";
 	public static final String USER_NAME="user_name";

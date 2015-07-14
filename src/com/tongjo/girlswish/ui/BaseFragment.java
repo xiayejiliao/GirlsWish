@@ -15,8 +15,8 @@ import android.content.Context;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.SyncHttpClient;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tongjo.girlswish.BaseApplication;
-
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -37,6 +37,7 @@ public class BaseFragment extends Fragment {
 	protected Dao<TJMessage, UUID> tjmessageDao;
 	protected AsyncHttpClient asyncHttpClient;
 	protected SyncHttpClient syncHttpClient;
+	protected ImageLoader imageLoader=ImageLoader.getInstance();
 	protected Context context;
 
 	@Override

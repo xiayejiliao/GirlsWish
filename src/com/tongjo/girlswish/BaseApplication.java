@@ -6,6 +6,8 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.SyncHttpClient;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tongjo.bean.TJLocalUserInfo;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.db.OrmLiteHelper;
@@ -44,7 +46,7 @@ public class BaseApplication extends Application {
 		OpenHelperManager.getHelper(getApplicationContext(),
 				OrmLiteHelper.class);
 		super.onCreate();
-
+		ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getBaseContext()));
 		DataContainer.userInfo = LoadLocalUserInfo();
 	}
 
