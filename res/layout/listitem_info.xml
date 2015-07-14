@@ -20,7 +20,7 @@
             android:layout_width="@dimen/info_list_img_width"
             android:layout_height="@dimen/info_list_img_height"
             android:paddingRight="@dimen/info_list_padding_left_right"
-            android:src="@drawable/wish" />
+            android:src="@drawable/sound" />
 
         <TextView
             android:id="@+id/info_list_title"

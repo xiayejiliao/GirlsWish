@@ -2,6 +2,9 @@ package com.tongjo.girlswish.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
+
+import org.apache.http.Header;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -19,10 +22,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.TextHttpResponseHandler;
+import com.tongjo.bean.TJResponse;
+import com.tongjo.bean.TJUserInfo;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.ImageFileUtils;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.SexUtils;
+import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.ButtonWithArrow;
@@ -78,8 +88,45 @@ public class UserBasicInfoActivity extends BaseActivity {
 			}
 
 		});
+		exit.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				asyncHttpClient.post(AppConstant.URL_BASE+AppConstant.URL_LOGOUT, logouTextHttpResponseHandler);
+				
+			}
+		});
 	}
-
+	private TextHttpResponseHandler logouTextHttpResponseHandler=new TextHttpResponseHandler("UTF-8") {
+		
+		@Override
+		public void onSuccess(int arg0, Header[] arg1, String arg2) {
+			// TODO Auto-generated method stub
+			if(arg0==200){
+				Type type = new TypeToken<TJResponse<TJUserInfo>>() {
+				}.getType();
+				TJResponse<TJUserInfo> response= new Gson().fromJson(arg2, type);
+				if(response.getResult().getCode()==0){
+					SpUtils.put(getApplicationContext(), AppConstant.USER_ID, "");
+					SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, 0);
+					SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, "");
+					SpUtils.put(getApplicationContext(), AppConstant.USER_NAME, "");
+					SpUtils.put(getApplicationContext(), AppConstant.USER_LOGINSTATE,0);
+					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL,"");
+					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOL,"");
+					setResult(AppConstant.FORRESULT_MEINFO_LOGOUT);
+					finish();
+					
+				}
+			}
+		}
+		
+		@Override
+		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 	public void InitData() {
 		if (DataContainer.userInfo != null) {
 			if (!StringUtils.isBlank(DataContainer.userInfo.getNickname())) {

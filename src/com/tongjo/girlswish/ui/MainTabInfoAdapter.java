@@ -91,7 +91,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		TJMessage message = mList.get(arg0);
-		holder.iconImageView.setImageResource(R.drawable.wish);
+		holder.iconImageView.setImageResource(R.drawable.sound);
 		holder.titleTextVIew.setText("您的心愿被摘啦");
 		holder.msgTextView.setText(message.getContent());
 		holder.timeTextView.setText(message.getTime());

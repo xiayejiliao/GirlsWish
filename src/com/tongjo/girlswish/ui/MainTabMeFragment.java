@@ -90,7 +90,7 @@ public class MainTabMeFragment extends BaseFragment {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), UserBasicInfoActivity.class);
-				startActivity(intent);
+				startActivityForResult(intent, AppConstant.FORRESULT_MEINFO);
 			}
 		});
 		updateinfo();
@@ -204,6 +204,12 @@ public class MainTabMeFragment extends BaseFragment {
 		if (requestCode == AppConstant.FORRESULT_LOG && resultCode == AppConstant.FORRESULT_LOG_CANCANL) {
 			tv_info.setVisibility(View.VISIBLE);
 			tv_info.setText("请登陆");
+		}
+		if(requestCode==AppConstant.FORRESULT_MEINFO&&requestCode==AppConstant.FORRESULT_MEINFO_LOGOUT){
+			handler.obtainMessage(MESSAGE_WHAT_UPDATE_INFO).sendToTarget();
+			tjWishs.clear();
+			handler.obtainMessage(MESSAGE_WHAT_UPDATE_WHISH).sendToTarget();
+			Log.d(TAG, "logout");
 		}
 	};
 

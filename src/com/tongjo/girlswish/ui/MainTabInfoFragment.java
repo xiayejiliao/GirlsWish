@@ -28,7 +28,10 @@ import com.tongjo.girlswish.widget.SlideListView.RemoveDirection;
 import com.tongjo.girlswish.widget.SlideListView.RemoveListener;
 import com.tongjo.girlwish.data.DataContainer;
 
+import android.R.integer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -48,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainTabInfoFragment extends BaseFragment {
+	private final static int MEG_WHAT_TOATS=10010;
 	private static String TAG = "MainTabInfoFragment";
 	private SlideListView mListView;
 	private MainTabInfoAdapter mListAdapter = null;
@@ -56,8 +60,7 @@ public class MainTabInfoFragment extends BaseFragment {
 	boolean mIsRefreshing;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_info, container, false);
 		initView(view);
 		return view;
@@ -65,27 +68,23 @@ public class MainTabInfoFragment extends BaseFragment {
 
 	private void initView(View view) {
 		mListView = (SlideListView) view.findViewById(R.id.info_listview);
-		mRefreshableView = (RefreshableView) view
-				.findViewById(R.id.info_refreshable_view);
-		mListAdapter = new MainTabInfoAdapter(getActivity(),
-				DataContainer.MessageList);
+		mRefreshableView = (RefreshableView) view.findViewById(R.id.info_refreshable_view);
+		mListAdapter = new MainTabInfoAdapter(getActivity(), DataContainer.MessageList);
 		MockData();
-		//selectData();
+		// selectData();
 		mListView.setAdapter(mListAdapter);
-		
+
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 			}
 		});
 		mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				if (!mIsRefreshing) {
 					menuDialog = new WishDialogFragment(position);
 					menuDialog.show(getFragmentManager(), "WishDialogFragment");
@@ -122,8 +121,7 @@ public class MainTabInfoFragment extends BaseFragment {
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if (mIsRefreshing) {
 			return;
 		}
@@ -134,11 +132,8 @@ public class MainTabInfoFragment extends BaseFragment {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
-		Toast.makeText(this.getActivity(),
-				"content" + item.getItemId() + info.position, Toast.LENGTH_LONG)
-				.show();
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		Toast.makeText(this.getActivity(), "content" + item.getItemId() + info.position, Toast.LENGTH_LONG).show();
 		if (item.getItemId() == Menu.FIRST) {
 
 		}
@@ -157,17 +152,14 @@ public class MainTabInfoFragment extends BaseFragment {
 		mListAdapter.setList(DataContainer.MessageList);
 	}
 
-	
 	private void selectData() {
 		try {
-			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(
-					this.getActivity()).getTJMessageDao();
-			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao
-					.queryBuilder();
+			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this.getActivity()).getTJMessageDao();
+			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
 			builder.orderBy("time", false);
 			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
 			DataContainer.MessageList.addAll(mTJMessageDao.query(preparedQuery));
-	         mListAdapter.notifyDataSetChanged();
+			mListAdapter.notifyDataSetChanged();
 		} catch (SQLException e) {
 			Log.e(TAG, e.getStackTrace().toString());
 		}
@@ -177,8 +169,7 @@ public class MainTabInfoFragment extends BaseFragment {
 
 		if (itemId >= 0 && itemId < DataContainer.MessageList.size()) {
 			try {
-				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(
-						this.getActivity()).getTJMessageDao();
+				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this.getActivity()).getTJMessageDao();
 				mTJMessageDao.delete(DataContainer.MessageList.get(itemId));
 				DataContainer.MessageList.remove(itemId);
 				mListAdapter.notifyDataSetChanged();
@@ -190,8 +181,7 @@ public class MainTabInfoFragment extends BaseFragment {
 	}
 
 	public void addMessage(List<TJMessage> messageList) {
-		Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(
-				this.getActivity()).getTJMessageDao();
+		Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this.getActivity()).getTJMessageDao();
 		for (TJMessage message : messageList) {
 			try {
 				mTJMessageDao.createIfNotExists(message);
@@ -207,56 +197,61 @@ public class MainTabInfoFragment extends BaseFragment {
 	public void getMessageData() {
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("page", "0");
-		syncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_MESSAGE,
-				requestParams, new TextHttpResponseHandler("UTF-8") {
+		syncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_MESSAGE, requestParams, new TextHttpResponseHandler("UTF-8") {
 
-					@Override
-					public void onSuccess(int arg0, Header[] arg1, String arg2) {
-						mRefreshableView.finishRefreshing();
-						if (arg2 == null) {
-							ToastUtils.show(getActivity(), "消息列表获取失败:");
-							return;
-						}
-						if (arg0 == 200) {
-							Type type = new TypeToken<TJResponse<TJMessageList>>() {
-							}.getType();
-							TJResponse<TJMessageList> response = new Gson()
-									.fromJson(arg2, type);
-							if (response == null
-									|| response.getResult() == null
-									|| response.getData() == null) {
-								ToastUtils.show(getActivity(), "消息列表获取失败:");
-								return;
-							}
-							if (response.getResult().getCode() == 0) {
-								if (response.getData().getMessageList() != null) {
-									Log.d(TAG, response.getData()
-											.getMessageList().toString());
-									addMessage((List<TJMessage>) response.getData().getMessageList());
-									DataContainer.MessageList
-											.addAll((List<TJMessage>) response
-													.getData().getMessageList());
-									mListAdapter.notifyDataSetChanged();
-								}
-							} else {
-								ToastUtils.show(getActivity(), "消息列表获取失败:"
-										+ response.getResult().getMessage());
-							}
-						} else {
-							ToastUtils.show(getActivity(), "消息列表获取失败" + arg0);
-						}
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String arg2) {
+				mRefreshableView.finishRefreshing();
+				if (arg2 == null) {
+					handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:").sendToTarget();
+					return;
+				}
+				if (arg0 == 200) {
+					Type type = new TypeToken<TJResponse<TJMessageList>>() {
+					}.getType();
+					TJResponse<TJMessageList> response = new Gson().fromJson(arg2, type);
+					if (response == null || response.getResult() == null || response.getData() == null) {
+						handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:").sendToTarget();
+						return;
 					}
+					if (response.getResult().getCode() == 0) {
+						if (response.getData().getMessageList() != null) {
+							Log.d(TAG, response.getData().getMessageList().toString());
+							addMessage((List<TJMessage>) response.getData().getMessageList());
+							DataContainer.MessageList.addAll((List<TJMessage>) response.getData().getMessageList());
+							mListAdapter.notifyDataSetChanged();
+						}
+					} else {
+						handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:" + response.getResult().getMessage()).sendToTarget();
+					}
+				} else {
+					handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:"  + arg0).sendToTarget();
+				}
+			}
 
-					@Override
-					public void onFailure(int arg0, Header[] arg1, String arg2,
-							Throwable arg3) {
-						mRefreshableView.finishRefreshing();
-						Toast.makeText(getActivity(), "消息列表获取失败" + arg0,
-								Toast.LENGTH_LONG).show();
-					}
-				});
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				mRefreshableView.finishRefreshing();
+				handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败" + arg0).sendToTarget();
+			}
+		});
 	}
+	private Handler handler=new Handler(){
 
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case MEG_WHAT_TOATS:
+				ToastUtils.show(getContext(), (String)msg.obj);
+				break;
+
+			default:
+				break;
+			}
+		}
+		
+	};
 	public class WishDialogFragment extends DialogFragment {
 		private Integer mPosition;
 		private TextView mDeleteTextView;
@@ -266,19 +261,16 @@ public class MainTabInfoFragment extends BaseFragment {
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-			View view = inflater
-					.inflate(R.layout.fragment_info_menu, container);
-			mDeleteTextView = (TextView) view
-					.findViewById(R.id.infomenu_delete);
+			View view = inflater.inflate(R.layout.fragment_info_menu, container);
+			mDeleteTextView = (TextView) view.findViewById(R.id.infomenu_delete);
 			mDeleteTextView.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
 					deleteMessage(mPosition);
-				    menuDialog.dismiss();
+					menuDialog.dismiss();
 				}
 			});
 			return view;

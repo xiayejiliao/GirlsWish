@@ -11,7 +11,7 @@
         android:layout_height="80dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:background="@color/lblue" />
+        android:background="@drawable/logoone" />
 
     <LinearLayout
         android:id="@+id/linerlayout_register1_input"
