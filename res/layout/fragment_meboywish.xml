@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <RadioGroup
+   <RadioGroup
         android:id="@+id/rg_fragmeboywish_chose"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@id/rl_fragme_main"
         android:background="@color/lblue"
         android:orientation="horizontal" >
-
+	
         <RadioButton
             android:id="@+id/rb_fragmeboywish_uncompleted"
             android:layout_width="match_parent"
@@ -32,6 +32,7 @@
             android:button="@null"
             android:gravity="center"
             android:text="已完成" />
+      
     </RadioGroup>
 
         <ListView

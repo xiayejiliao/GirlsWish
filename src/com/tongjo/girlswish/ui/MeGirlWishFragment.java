@@ -1,9 +1,11 @@
 package com.tongjo.girlswish.ui;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -12,6 +14,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.model.UserSex;
@@ -19,6 +22,7 @@ import com.tongjo.girlswish.ui.MeBoyWishFragment.ViewHolder;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.RandomUtils;
 import com.tongjo.girlswish.utils.TimeUtils;
+import com.tongjo.girlwish.data.DataContainer;
 
 import de.greenrobot.event.EventBus;
 import android.app.Activity;
@@ -32,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.BaseAdapter;
@@ -41,30 +46,69 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class MeGirlWishFragment extends BaseFragment {
-	private final static String TAG="MeGirlWishFragment";
+	private final static String TAG = "MeGirlWishFragment";
 	private Context mcontext;
-	private List<TJWish> allwishs;
-	private List<TJWish> pickewishs;
-	private List<TJWish> unpickedwishs;
+	private List<TJWish> allwishs; // 所有心愿
+	private List<TJWish> pickewishs;// 被摘进行的心愿
+	private List<TJWish> unpickedwishs; // 没有被摘的心愿
+	private List<TJWish> finshWishs;// 结束的心愿
 	private ListView listView;
 	private RadioGroup radioGroup;
 	private DisplayImageOptions displayImageOptions;
 
 	public MeGirlWishFragment(List<TJWish> wishs) {
 		super();
+		setWishs(wishs);
+	}
+
+	public void setWishs(List<TJWish> wishs) {
 		this.allwishs = wishs;
 		pickewishs = new ArrayList<TJWish>();
 		unpickedwishs = new ArrayList<TJWish>();
+		finshWishs = new ArrayList<TJWish>();
 		if (wishs == null) {
 			return;
 		}
+		// 分类心愿 ispicked=0 没有被摘 iscompleted=0没有完成
 		for (int i = 0; i < wishs.size(); i++) {
 			TJWish wish = wishs.get(i);
 			if (wish.getIsPicked() == 0) {
-				pickewishs.add(wish);
-			} else {
 				unpickedwishs.add(wish);
+			} else {
+				if (wish.getIsCompleted() == 0) {
+					pickewishs.add(wish);
+				} else {
+					finshWishs.add(wish);
+				}
+
 			}
+		}
+	}
+	public void updateViewFromContainer() {
+		List<TJWish> list=DataContainer.mewishs.getAll();
+		setWishs(list);
+		updateWiew();
+	}
+	
+	public void updateViewFromlist(List<TJWish> wishs) {
+		setWishs(wishs);
+		updateWiew();
+	}
+
+	private void updateWiew() {
+		switch (radioGroup.getCheckedRadioButtonId()) {
+		case R.id.rb_fragmegirlwish_picked:
+			listView.setAdapter(new GirlWishAdapter(pickewishs));
+			break;
+		case R.id.rb_fragmegirlwish_unpick:
+			listView.setAdapter(new GirlWishAdapter(unpickedwishs));
+			break;
+		case R.id.rb_fragmegirlwish_finish:
+			listView.setAdapter(new GirlWishAdapter(finshWishs));
+			break;
+
+		default:
+			break;
 		}
 	}
 
@@ -84,40 +128,48 @@ public class MeGirlWishFragment extends BaseFragment {
 				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
 				.displayer(new RoundedBitmapDisplayer(20))// 设置成圆角图片
 				.build(); // 创建配置过得DisplayImageOption对象
-
+		EventBus.getDefault().register(this);
 	}
-
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		EventBus.getDefault().unregister(this);
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_megirlwish, null);
 		listView = (ListView) view.findViewById(R.id.lv_fragmegirlwhish_wishs);
 		radioGroup = (RadioGroup) view.findViewById(R.id.rg_fragmegirlwish_chose);
 		radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
-		listView.setOnItemLongClickListener(onItemLongClickListener);
-		switch (radioGroup.getCheckedRadioButtonId()) {
-		case R.id.rb_fragmegirlwish_picked:
-			listView.setAdapter(new GirlWishAdapter(pickewishs));
-			break;
-		case R.id.rb_fragmegirlwish_unpick:
-			listView.setAdapter(new GirlWishAdapter(unpickedwishs));
-			break;
-		default:
-			break;
-		}
-		
+		listView.setOnItemClickListener(onItemClickListener);
+		updateWiew();
 		return view;
 	}
-	private OnItemLongClickListener onItemLongClickListener=new OnItemLongClickListener() {
+
+	private OnItemClickListener onItemClickListener = new OnItemClickListener() {
 
 		@Override
-		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-			Message message=new Message();
-			message.what=AppConstant.MESSAGE_WHAT_MEWISHLONGCLICK;
-			message.obj=parent.getItemAtPosition(position);
-			EventBus.getDefault().post(message);
-			return true;
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			Message msg = new Message();
+			switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.rb_fragmegirlwish_picked:
+				msg.what = AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_PCIK;
+				break;
+			case R.id.rb_fragmegirlwish_unpick:
+				msg.what = AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_UNPICK;
+				break;
+			case R.id.rb_fragmegirlwish_finish:
+				msg.what = AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_FINISH;
+				break;
+			default:
+				break;
+			}
+			msg.obj = parent.getItemAtPosition(position);
+			EventBus.getDefault().post(msg);
 		}
 	};
+
 	private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
 
 		@Override
@@ -129,7 +181,9 @@ public class MeGirlWishFragment extends BaseFragment {
 			case R.id.rb_fragmegirlwish_unpick:
 				listView.setAdapter(new GirlWishAdapter(unpickedwishs));
 				break;
-
+			case R.id.rb_fragmegirlwish_finish:
+				listView.setAdapter(new GirlWishAdapter(finshWishs));
+				break;
 			default:
 				break;
 			}
@@ -190,9 +244,9 @@ public class MeGirlWishFragment extends BaseFragment {
 			TJWish tjWish = wishs.get(position);
 			viewHolder.tv_name.setText(tjWish.getCreatorUser().getRealname());
 			viewHolder.tv_school.setText(tjWish.getCreatorUser().getSchool().getName());
-			String current=TimeUtils.getCurrentTimeInString();
-			viewHolder.tv_time.setText(TimeUtils.minuteCompare(current, tjWish.getPickedTime())+"min");
-			viewHolder.view_color.setBackgroundColor(Color.parseColor("#"+tjWish.getBackgroundColor()));
+			String current = TimeUtils.getCurrentTimeInString();
+			viewHolder.tv_time.setText(TimeUtils.minuteCompare(current, tjWish.getPickedTime()) + "min");
+			viewHolder.view_color.setBackgroundColor(Color.parseColor("#" + tjWish.getBackgroundColor()));
 			imageLoader.displayImage(tjWish.getCreatorUser().getAvatarUrl(), viewHolder.iv_icon, displayImageOptions, animateFirstDisplayListener);
 			return convertView;
 		}
@@ -223,6 +277,19 @@ public class MeGirlWishFragment extends BaseFragment {
 					displayedImages.add(imageUri);
 				}
 			}
+		}
+	}
+	
+	public void onEventMainThread(Message msg) {
+		switch (msg.what) {
+		case AppConstant.MESSAGE_WHAT_GIRLWISH_UPDATE:
+			updateViewFromContainer();
+			break;
+		case AppConstant.MESSAGE_WHAT_GIRLWISH_DEL:
+			updateViewFromContainer();
+			break;
+		default:
+			break;
 		}
 	}
 }

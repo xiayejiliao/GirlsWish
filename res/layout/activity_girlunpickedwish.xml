@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="心愿内容:" />
+
+    <EditText
+        android:id="@+id/et_girlunpickedwish_wish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:ems="10" 
+        android:text="　沪深两市今日开盘涨跌互现，但随后迎来大幅跳水，随后在银行石油等权重的拉升下回稳，但独木难支，截至目前，沪指报3861点，跌1.55%；深指报12584点，跌1.11%。创业板指报2673点，跌1.90%">
+    </EditText>
+
+    <Button
+        android:id="@+id/bt_girlunpickedwish_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/et_girlunpickedwish_wish"
+        android:layout_marginRight="58dp"
+        android:text="修改" />
+
+    <Button
+        android:id="@+id/bt_girlunpickedwish_del"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/bt_girlunpickedwish_update"
+        android:layout_alignBottom="@+id/bt_girlunpickedwish_update"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:text="删除" />
+
+</RelativeLayout>

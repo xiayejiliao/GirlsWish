@@ -21,6 +21,8 @@ import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.SpUtils;
 
 /**
  * 应用程序主界面，含有多个fragment
@@ -41,7 +43,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 	private final int count = 3;
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
-	private int currentpager=0;
+	private int currentpager = 0;
 
 	// 三个Tab 每个Tab都是一个单独的Layout
 	private RelativeLayout section1;
@@ -94,11 +96,11 @@ public class MainTabActivity extends BaseFragmentActivity {
 		setSelectTextColor(0);
 		setSelectImage(0);
 		getRightBtnImageView().setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(currentpager==2){
+				if (currentpager == 2) {
 					System.out.println("设置");
 				}
 			}
@@ -378,14 +380,18 @@ public class MainTabActivity extends BaseFragmentActivity {
 		public void onPageSelected(int arg0) {
 			setSelectImage(arg0);
 			setSelectTextColor(arg0);
-			currentpager=arg0;
+			currentpager = arg0;
 			switch (arg0) {
 			case 0:
-				setRightBtn(R.drawable.add);
-				
+				setRightBtn(R.drawable.transparency);
 				break;
 			case 1:
-				setRightBtn(R.drawable.add);
+				int sex = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_SEX, 0);
+				if (sex == 0) {
+					setRightBtn(R.drawable.add);
+				}else {
+					setRightBtn(R.drawable.transparency);
+				}
 				break;
 			case 2:
 				setRightBtn(R.drawable.setting_n);

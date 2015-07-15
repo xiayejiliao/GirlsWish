@@ -33,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -96,6 +97,8 @@ public class MeBoyWishFragment extends BaseFragment {
 		listView = (ListView) view.findViewById(R.id.lv_fragmeboylwhish_wishs);
 		radioGroup = (RadioGroup) view.findViewById(R.id.rg_fragmeboywish_chose);
 		radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
+		listView.setOnItemClickListener(onItemClickListener);
+		//listView.setOnItemLongClickListener(onItemLongClickListener);
 		Log.d(TAG, "on createview");
 		switch (radioGroup.getCheckedRadioButtonId()) {
 		case R.id.rb_fragmeboywish_completed:
@@ -108,7 +111,6 @@ public class MeBoyWishFragment extends BaseFragment {
 		default:
 			break;
 		}
-		listView.setOnItemLongClickListener(onItemLongClickListener);
 		return view;
 	}
 
@@ -116,11 +118,32 @@ public class MeBoyWishFragment extends BaseFragment {
 
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-			Message message=new Message();
-			message.what=AppConstant.MESSAGE_WHAT_MEWISHLONGCLICK;
-			message.obj=parent.getItemAtPosition(position);
-			EventBus.getDefault().post(message);
+			/*
+			 * Message message=new Message();
+			 * message.what=AppConstant.MESSAGE_WHAT_MEWISHLONGCLICK;
+			 * message.obj=parent.getItemAtPosition(position);
+			 * EventBus.getDefault().post(message);
+			 */
 			return true;
+		}
+	};
+	private OnItemClickListener onItemClickListener = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			Message msg = new Message();
+			switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.rb_fragmeboywish_completed:
+				msg.what=AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_COMPLETE;
+				break;
+			case R.id.rb_fragmeboywish_uncompleted:
+				msg.what=AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_UNCOMPLETE;
+				break;
+			default:
+				break;
+			}
+			msg.obj = parent.getItemAtPosition(position);
+			EventBus.getDefault().post(msg);
 		}
 	};
 	private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
@@ -195,9 +218,9 @@ public class MeBoyWishFragment extends BaseFragment {
 			TJWish tjWish = wishs.get(position);
 			viewHolder.tv_name.setText(tjWish.getCreatorUser().getRealname());
 			viewHolder.tv_school.setText(tjWish.getCreatorUser().getSchool().getName());
-			String current=TimeUtils.getCurrentTimeInString();
-			viewHolder.tv_time.setText(TimeUtils.minuteCompare(current, tjWish.getPickedTime())+"min");
-			viewHolder.view_color.setBackgroundColor(Color.parseColor("#"+tjWish.getBackgroundColor()));
+			String current = TimeUtils.getCurrentTimeInString();
+			viewHolder.tv_time.setText(TimeUtils.minuteCompare(current, tjWish.getPickedTime()) + "min");
+			viewHolder.view_color.setBackgroundColor(Color.parseColor("#" + tjWish.getBackgroundColor()));
 			imageLoader.displayImage(tjWish.getCreatorUser().getAvatarUrl(), viewHolder.iv_icon, displayImageOptions, animateFirstDisplayListener);
 			return convertView;
 		}
@@ -209,7 +232,7 @@ public class MeBoyWishFragment extends BaseFragment {
 		public TextView tv_school;
 		public TextView tv_time;
 		public View view_color;
-		
+
 	}
 
 	private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {

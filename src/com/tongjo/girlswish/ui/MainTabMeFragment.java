@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.apache.http.Header;
 
+import android.R.menu;
 import android.R.raw;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -44,6 +45,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
+import com.tongjo.bean.TJWishList;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.model.LoginState;
@@ -52,6 +54,7 @@ import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
+import com.tongjo.girlwish.data.DataContainer;
 
 import de.greenrobot.event.EventBus;
 
@@ -76,6 +79,7 @@ public class MainTabMeFragment extends BaseFragment {
 	private int sex;
 	private int loginstate;
 	private DisplayImageOptions displayImageOptions;
+	private BaseFragment wishsFragment;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -150,6 +154,7 @@ public class MainTabMeFragment extends BaseFragment {
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
+		Log.d(TAG, "isVisibleToUser: " + isVisibleToUser);
 		if (isVisibleToUser == true) {
 			asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISHLIST, wishListResponse);
 			ImageLoader.getInstance().loadImage((String) SpUtils.get(mcontext, AppConstant.USER_ICONURL, ""), new SimpleImageLoadingListener() {
@@ -193,6 +198,7 @@ public class MainTabMeFragment extends BaseFragment {
 				if (mywishs.getResult().getCode() == 0) {
 					tjWishs = mywishs.getData().getWishList();
 					Log.d(TAG, "wishs size:" + tjWishs.size());
+					DataContainer.mewishs=new TJWishList(tjWishs);
 					handler.obtainMessage(MESSAGE_WHAT_UPDATE_WHISH).sendToTarget();
 				}
 			}
@@ -283,38 +289,36 @@ public class MainTabMeFragment extends BaseFragment {
 	}
 
 	public void onEventMainThread(Message msg) {
+		TJWish tjWish = (TJWish) msg.obj;
 		switch (msg.what) {
-		case AppConstant.MESSAGE_WHAT_MEWISHLONGCLICK:
-			TJWish tjWish = (TJWish) msg.obj;
-			if (tjWish.getIsPicked() == 0 && tjWish.getIsCompleted() == 1) {
-				
-			}
-			if (tjWish.getIsPicked() == 0 && tjWish.getIsCompleted() == 1) {
-
-			}
-			if (tjWish.getIsPicked() == 0 && tjWish.getIsCompleted() == 1) {
-
-			}
-			if (tjWish.getIsPicked() == 0 && tjWish.getIsCompleted() == 1) {
-
-			}
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setMessage("确定").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					Intent intent = new Intent(getActivity(), LoginActivity.class);
-					startActivityForResult(intent, AppConstant.FORRESULT_LOG);
-				}
-			}).setNegativeButton("No", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			}).show();
-			AlertDialog alert = builder.create();
+		case AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_FINISH:
+			Intent intent = new Intent(getActivity(), GirlFinishWishActivity.class);
+			intent.putExtra("wishuuid", tjWish.get_id().toString());
+			startActivity(intent);
 			break;
-
+		case AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_PCIK:
+			Intent intent1 = new Intent(getActivity(), GirlUnderwayWishActivity.class);
+			intent1.putExtra("wishuuid", tjWish.get_id().toString());
+			startActivity(intent1);
+			break;
+		case AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_UNPICK:
+			Intent intent2 = new Intent(getActivity(), GirlUnpickedWishActivity.class);
+			intent2.putExtra("wishuuid", tjWish.get_id().toString());
+			startActivity(intent2);
+			break;
+		case AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_COMPLETE:
+			Intent intent3 = new Intent(getActivity(), BoyCompleteWishActivity.class);
+			intent3.putExtra("wishuuid", tjWish.get_id().toString());
+			startActivity(intent3);
+			break;
+		case AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_UNCOMPLETE:
+			Intent intent4 = new Intent(getActivity(), BoyUncompleteWishActivity.class);
+			intent4.putExtra("wishuuid", tjWish.get_id().toString());
+			startActivity(intent4);
+			break;
 		default:
 			break;
 		}
+
 	}
 }
