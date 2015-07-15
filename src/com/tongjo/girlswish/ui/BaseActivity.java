@@ -48,6 +48,7 @@ public class BaseActivity extends Activity {
 
 	protected AsyncHttpClient asyncHttpClient;
 	protected SyncHttpClient syncHttpClient;
+	protected ImageLoader imageLoader=ImageLoader.getInstance();
 
 	
 	public synchronized void setisFront(boolean bool) {

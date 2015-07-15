@@ -3,6 +3,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp" >
+
+        <ImageView
+            android:id="@+id/iv_grilunderwaywish_pickericon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_launcher" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tv_grilunderwaywish_pickername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="picker name" />
+
+            <TextView
+                android:id="@+id/tv_grilunderwaywish_pickerschool"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="picked school" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:alpha="0.5"
+        android:background="@color/black" />
+
+    <EditText
+        android:id="@+id/tv_grilunderwaywish_context"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:minHeight="70dp"
+        android:editable="false"
+        android:text="心愿内容" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:alpha="0.5"
+        android:background="@color/black" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/tv_grilunderwaywish_picktime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="摘取时间" />
+
+        <Button
+            android:id="@+id/bt_grilunderwaywish_sure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="确认完成" />
+    </RelativeLayout>
 
 </LinearLayout>

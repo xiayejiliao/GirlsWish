@@ -198,6 +198,11 @@ public class MainTabMeFragment extends BaseFragment {
 				if (mywishs.getResult().getCode() == 0) {
 					tjWishs = mywishs.getData().getWishList();
 					Log.d(TAG, "wishs size:" + tjWishs.size());
+				/*	for (int i = 0; i < tjWishs.size(); i++) {
+						TJWish tjWish= tjWishs.get(i);
+						Log.d(TAG, "wish" + tjWish.getPickerUser()==null?"null":tjWish.toString());
+					}
+			*/
 					DataContainer.mewishs=new TJWishList(tjWishs);
 					handler.obtainMessage(MESSAGE_WHAT_UPDATE_WHISH).sendToTarget();
 				}
@@ -299,6 +304,7 @@ public class MainTabMeFragment extends BaseFragment {
 		case AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_PCIK:
 			Intent intent1 = new Intent(getActivity(), GirlUnderwayWishActivity.class);
 			intent1.putExtra("wishuuid", tjWish.get_id().toString());
+			System.out.println(msg.obj);
 			startActivity(intent1);
 			break;
 		case AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_UNPICK:
