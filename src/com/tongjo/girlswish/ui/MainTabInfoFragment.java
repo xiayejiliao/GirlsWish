@@ -9,6 +9,10 @@ import org.apache.http.Header;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -19,23 +23,18 @@ import com.tongjo.bean.TJMessageList;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.ui.MainTabInfoAdapter.MItemClickListener;
+import com.tongjo.girlswish.ui.MainTabInfoAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.ToastUtils;
-import com.tongjo.girlswish.widget.RefreshableView;
-import com.tongjo.girlswish.widget.RefreshableView.PullToRefreshListener;
-import com.tongjo.girlswish.widget.SlideListView;
-import com.tongjo.girlswish.widget.SlideListView.RemoveDirection;
-import com.tongjo.girlswish.widget.SlideListView.RemoveListener;
 import com.tongjo.girlwish.data.DataContainer;
 
-import android.R.integer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
+import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,20 +42,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainTabInfoFragment extends BaseFragment {
 	private final static int MEG_WHAT_TOATS=10010;
 	private static String TAG = "MainTabInfoFragment";
-	private SlideListView mListView;
+	//private SlideListView mListView;
 	private MainTabInfoAdapter mListAdapter = null;
-	private RefreshableView mRefreshableView;
-	WishDialogFragment menuDialog = null;
+	//private RefreshableView mRefreshableView;
+	private PullToRefreshListView mListView = null;
+	private ViewGroup mEmptyView = null;
+	private WishDialogFragment menuDialog = null;
+	
 	boolean mIsRefreshing;
 
 	@Override
@@ -67,67 +67,55 @@ public class MainTabInfoFragment extends BaseFragment {
 	}
 
 	private void initView(View view) {
-		mListView = (SlideListView) view.findViewById(R.id.info_listview);
-		mRefreshableView = (RefreshableView) view.findViewById(R.id.info_refreshable_view);
+		mEmptyView = (ViewGroup)view.findViewById(R.id.info_empty_view);
+		mListView = (PullToRefreshListView) view.findViewById(R.id.info_listview);
+		//mRefreshableView = (RefreshableView) view.findViewById(R.id.info_refreshable_view);
 		mListAdapter = new MainTabInfoAdapter(getActivity(), DataContainer.MessageList);
-		MockData();
-		// selectData();
+		//MockData();
+		selectData();
 		mListView.setAdapter(mListAdapter);
+		updateUi();
 
-		mListView.setOnItemClickListener(new OnItemClickListener() {
+		mListAdapter.setMItemClickListener(new MItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+			public void MItemClick(View v, int position) {
 			}
+
 		});
-		mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+		mListAdapter.setMItemLongPressListener(new MItemLongPressListener() {
 
 			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+			public void MItemLongPress(View v, int position) {
 				if (!mIsRefreshing) {
 					menuDialog = new WishDialogFragment(position);
 					menuDialog.show(getFragmentManager(), "WishDialogFragment");
-					return false;
 				}
-				return true;
 			}
-		});
-		mListView.setRemoveListener(new RemoveListener() {
 
-			public void removeItem(RemoveDirection direction, int position) {
-
-			}
 		});
-		mRefreshableView.setOnRefreshListener(new PullToRefreshListener() {
+		
+		mListView.setMode(Mode.BOTH);
+		mListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
-			public void onRefresh() {
-				try {
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				String label = DateUtils.formatDateTime(getActivity(),
+						System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
+
 					mIsRefreshing = true;
 					if (menuDialog != null && menuDialog.isVisible()) {
 						menuDialog.dismiss();
 					}
 					getMessageData();
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				mRefreshableView.finishRefreshing();
-				mIsRefreshing = false;
+					mIsRefreshing = false;
 			}
-		}, 0);
+		});
 		// 注册上下文菜单
 		// registerForContextMenu(view);
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		if (mIsRefreshing) {
-			return;
-		}
-		// 添加菜单项
-		menu.add(0, Menu.FIRST, 0, "删除");
-		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
 	@Override
@@ -144,8 +132,7 @@ public class MainTabInfoFragment extends BaseFragment {
 
 		for (int i = 0; i < 5; i++) {
 			TJMessage message = new TJMessage();
-			message.setType(1);
-			message.setTime("12-8");
+			message.setCreatedTime("12-8");
 			message.setContent("青岛爆炸满月：大量鱼虾死亡");
 			DataContainer.MessageList.add(message);
 		}
@@ -156,7 +143,7 @@ public class MainTabInfoFragment extends BaseFragment {
 		try {
 			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this.getActivity()).getTJMessageDao();
 			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
-			builder.orderBy("time", false);
+			builder.orderBy("createdTime", false);
 			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
 			DataContainer.MessageList.addAll(mTJMessageDao.query(preparedQuery));
 			mListAdapter.notifyDataSetChanged();
@@ -191,17 +178,27 @@ public class MainTabInfoFragment extends BaseFragment {
 		}
 	}
 
+	public void updateUi(){
+		if(DataContainer.WishList.size() <1){
+			mEmptyView.setVisibility(View.VISIBLE);
+		}else{
+			mEmptyView.setVisibility(View.GONE);
+			mListAdapter.notifyDataSetChanged();
+		}
+	}
+	
 	/**
 	 * 获取消息列表
 	 */
 	public void getMessageData() {
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("page", "0");
-		syncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_MESSAGE, requestParams, new TextHttpResponseHandler("UTF-8") {
+		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_MESSAGE, requestParams, new TextHttpResponseHandler("UTF-8") {
 
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, String arg2) {
-				mRefreshableView.finishRefreshing();
+				Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
+				mListView.onRefreshComplete();
 				if (arg2 == null) {
 					handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:").sendToTarget();
 					return;
@@ -215,11 +212,13 @@ public class MainTabInfoFragment extends BaseFragment {
 						return;
 					}
 					if (response.getResult().getCode() == 0) {
-						if (response.getData().getMessageList() != null) {
-							Log.d(TAG, response.getData().getMessageList().toString());
-							addMessage((List<TJMessage>) response.getData().getMessageList());
-							DataContainer.MessageList.addAll((List<TJMessage>) response.getData().getMessageList());
-							mListAdapter.notifyDataSetChanged();
+						if (response.getData().getNotices() != null) {
+							Log.d(TAG, response.getData().getNotices().toString());
+							//加入数据库
+							addMessage((List<TJMessage>) response.getData().getNotices());
+							//加入内存List
+							DataContainer.MessageList.addAll((List<TJMessage>) response.getData().getNotices());
+							updateUi();
 						}
 					} else {
 						handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:" + response.getResult().getMessage()).sendToTarget();
@@ -231,7 +230,7 @@ public class MainTabInfoFragment extends BaseFragment {
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-				mRefreshableView.finishRefreshing();
+				mListView.onRefreshComplete();
 				handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败" + arg0).sendToTarget();
 			}
 		});

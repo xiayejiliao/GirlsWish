@@ -5,11 +5,18 @@ import java.util.List;
 
 import com.tongjo.bean.TJMessage;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
+import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
+import com.tongjo.girlswish.ui.MainTabWishAdapter.MyGestureListener;
 
 import android.content.Context;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.View.OnTouchListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,16 +28,27 @@ import android.widget.TextView;
 public class MainTabInfoAdapter extends BaseAdapter {
 	private Context mContext;
 	private List<TJMessage> mList = new ArrayList<TJMessage>();
+	
+	private MItemClickListener ICListener;
+	private MItemLongPressListener LPListener;
+	private GestureDetector gestureDetector;
+
+	private View curView = null;
+	private int curPosition = 0;
 
 	public MainTabInfoAdapter(Context context) {
 		super();
 		this.mContext = context;
+		gestureDetector = new GestureDetector(context, new MyGestureListener());
+
 	}
 
 	public MainTabInfoAdapter(Context context, List<TJMessage> list) {
 		super();
 		this.mContext = context;
 		this.mList = list;
+		gestureDetector = new GestureDetector(context, new MyGestureListener());
+
 	}
 
 	public void setList(List<TJMessage> list) {
@@ -69,7 +87,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int arg0, View convertView, ViewGroup arg2) {
+	public View getView(final int arg0, View convertView, ViewGroup arg2) {
 		ViewHolder holder = null;
 		if (convertView == null) {
 
@@ -94,7 +112,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		holder.iconImageView.setImageResource(R.drawable.sound);
 		holder.titleTextVIew.setText("您的心愿被摘啦");
 		holder.msgTextView.setText(message.getContent());
-		holder.timeTextView.setText(message.getTime());
+		holder.timeTextView.setText(message.getCreatedTime());
 		if (arg0 % 4 == 0) {
 			convertView.setBackgroundColor(mContext.getResources().getColor(
 					R.color.addwish_blueColor));
@@ -108,6 +126,19 @@ public class MainTabInfoAdapter extends BaseAdapter {
 			convertView.setBackgroundColor(mContext.getResources().getColor(
 					R.color.addwish_yellowColor));
 		}
+		
+		convertView.setOnTouchListener(new OnTouchListener() {
+			public boolean onTouch(View v, MotionEvent event) {
+				curPosition = arg0;
+				curView = v;
+				// 直接的手势操作
+				if (gestureDetector.onTouchEvent(event)) {
+					return true;
+				}
+				return false;
+			}
+		});
+		
 		return convertView;
 	}
 
@@ -117,5 +148,70 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		public TextView msgTextView;
 		public TextView timeTextView;
 	}
+	/** Item点击对应的事件 */
+	public void setMItemClickListener(MItemClickListener listener) {
+		ICListener = listener;
+	}
 
+	public interface MItemClickListener {
+		public void MItemClick(View v, int position);
+	}
+
+	/** Item长按对应的事件 */
+	public void setMItemLongPressListener(MItemLongPressListener listener) {
+		LPListener = listener;
+	}
+
+	public interface MItemLongPressListener {
+		public void MItemLongPress(View v, int position);
+	}
+
+	/** 手势操作，并通过自定义接口将该操作由使用时定义 */
+	public class MyGestureListener extends SimpleOnGestureListener {
+		@Override
+		public boolean onSingleTapUp(MotionEvent ev) {
+			if (ICListener != null)
+				ICListener.MItemClick(curView, curPosition);
+			return true;
+		}
+
+		@Override
+		public void onShowPress(MotionEvent ev) {
+			System.out.println("onShowPress");
+		}
+
+		@Override
+		public void onLongPress(MotionEvent ev) {
+			if (LPListener != null)
+				LPListener.MItemLongPress(curView, curPosition);
+		}
+
+		// 手势移动操作，移动时触发
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2,
+				float distanceX, float distanceY) {
+			System.out.println("onScroll");
+			return true;
+		}
+
+		@Override
+		public boolean onDown(MotionEvent ev) {
+			System.out.println("onDown");
+			return true;
+		}
+
+		// 手势移动操作，UP时才会触发
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+				float velocityY) {
+			System.out.println("onFling");
+			return false;
+		}
+
+		@Override
+		public boolean onDoubleTap(MotionEvent event) {
+			System.out.println("onDoubleTap");
+			return true;
+		}
+	}
 }
