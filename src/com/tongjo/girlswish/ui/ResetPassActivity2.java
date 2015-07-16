@@ -13,6 +13,7 @@ import com.tongjo.bean.TJUserInfo;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.RandomUtils;
+import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 
@@ -33,6 +34,7 @@ public class ResetPassActivity2 extends BaseActivity {
 	private EditText et_pass;
 	private EditText et_repass;
 	private Button bt_sure;
+	private String newpassword;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +62,10 @@ public class ResetPassActivity2 extends BaseActivity {
 					ToastUtils.show(getApplicationContext(), "密码小于6位");
 					return;
 				}
+				newpassword=et_pass.getText().toString();
 				RequestParams requestParams = new RequestParams();
 				requestParams.put("password", et_pass.getText().toString());
-				requestParams.put("authcode", RandomUtils.getRandom(1000, 9999));
+				requestParams.put("authcode", "1234");
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_RESETPASSWORD, requestParams, resetpass);
 			}
 		});
@@ -77,7 +80,8 @@ public class ResetPassActivity2 extends BaseActivity {
 				}.getType();
 				TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
 				if(response.getResult().getCode()==0){
-					
+					SpUtils.put(getApplicationContext(), AppConstant.USER_PASSWORD,newpassword);
+					ToastUtils.show(getApplicationContext(), "修改成功"+response.getResult().getMessage());
 				}else {
 					ToastUtils.show(getApplicationContext(), "修改失败"+response.getResult().getMessage());
 				}
@@ -87,7 +91,7 @@ public class ResetPassActivity2 extends BaseActivity {
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 			// TODO Auto-generated method stub
-
+			ToastUtils.show(getApplicationContext(), "修改失败"+arg3.toString());
 		}
 	};
 }

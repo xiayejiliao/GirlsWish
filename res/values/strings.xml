@@ -67,4 +67,11 @@
     <string name="resetpass_getcaptcha">获取验证码</string>
     <string name="resetpass_captcha">验证码</string>
     <string name="resetpass_sure">确认</string>
+    
+    <!-- 注册界面 -->
+      <string name="register_phone">手机号</string>
+    <string name="register_getcaptcha">获取验证码</string>
+    <string name="register_captcha">验证码</string>
+    <string name="register_password">密码(最少六位)</string>
+    <string name="register_sure">确认</string>
 </resources>

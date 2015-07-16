@@ -38,7 +38,7 @@
                 android:layout_height="45dp"
                 android:background="@null"
                 android:digits="0123456789"
-                android:hint="@string/resetpass_phone"
+                android:hint="@string/register_phone"
                 android:inputType="number"
                 android:maxLength="11" />
         </LinearLayout>
