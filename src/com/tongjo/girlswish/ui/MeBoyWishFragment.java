@@ -19,6 +19,7 @@ import com.tongjo.girlswish.model.UserSex;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.RandomUtils;
 import com.tongjo.girlswish.utils.TimeUtils;
+import com.tongjo.girlwish.data.DataContainer;
 
 import de.greenrobot.event.EventBus;
 import android.R.raw;
@@ -54,20 +55,7 @@ public class MeBoyWishFragment extends BaseFragment {
 
 	public MeBoyWishFragment(List<TJWish> wishs) {
 		super();
-		this.allwishs = wishs;
-		completedwishs = new ArrayList<TJWish>();
-		uncompletedwishs = new ArrayList<TJWish>();
-		if (wishs == null) {
-			return;
-		}
-		for (int i = 0; i < wishs.size(); i++) {
-			TJWish wish = wishs.get(i);
-			if (wish.getIsCompleted() == 0) {
-				uncompletedwishs.add(wish);
-			} else {
-				completedwishs.add(wish);
-			}
-		}
+		setWishs(wishs);
 		Log.d(TAG, "new boywishfragment comp size" + completedwishs.size() + " uncomp size" + uncompletedwishs.size());
 	}
 
@@ -89,6 +77,14 @@ public class MeBoyWishFragment extends BaseFragment {
 				.displayer(new RoundedBitmapDisplayer(20))// 设置成圆角图片
 				.build(); // 创建配置过得DisplayImageOption对象
 		Log.d(TAG, "on create");
+		EventBus.getDefault().register(this);
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		EventBus.getDefault().unregister(this);;
 	}
 
 	@Override
@@ -98,19 +94,9 @@ public class MeBoyWishFragment extends BaseFragment {
 		radioGroup = (RadioGroup) view.findViewById(R.id.rg_fragmeboywish_chose);
 		radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
 		listView.setOnItemClickListener(onItemClickListener);
-		//listView.setOnItemLongClickListener(onItemLongClickListener);
+		// listView.setOnItemLongClickListener(onItemLongClickListener);
 		Log.d(TAG, "on createview");
-		switch (radioGroup.getCheckedRadioButtonId()) {
-		case R.id.rb_fragmeboywish_completed:
-			listView.setAdapter(new BoyWishAdapter(completedwishs));
-			break;
-		case R.id.rb_fragmeboywish_uncompleted:
-			listView.setAdapter(new BoyWishAdapter(uncompletedwishs));
-			break;
-
-		default:
-			break;
-		}
+		updateWiew();
 		return view;
 	}
 
@@ -134,10 +120,10 @@ public class MeBoyWishFragment extends BaseFragment {
 			Message msg = new Message();
 			switch (radioGroup.getCheckedRadioButtonId()) {
 			case R.id.rb_fragmeboywish_completed:
-				msg.what=AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_COMPLETE;
+				msg.what = AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_COMPLETE;
 				break;
 			case R.id.rb_fragmeboywish_uncompleted:
-				msg.what=AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_UNCOMPLETE;
+				msg.what = AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_UNCOMPLETE;
 				break;
 			default:
 				break;
@@ -164,6 +150,51 @@ public class MeBoyWishFragment extends BaseFragment {
 
 		}
 	};
+
+	public void updateViewFromContainer() {
+		List<TJWish> list = DataContainer.mewishs.getAll();
+		setWishs(list);
+		updateWiew();
+	}
+
+	public void updateViewFromlist(List<TJWish> wishs) {
+		setWishs(wishs);
+		updateWiew();
+	}
+
+	private void updateWiew() {
+		// TODO Auto-generated method stub
+		switch (radioGroup.getCheckedRadioButtonId()) {
+		case R.id.rb_fragmeboywish_completed:
+			listView.setAdapter(new BoyWishAdapter(completedwishs));
+			break;
+		case R.id.rb_fragmeboywish_uncompleted:
+			listView.setAdapter(new BoyWishAdapter(uncompletedwishs));
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	private void setWishs(List<TJWish> wishs) {
+		// TODO Auto-generated method stub
+		this.allwishs = wishs;
+		completedwishs = new ArrayList<TJWish>();
+		uncompletedwishs = new ArrayList<TJWish>();
+		if (wishs == null) {
+			return;
+		}
+		for (int i = 0; i < wishs.size(); i++) {
+			TJWish wish = wishs.get(i);
+			if (wish.getIsCompleted() == 0) {
+				uncompletedwishs.add(wish);
+			} else {
+				completedwishs.add(wish);
+			}
+		}
+
+	}
 
 	class BoyWishAdapter extends BaseAdapter {
 
@@ -251,6 +282,16 @@ public class MeBoyWishFragment extends BaseFragment {
 					displayedImages.add(imageUri);
 				}
 			}
+		}
+	}
+
+	public void onEventMainThread(Message msg) {
+		switch (msg.what) {
+		case AppConstant.MESSAGE_WHAT_GIRLWISH_DEL:
+			updateViewFromContainer();
+			break;
+		default:
+			break;
 		}
 	}
 }

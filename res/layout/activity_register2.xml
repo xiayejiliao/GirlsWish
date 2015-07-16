@@ -6,11 +6,11 @@
 
     <ImageButton
         android:id="@+id/iv_register2_personico"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:background="@color/lblue" />
+        android:layout_marginTop="45dp"
+        android:background="@drawable/logotwo" />
 
     <LinearLayout
         android:id="@+id/linerlayout_register2_input"

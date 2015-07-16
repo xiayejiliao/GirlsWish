@@ -52,7 +52,7 @@ public class GirlUnpickedWishActivity extends BaseActivity {
 			et_wish.setText(currentwish.getContent());
 			bt_del.setOnClickListener(onClickListener);
 			bt_update.setOnClickListener(onClickListener);
-		}else {
+		} else {
 			et_wish.setText("-----");
 		}
 

@@ -113,7 +113,7 @@ public class UserBasicInfoActivity extends BaseActivity {
 					SpUtils.put(getApplicationContext(), AppConstant.USER_NAME, "");
 					SpUtils.put(getApplicationContext(), AppConstant.USER_LOGINSTATE,0);
 					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL,"");
-					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOL,"");
+					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME,"");
 					setResult(AppConstant.FORRESULT_MEINFO_LOGOUT);
 					finish();
 					

@@ -95,14 +95,14 @@ public class BaseApplication extends Application {
 		}
 		try {
 			String school = (String) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_SCHOOL, "School");
+					AppConstant.USER_SCHOOLNAME, "School");
 			user.setSchoolName(school);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		try {
 			String avatar = (String) SpUtils.get(getApplicationContext(),
-					AppConstant.USER_ICONPATH, "");
+					AppConstant.USER_ICONURL, "");
 			user.setAvatarUrl(avatar);
 
 		} catch (Exception e) {

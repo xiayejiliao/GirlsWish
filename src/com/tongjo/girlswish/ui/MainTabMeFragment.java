@@ -40,6 +40,7 @@ import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.tongjo.bean.TJResponse;
@@ -131,7 +132,8 @@ public class MainTabMeFragment extends BaseFragment {
 				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
 				.cacheInMemory(true) // 设置下载的图片是否缓存在内存中
 				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
-				.displayer(new RoundedBitmapDisplayer(20))// 设置成圆角图片
+				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
+				.imageScaleType(ImageScaleType.EXACTLY)
 				.build(); // 创建配置过得DisplayImageOption对象
 		EventBus.getDefault().register(this);
 	}
@@ -166,7 +168,7 @@ public class MainTabMeFragment extends BaseFragment {
 				}
 			});
 			tv_name.setText((String) SpUtils.get(mcontext, AppConstant.USER_NAME, ""));
-			tv_school.setText((String) SpUtils.get(mcontext, AppConstant.USER_SCHOOL, ""));
+			tv_school.setText((String) SpUtils.get(mcontext, AppConstant.USER_SCHOOLNAME, ""));
 		} else {
 
 		}
@@ -251,11 +253,12 @@ public class MainTabMeFragment extends BaseFragment {
 
 	private void updateinfo() {
 		String name = (String) SpUtils.get(mcontext, AppConstant.USER_NAME, "--");
-		String school = (String) SpUtils.get(mcontext, AppConstant.USER_SCHOOL, "----");
+		String school = (String) SpUtils.get(mcontext, AppConstant.USER_SCHOOLNAME, "----");
 		String iconurl = (String) SpUtils.get(mcontext, AppConstant.USER_ICONURL, "----");
 		tv_name.setText(name);
 		tv_school.setText(school);
 		imageLoader.displayImage(iconurl, iv_icon, displayImageOptions);
+
 	}
 
 	private void setGirlWish(List<TJWish> tjWishs) {
@@ -294,30 +297,35 @@ public class MainTabMeFragment extends BaseFragment {
 	}
 
 	public void onEventMainThread(Message msg) {
-		TJWish tjWish = (TJWish) msg.obj;
+		TJWish tjWish = null;
 		switch (msg.what) {
 		case AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_FINISH:
+			tjWish = (TJWish) msg.obj;
 			Intent intent = new Intent(getActivity(), GirlFinishWishActivity.class);
 			intent.putExtra("wishuuid", tjWish.get_id().toString());
 			startActivity(intent);
 			break;
 		case AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_PCIK:
+			tjWish = (TJWish) msg.obj;
 			Intent intent1 = new Intent(getActivity(), GirlUnderwayWishActivity.class);
 			intent1.putExtra("wishuuid", tjWish.get_id().toString());
 			System.out.println(msg.obj);
 			startActivity(intent1);
 			break;
 		case AppConstant.MESSAGE_WHAT_GIRLWISH_CLICK_UNPICK:
+			tjWish = (TJWish) msg.obj;
 			Intent intent2 = new Intent(getActivity(), GirlUnpickedWishActivity.class);
 			intent2.putExtra("wishuuid", tjWish.get_id().toString());
 			startActivity(intent2);
 			break;
 		case AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_COMPLETE:
+			tjWish = (TJWish) msg.obj;
 			Intent intent3 = new Intent(getActivity(), BoyCompleteWishActivity.class);
 			intent3.putExtra("wishuuid", tjWish.get_id().toString());
 			startActivity(intent3);
 			break;
 		case AppConstant.MESSAGE_WHAT_BOYWISH_CLICK_UNCOMPLETE:
+			tjWish = (TJWish) msg.obj;
 			Intent intent4 = new Intent(getActivity(), BoyUncompleteWishActivity.class);
 			intent4.putExtra("wishuuid", tjWish.get_id().toString());
 			startActivity(intent4);

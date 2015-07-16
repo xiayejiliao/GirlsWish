@@ -84,12 +84,13 @@ public class MeGirlWishFragment extends BaseFragment {
 			}
 		}
 	}
+
 	public void updateViewFromContainer() {
-		List<TJWish> list=DataContainer.mewishs.getAll();
+		List<TJWish> list = DataContainer.mewishs.getAll();
 		setWishs(list);
 		updateWiew();
 	}
-	
+
 	public void updateViewFromlist(List<TJWish> wishs) {
 		setWishs(wishs);
 		updateWiew();
@@ -130,12 +131,14 @@ public class MeGirlWishFragment extends BaseFragment {
 				.build(); // 创建配置过得DisplayImageOption对象
 		EventBus.getDefault().register(this);
 	}
+
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		EventBus.getDefault().unregister(this);
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_megirlwish, null);
@@ -279,13 +282,16 @@ public class MeGirlWishFragment extends BaseFragment {
 			}
 		}
 	}
-	
+
 	public void onEventMainThread(Message msg) {
 		switch (msg.what) {
 		case AppConstant.MESSAGE_WHAT_GIRLWISH_UPDATE:
 			updateViewFromContainer();
 			break;
 		case AppConstant.MESSAGE_WHAT_GIRLWISH_DEL:
+			updateViewFromContainer();
+			break;
+		case AppConstant.MESSAGE_WHAT_GIRLWISH_PASS:
 			updateViewFromContainer();
 			break;
 		default:

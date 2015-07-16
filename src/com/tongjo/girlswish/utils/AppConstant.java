@@ -13,16 +13,19 @@ public class AppConstant {
 	public static final String path = Environment.getExternalStorageDirectory().getPath() + "/girlWish";
 
 	// SharedPreferences
+	public static final String USER_ID = "user_id";
 	public static final String USER_PHONE = "user_pohone";
 	public static final String USER_PASSWORD = "user_password";
 	public static final String USER_LOGINSTATE = "user_loginstate";
-	public static final String USER_ICONPATH = "user_iconpath";
 	public static final String USER_ICONURL = "user_iconurl";
-	public static final String USER_ISREMEMBER = "user_isremeber";
+	public static final String USER_ISREMEMBERPHONE = "user_isremeberphone";
+	public static final String USER_ISREMEMBERPASSWORD = "user_isremeberpassword";
 	public static final String USER_SEX = "user_sex";
 	public static final String USER_NAME = "user_name";
-	public static final String USER_ID = "user_id";
-	public static final String USER_SCHOOL = "user_school";
+	public static final String USER_NICKNAME = "user_nickname";
+	public static final String USER_SCHOOLID = "user_schoolid";
+	public static final String USER_SCHOOLNAME = "user_schoolname";
+	public static final String USER_SCHOOLCOORDINATES = "user_schoolcoordinates";
 
 	// web
 	public static final String URL_BASE = "http://api.wish.tongjo.com";
@@ -36,6 +39,10 @@ public class AppConstant {
 	public static final String URL_ADDWISH = "/wish/create";
 	public static final String URL_PICKWISH = "/wish/pick";
 	public static final String URL_MESSAGE = "/notice";
+	public static final String URL_GETCAPTCHA= "/notice";
+	public static final String URL_CONFIRMCAPTCHA = "/notice";
+	public static final String URL_RESETPASSWORD = "/resetpsw";
+
 
 	// intent
 	public static final int FORRESULT_LOG = 10101;
@@ -57,6 +64,13 @@ public class AppConstant {
 	
 	public static final int MESSAGE_WHAT_GIRLWISH_UPDATE = 10308;
 	public static final int MESSAGE_WHAT_GIRLWISH_DEL = 10309;
+	public static final int MESSAGE_WHAT_GIRLWISH_PASS = 10310;
+	
+	
+	public static final int MESSAGE_WHAT_USER_LOGIN = 10410;
+	public static final int MESSAGE_WHAT_USER_LOGOUT= 10410;
+	
+	
 	
 	
 
