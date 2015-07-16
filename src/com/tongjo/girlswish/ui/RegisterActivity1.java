@@ -6,7 +6,9 @@ import org.apache.http.Header;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.MyTimer;
+import com.tongjo.girlswish.utils.SMSHelper;
 import com.tongjo.girlswish.utils.MyTimer.TimerProgress;
+import com.tongjo.girlswish.utils.SMSHelper.SendResult;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -37,26 +39,14 @@ public class RegisterActivity1 extends BaseActivity {
 		bt_sure = (Button) findViewById(R.id.bt_register1_sure);
 		bt_getcaptcha.setOnClickListener(onClickListener);
 		bt_sure.setOnClickListener(onClickListener);
-		new MyTimer(30).setTimerProgress(new TimerProgress() {
+		new SMSHelper().send("1234", "13262221362", new SendResult() {
 			
 			@Override
-			public void onStart() {
+			public void onResult(int state, String serial, String mesg, int invalid, int valid) {
 				// TODO Auto-generated method stub
-				
+				et_password.setText(mesg);
 			}
-			
-			@Override
-			public void onProgress(int toals, int remaining) {
-				// TODO Auto-generated method stub
-		
-			}
-			
-			@Override
-			public void onFinish() {
-				// TODO Auto-generated method stub
-				
-			}
-		}).start();
+		});
 	
 	}
 
