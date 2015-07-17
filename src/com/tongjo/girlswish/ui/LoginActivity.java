@@ -93,6 +93,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		setCenterText("登陆");
 		bt_login = (Button) findViewById(R.id.bt_login_sure);
 		et_phone = (EditText) findViewById(R.id.et_login_name);
 		et_pass = (EditText) findViewById(R.id.et_login_pass);
@@ -226,6 +227,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			startActivity(intent1);
 			break;
 		case R.id.ltv_login_register:
+			Intent intent2=new Intent(LoginActivity.this, RegisterActivity1.class);
+			startActivity(intent2);
 			break;
 		default:
 			break;

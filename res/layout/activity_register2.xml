@@ -4,14 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.tongjo.girlswish.ui.RegisterActivity2" >
 
-    <ImageButton
-        android:id="@+id/iv_register2_personico"
-        android:layout_width="200dp"
-        android:layout_height="80dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp"
-        android:background="@drawable/logotwo" />
-
     <LinearLayout
         android:id="@+id/linerlayout_register2_input"
         android:layout_width="250dp"
@@ -55,5 +47,14 @@
             android:text="开启心愿之旅"
             android:textColor="@color/white" />
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/iv_register2_personico"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_above="@+id/linerlayout_register2_input"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="43dp"
+        android:background="@drawable/logotwo" />
 
 </RelativeLayout>

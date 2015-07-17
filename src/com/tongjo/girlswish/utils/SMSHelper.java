@@ -52,9 +52,10 @@ public class SMSHelper extends Thread {
 		try {
 			String result = sendmesg(verify, phone);
 			handler.obtainMessage(WHAT, result).sendToTarget();
-			;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			String result = "1324,0,1,0,0," + e.toString();
+			handler.obtainMessage(WHAT, result).sendToTarget();
 			e.printStackTrace();
 		}
 		super.run();
@@ -70,7 +71,7 @@ public class SMSHelper extends Thread {
 	private String sendmesg(String verify, String phone) throws Exception {
 		String content = "您的验证码是:" + verify;
 		String sign = "竹舟科技";
-
+		
 		// 创建StringBuffer对象用来操作字符串
 		StringBuffer sb = new StringBuffer("http://sms.1xinxi.cn/asmx/smsservice.aspx?");
 
@@ -96,7 +97,7 @@ public class SMSHelper extends Thread {
 		// 创建url对象
 		// String temp = new String(sb.toString().getBytes("GBK"),"UTF-8");
 		URL url = new URL(sb.toString());
-
+		Log.d(TAG, sb.toString());
 		// 打开url连接
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 

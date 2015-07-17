@@ -67,4 +67,8 @@
     <!-- 我的界面颜色 -->
     
     <color name="me_info_bg">#f3d2d5</color>
+    
+    <!-- 注册界面颜色 -->
+    <color name="register_getcaptcha_textcolor">#333333</color>
+    <color name="register_login_textcolor">#333333</color>
 </resources>

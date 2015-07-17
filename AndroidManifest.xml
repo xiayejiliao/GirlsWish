@@ -21,22 +21,32 @@
             android:name="com.tongjo.girlswish.ui.MainTabActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.LoginActivity" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.LoginActivity"
+            android:launchMode="singleInstance" >
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.RegisterActivity1" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.RegisterActivity1"
+            android:launchMode="singleInstance" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.RegisterActivity2" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.RegisterActivity2"
+            android:launchMode="singleInstance" >
         </activity>
         <activity android:name="com.tongjo.girlswish.test.TestActivity" >
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.ResetPassActivity1" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.ResetPassActivity1"
+            android:launchMode="singleInstance" >
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.ResetPassActivity2" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.ResetPassActivity2"
+            android:launchMode="singleInstance" >
         </activity>
         <activity android:name="com.tongjo.girlswish.ui.AddWishActivity" >
         </activity>

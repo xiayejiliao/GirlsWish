@@ -1,5 +1,6 @@
 package com.tongjo.girlswish.utils;
 
+import android.R.integer;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Looper;
@@ -13,18 +14,16 @@ import android.os.Message;
  */
 
 public class MyTimer extends Thread {
-	private final int START = 0;
-	private final int PROGRESS = 1;
-	private final int FINISH = 2;
+	private final int START = 3256;
+	private final int PROGRESS = 3257;
+	private final int FINISH = 3258;
 	private int times;
 	private int remaining;
 	private TimerProgress timerProgress;
 	private Handler handler;
 
-	public MyTimer(int times) {
+	public MyTimer() {
 		super();
-		this.times = times;
-		remaining = times;
 		handler = new Handler(Looper.myLooper(), new Callback() {
 
 			@Override
@@ -36,7 +35,7 @@ public class MyTimer extends Thread {
 					break;
 				case PROGRESS:
 					if (timerProgress != null)
-						timerProgress.onProgress(msg.arg1, msg.arg2);;
+						timerProgress.onProgress(msg.arg1, msg.arg2);
 					break;
 				case FINISH:
 					if (timerProgress != null) {
@@ -52,6 +51,18 @@ public class MyTimer extends Thread {
 		});
 	}
 
+	public void begin(int times, TimerProgress timerProgress) {
+		this.times = times;
+		remaining = times;
+		this.timerProgress = timerProgress;
+		this.start();
+	}
+
+	public void end() {
+		handler.obtainMessage(FINISH).sendToTarget();
+		this.stop();
+	}
+	
 	@Override
 	public void run() {
 
@@ -69,12 +80,6 @@ public class MyTimer extends Thread {
 			remaining--;
 		}
 		handler.obtainMessage(FINISH).sendToTarget();
-		;
-	}
-
-	public MyTimer setTimerProgress(TimerProgress timerProgress) {
-		this.timerProgress = timerProgress;
-		return this;
 	}
 
 	public interface TimerProgress {

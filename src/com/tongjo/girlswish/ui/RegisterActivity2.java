@@ -27,6 +27,7 @@ public class RegisterActivity2 extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register2);
+		setCenterText("注册");
 		iv_personicon = (ImageButton) findViewById(R.id.iv_register2_personico);
 		bt_sure = (Button) findViewById(R.id.bt_register2_sure);
 		iv_personicon.setOnClickListener(this);

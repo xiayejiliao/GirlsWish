@@ -42,6 +42,7 @@ public class AppConstant {
 	public static final String URL_CONFIRMCAPTCHA = "/notice";
 	public static final String URL_RESETPASSWORD = "/resetpsw";
 	public static final String URL_GETCAPTCHA= "/code";
+	public static final String URL_REGISTER= "/register";
 	
 
 
