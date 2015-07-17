@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res/com.tongjo.girlswish"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tongjo.girlswish.ui.RegisterActivity1" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/iv_register3_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/testimg" />
+
+        <Button
+            android:id="@+id/bt_register3_geticon"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/selector_bg_button_sure"
+            android:gravity="center"
+            android:text="@string/register_getpic"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/bt_register3_sure"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/selector_bg_button_sure"
+            android:gravity="center"
+            android:text="@string/register_uploadpic"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -33,7 +33,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-
+/**
+ * 1.注册，接收短信验证码验证手机
+ * 2.提交注册账号、密码
+ * 3.跳转到个人信息完善界面RegisterActivity2
+ * @author 16ren
+ * @data 2015/7/17
+ */
 public class RegisterActivity1 extends BaseActivity {
 	private final static String TAG = "RegisterActivity1";
 	private EditText et_phone;

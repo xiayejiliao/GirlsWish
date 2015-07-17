@@ -74,4 +74,7 @@
     <string name="register_captcha">验证码</string>
     <string name="register_password">密码(最少六位)</string>
     <string name="register_sure">确认</string>
+    <string name="register_next">下一步</string>
+    <string name="register_getpic">获取图片</string>
+    <string name="register_uploadpic">上传图片</string>
 </resources>

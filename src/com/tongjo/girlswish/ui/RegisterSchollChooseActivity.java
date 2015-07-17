@@ -27,7 +27,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
+/**
+ * 选择学校界面
+ * 学校资源放在assets文件夹里的school文件里面，格式是json的
+ * @author dell
+ *
+ */
 public class RegisterSchollChooseActivity extends BaseActivity {
 	private enum CHOOSE {
 		COUNTRY, PROVINCE, SHOOL;
@@ -70,10 +75,6 @@ public class RegisterSchollChooseActivity extends BaseActivity {
 					try {
 						String provs=jsonObject.getString("provs");
 						String univs=jsonObject.getString("univs");
-					
-			
-						System.out.println(provs);
-						System.out.println(univs);
 						if (!StringUtils.isEmpty(provs) && StringUtils.isEmpty(univs)) {
 							JSONArray provsJsonArray = new JSONArray(provs);
 							listView.setAdapter(new ProvinceAdapter(provsJsonArray));
@@ -113,7 +114,7 @@ public class RegisterSchollChooseActivity extends BaseActivity {
 					try {
 						String name= jsonObject.getString("name");
 						Intent intent=new Intent();
-						intent.putExtra("shoolname", name);
+						intent.putExtra("schoolname", name);
 						setResult(AppConstant.RESULTCODE_REGISTER_SCHOOL, intent);
 						RegisterSchollChooseActivity.this.finish();
 					} catch (JSONException e) {

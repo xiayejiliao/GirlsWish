@@ -12,8 +12,8 @@ import android.view.View.OnTouchListener;
 import android.widget.LinearLayout;
 
 /**
- * 注册性别选择
- * 
+ * 注册第一步，性别选择
+ * 跳转到账号提交界面RegisterActivity1
  * @author 16ren
  *
  */

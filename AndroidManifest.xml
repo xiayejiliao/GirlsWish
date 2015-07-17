@@ -33,6 +33,15 @@
             android:name="com.tongjo.girlswish.ui.RegisterActivity2"
             android:launchMode="singleInstance" >
         </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.RegisterActivity3"
+            android:launchMode="singleInstance" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name="com.tongjo.girlswish.test.TestActivity" >
         </activity>
         <activity
@@ -60,11 +69,6 @@
         <activity
             android:name="com.tongjo.girlswish.ui.RegisterSchollChooseActivity"
             android:launchMode="singleInstance" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.tongjo.girlswish.ui.RegisterSexChooseActivity"
