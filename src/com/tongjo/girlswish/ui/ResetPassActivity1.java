@@ -116,7 +116,7 @@ public class ResetPassActivity1 extends BaseActivity {
 				RequestParams requestParams1 = new RequestParams();
 				requestParams1.put("password", nespassword);
 				requestParams1.put("authcode", captcha);
-				asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_RESETPASSWORD, requestParams1, httpresetpass);
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_RESETPASSWORD, requestParams1, httpresetpass);
 				break;
 			default:
 				break;

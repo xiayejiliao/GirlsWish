@@ -93,7 +93,7 @@ public class RegisterActivity1 extends BaseActivity {
 				RequestParams requestParams1 = new RequestParams();
 				requestParams1.put("password", password);
 				requestParams1.put("authcode", captcha);
-				asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_REGISTER, requestParams1, httpregister);
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_REGISTER, requestParams1, httpregister);
 				break;
 			case R.id.ltv_register1_login:
 				Intent intent = new Intent(RegisterActivity1.this, LoginActivity.class);
