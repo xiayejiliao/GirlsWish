@@ -28,17 +28,13 @@
         <activity
             android:name="com.tongjo.girlswish.ui.RegisterActivity1"
             android:launchMode="singleInstance" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.tongjo.girlswish.ui.RegisterActivity2"
             android:launchMode="singleInstance" >
         </activity>
         <activity android:name="com.tongjo.girlswish.test.TestActivity" >
+          
         </activity>
         <activity
             android:name="com.tongjo.girlswish.ui.ResetPassActivity1"
@@ -61,6 +57,13 @@
         <activity android:name="com.tongjo.girlswish.ui.BoyCompleteWishActivity" >
         </activity>
         <activity android:name="com.tongjo.girlswish.ui.BoyUncompleteWishActivity" >
+        </activity>
+        <activity android:name="com.tongjo.girlswish.ui.ResgisterSexChooseActivity">
+              <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

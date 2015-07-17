@@ -33,13 +33,11 @@ public class AppConstant {
 	public static final String URL_LOGOUT = "/logout";
 	public static final String URL_WISHDEL = "/wish/delete";
 	public static final String URL_WISHUPDATE= "/wish/update";
-
 	public static final String URL_WISHLIST = "/wish/mylist";
 	public static final String URL_WISH = "/wish";
 	public static final String URL_ADDWISH = "/wish/create";
 	public static final String URL_PICKWISH = "/wish/pick";
 	public static final String URL_MESSAGE = "/notice";
-	public static final String URL_CONFIRMCAPTCHA = "/notice";
 	public static final String URL_RESETPASSWORD = "/resetpsw";
 	public static final String URL_GETCAPTCHA= "/code";
 	public static final String URL_REGISTER= "/register";

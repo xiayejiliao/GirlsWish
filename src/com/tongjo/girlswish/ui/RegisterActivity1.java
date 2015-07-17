@@ -13,6 +13,7 @@ import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.MyTimer;
 import com.tongjo.girlswish.utils.SMSHelper;
+import com.tongjo.girlswish.utils.SexUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.utils.MyTimer.TimerProgress;
@@ -42,6 +43,7 @@ public class RegisterActivity1 extends BaseActivity {
 	private Button bt_sure;
 	private String sendphone;
 	private LinkTextView linkTextView;
+	private int sex;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,8 @@ public class RegisterActivity1 extends BaseActivity {
 		bt_getcaptcha.setOnClickListener(onClickListener);
 		bt_sure.setOnClickListener(onClickListener);
 		linkTextView.setOnClickListener(onClickListener);
+		sex= getIntent().getIntExtra("sex",-1);
+		System.out.println(sex);
 	}
 
 	private OnClickListener onClickListener = new OnClickListener() {
