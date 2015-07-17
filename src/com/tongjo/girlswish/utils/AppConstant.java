@@ -50,6 +50,8 @@ public class AppConstant {
 	public static final int FORRESULT_LOG_CANCANL = 10103;
 	public static final int FORRESULT_MEINFO = 10200;
 	public static final int FORRESULT_MEINFO_LOGOUT = 10201;
+	public static final int STARTFORCODE_REGISTER_SCHOOL= 10202;
+	public static final int RESULTCODE_REGISTER_SCHOOL= 10203;
 
 	// refreshView
 	public static final int REFRESH_WISH = 0x100;

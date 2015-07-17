@@ -95,8 +95,10 @@ public class RegisterActivity1 extends BaseActivity {
 					return;
 				}
 				RequestParams requestParams1 = new RequestParams();
+				requestParams1.put("tel", sendphone);
 				requestParams1.put("password", password);
 				requestParams1.put("authcode", captcha);
+				requestParams1.put("gender", sex);
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_REGISTER, requestParams1, httpregister);
 				break;
 			case R.id.ltv_register1_login:

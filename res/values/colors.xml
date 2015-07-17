@@ -71,4 +71,9 @@
     <!-- 注册界面颜色 -->
     <color name="register_getcaptcha_textcolor">#333333</color>
     <color name="register_login_textcolor">#333333</color>
+    
+    <!-- 学校选择界面 -->
+    <color name="schoolchoose_eraritem_press">#eeeeee</color>
+    <color name="schoolchoose_eraritem_up">#ffffff</color>
+    
 </resources>

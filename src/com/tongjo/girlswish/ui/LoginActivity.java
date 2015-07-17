@@ -227,7 +227,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			startActivity(intent1);
 			break;
 		case R.id.ltv_login_register:
-			Intent intent2=new Intent(LoginActivity.this, RegisterActivity1.class);
+			Intent intent2=new Intent(LoginActivity.this, RegisterSexChooseActivity.class);
 			startActivity(intent2);
 			break;
 		default:

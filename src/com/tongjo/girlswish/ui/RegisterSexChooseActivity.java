@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
  * @author 16ren
  *
  */
-public class ResgisterSexChooseActivity extends BaseActivity implements OnClickListener, OnTouchListener {
+public class RegisterSexChooseActivity extends BaseActivity implements OnClickListener, OnTouchListener {
 	private final static int GIRL = 0;
 	private final static int BOY = 1;
 	private LinearLayout linearLayout;
@@ -41,7 +41,7 @@ public class ResgisterSexChooseActivity extends BaseActivity implements OnClickL
 	@Override
 	public void onClick(View v) {
 		if(v.getId()==R.id.ll_register_sexchose){
-			Intent intent=new Intent(ResgisterSexChooseActivity.this,RegisterActivity1.class);
+			Intent intent=new Intent(RegisterSexChooseActivity.this,RegisterActivity1.class);
 			if(choose==GIRL){
 				intent.putExtra("sex",GIRL);
 				startActivity(intent);
