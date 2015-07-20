@@ -110,7 +110,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		}
 		TJMessage message = mList.get(arg0);
 		holder.iconImageView.setImageResource(R.drawable.sound);
-		holder.titleTextVIew.setText("您的心愿被摘啦");
+		holder.titleTextVIew.setText(message.getTitle());
 		holder.msgTextView.setText(message.getContent());
 		holder.timeTextView.setText(message.getCreatedTime());
 		if (arg0 % 4 == 0) {
