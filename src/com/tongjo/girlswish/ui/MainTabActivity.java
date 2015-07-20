@@ -101,7 +101,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if (currentpager == 2) {
-					System.out.println("设置");
+					startActivity(new Intent(MainTabActivity.this, SettingActivity.class));
 				}
 			}
 		});
@@ -389,7 +389,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 				int sex = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_SEX, 0);
 				if (sex == 0) {
 					setRightBtn(R.drawable.add);
-				}else {
+				} else {
 					setRightBtn(R.drawable.transparency);
 				}
 				break;

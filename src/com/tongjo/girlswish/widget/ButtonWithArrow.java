@@ -60,6 +60,11 @@ public class ButtonWithArrow extends LinearLayout{
 		}
 	}
 	
+	public void setLeftIcon(int id) {
+		if(mIcon!=null){
+			mIcon.setImageResource(id);
+		}
+	}
 	private void init(AttributeSet attrs) {
 		final View mView = LayoutInflater.from(mContext).inflate(
 				R.layout.widget_buttonwitharrow, this, true);

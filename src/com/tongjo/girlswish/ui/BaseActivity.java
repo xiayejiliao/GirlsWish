@@ -1,6 +1,5 @@
 package com.tongjo.girlswish.ui;
 
-
 import java.util.UUID;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -39,7 +38,7 @@ public class BaseActivity extends Activity {
 	/** 主要用来判断当前Activity是否在前端 */
 	public static boolean isFront = false;
 
-	/**数据持久化框架*/
+	/** 数据持久化框架 */
 	public OrmLiteHelper ormLiteHelper;
 	public Dao<TJUserInfo, UUID> tjuserinfoDao;
 	public Dao<TJSchool, UUID> tjschoolDao;
@@ -48,9 +47,8 @@ public class BaseActivity extends Activity {
 
 	protected AsyncHttpClient asyncHttpClient;
 	protected SyncHttpClient syncHttpClient;
-	protected ImageLoader imageLoader=ImageLoader.getInstance();
+	protected ImageLoader imageLoader = ImageLoader.getInstance();
 
-	
 	public synchronized void setisFront(boolean bool) {
 		this.isFront = bool;
 	}
@@ -96,11 +94,10 @@ public class BaseActivity extends Activity {
 
 		ormLiteHelper = OpenHelperManager.getHelper(getApplicationContext(), OrmLiteHelper.class);
 		tjuserinfoDao = ormLiteHelper.getTJUserInfoDao();
-		tjmessageDao=ormLiteHelper.getTJMessageDao();
-		tjschoolDao=ormLiteHelper.getTJSchoolDao();
-		tjwishDao=ormLiteHelper.getTJWishDao();
+		tjmessageDao = ormLiteHelper.getTJMessageDao();
+		tjschoolDao = ormLiteHelper.getTJSchoolDao();
+		tjwishDao = ormLiteHelper.getTJWishDao();
 
-		
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 		syncHttpClient = ((BaseApplication) getApplication()).getSyncHttpClient();
 	}
@@ -187,6 +184,12 @@ public class BaseActivity extends Activity {
 			return ((TextView) leftBtnContainer.getChildAt(1));
 		}
 		return null;
+	}
+
+	public void setLeftBtnOnClickListener(OnClickListener onClickListener) {
+		if(leftBtnContainer!=null){
+			leftBtnContainer.setOnClickListener(onClickListener);
+		}
 	}
 
 	/** 设置leftBtn的文字,不显示返回按钮 */

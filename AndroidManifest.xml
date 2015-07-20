@@ -20,6 +20,11 @@
         <activity
             android:name="com.tongjo.girlswish.ui.MainTabActivity"
             android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.tongjo.girlswish.ui.LoginActivity"
@@ -34,13 +39,8 @@
             android:launchMode="singleInstance" >
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.RegisterActivity3"
+            android:name="com.tongjo.girlswish.ui.UploadAvatarActivity"
             android:launchMode="singleInstance" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name="com.tongjo.girlswish.test.TestActivity" >
         </activity>
@@ -72,6 +72,10 @@
         </activity>
         <activity
             android:name="com.tongjo.girlswish.ui.RegisterSexChooseActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.SettingActivity"
             android:launchMode="singleInstance" >
         </activity>
     </application>

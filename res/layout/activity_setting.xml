@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tongjo="http://schemas.android.com/apk/res/com.tongjo.girlswish"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.tongjo.girlswish.LoginActivity" >
+
+    <com.tongjo.girlswish.widget.ArrayLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <com.tongjo.girlswish.widget.ButtonWithArrow
+            android:id="@+id/bt_setting_resetpass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_transparent"
+            tongjo:iconvisiable="invisible"
+            tongjo:lefttextValue="修改密码" />
+
+        <com.tongjo.girlswish.widget.ButtonWithArrow
+            android:id="@+id/bt_setting_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_transparent"
+            tongjo:iconvisiable="invisible"
+            tongjo:lefttextValue="关于" />
+    </com.tongjo.girlswish.widget.ArrayLayout>
+
+    <Button
+        android:id="@+id/bt_setting_exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_bg_button_sure"
+        android:gravity="center"
+        android:text="退出应用" />
+
+</LinearLayout>

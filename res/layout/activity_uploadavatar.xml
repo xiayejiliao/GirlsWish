@@ -12,10 +12,10 @@
         android:gravity="center_horizontal"
         android:orientation="vertical" >
 
-        <ImageView
+        <com.tongjo.girlswish.widget.CircleImageView
             android:id="@+id/iv_register3_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:src="@drawable/testimg" />
 
         <Button

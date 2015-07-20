@@ -55,6 +55,7 @@ import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
+import com.tongjo.girlswish.widget.CircleImageView;
 import com.tongjo.girlwish.data.DataContainer;
 
 import de.greenrobot.event.EventBus;
@@ -75,7 +76,7 @@ public class MainTabMeFragment extends BaseFragment {
 	private ImageView avatar;
 	private TextView tv_name;
 	private TextView tv_school;
-	private ImageView iv_icon;
+	private CircleImageView iv_icon;
 	private List<TJWish> tjWishs;
 	private int sex;
 	private int loginstate;
@@ -90,7 +91,7 @@ public class MainTabMeFragment extends BaseFragment {
 		tv_info = (TextView) rootView.findViewById(R.id.tv_fragme_info);
 		tv_name = (TextView) rootView.findViewById(R.id.tv_fragme_name);
 		tv_school = (TextView) rootView.findViewById(R.id.tv_fragme_school);
-		iv_icon = (ImageView) rootView.findViewById(R.id.iv_fragme_icon);
+		iv_icon = (CircleImageView) rootView.findViewById(R.id.iv_fragme_icon);
 		avatar = (ImageView) rootView.findViewById(R.id.iv_fragme_icon);
 		avatar.setOnClickListener(new OnClickListener() {
 

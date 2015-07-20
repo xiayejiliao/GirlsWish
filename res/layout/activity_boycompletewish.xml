@@ -74,7 +74,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="发短信" />
+            android:text="发短信"
+            android:textColor="@color/mlblack" />
     </RelativeLayout>
 
     <View
@@ -90,7 +91,8 @@
         android:background="@null"
         android:editable="false"
         android:minHeight="70dp"
-        android:text="心愿内容" />
+        android:text="心愿内容"
+        android:textColor="@color/mlblack" />
 
     <View
         android:layout_width="match_parent"
@@ -125,7 +127,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="删除" />
+            android:text="删除"
+            android:textColor="@color/mlblack" />
     </RelativeLayout>
 
 </LinearLayout>

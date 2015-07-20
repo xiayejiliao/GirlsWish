@@ -16,7 +16,7 @@
         android:layout_below="@id/tv_fragme_info"
         android:background="@color/me_info_bg" >
 
-        <ImageView
+        <com.tongjo.girlswish.widget.CircleImageView
             android:id="@+id/iv_fragme_icon"
             android:layout_width="70dp"
             android:layout_height="70dp"

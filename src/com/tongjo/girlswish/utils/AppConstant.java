@@ -53,8 +53,10 @@ public class AppConstant {
 	public static final int FORRESULT_MEINFO_LOGOUT = 10201;
 	public static final int STARTFORCODE_REGISTER_SCHOOL = 10202;
 	public static final int RESULTCODE_REGISTER_SCHOOL = 10203;
-	public static final int STARTFORCODE_REGISTER_PIC = 10204;
-	public static final int RESULTCODE_REGISTER_PIC = 10205;
+	public static final int STARTFORCODE_REGISTER_TACKPICFORMLOCAL = 10204;
+	public static final int RESULTCODE_REGISTER_TACKPICFORMLOCAL = 10205;
+	public static final int STARTFORCODE_REGISTER_TACKPICFORMCAMERA = 10206;
+	public static final int RESULTCODE_REGISTER_TACKPICFORMCAMERA = 10207;
 
 	// refreshView
 	public static final int REFRESH_WISH = 0x100;
