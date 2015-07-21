@@ -18,8 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:minWidth="50dp"
             android:minHeight="50dp"
+            android:minWidth="50dp"
             android:src="@drawable/ic_launcher" />
 
         <LinearLayout
@@ -76,7 +76,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="发短信" />
+            android:text="发短信"
+            android:textColor="@color/mlblack" />
     </RelativeLayout>
 
     <View
@@ -92,7 +93,8 @@
         android:background="@null"
         android:editable="false"
         android:minHeight="70dp"
-        android:text="心愿内容" />
+        android:text="心愿内容"
+        android:textColor="@color/mlblack" />
 
     <View
         android:layout_width="match_parent"
@@ -127,7 +129,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="放回心愿池" />
+            android:text="放回心愿池"
+            android:textColor="@color/mlblack" />
     </RelativeLayout>
 
 </LinearLayout>

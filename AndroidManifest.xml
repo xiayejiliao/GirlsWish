@@ -39,9 +39,8 @@
             android:launchMode="singleInstance" >
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.RegisterActivity3"
+            android:name="com.tongjo.girlswish.ui.UploadAvatarActivity"
             android:launchMode="singleInstance" >
-            
         </activity>
         <activity android:name="com.tongjo.girlswish.test.TestActivity" >
         </activity>
@@ -73,6 +72,10 @@
         </activity>
         <activity
             android:name="com.tongjo.girlswish.ui.RegisterSexChooseActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.SettingActivity"
             android:launchMode="singleInstance" >
         </activity>
     </application>

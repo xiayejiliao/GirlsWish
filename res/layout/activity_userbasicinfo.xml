@@ -10,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_160"
         android:layout_alignParentTop="true"
-        android:background="@color/red" >
+        android:background="@color/me_info_bg" >
 
-        <ImageView
+        <com.tongjo.girlswish.widget.CircleImageView
             android:id="@+id/avatar"
             android:layout_width="@dimen/margin_100"
             android:layout_height="@dimen/margin_100"
@@ -32,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_transparent"
+            tongjo:iconsrc="@drawable/icon_person"
             tongjo:iconvisiable="visiable"
             tongjo:lefttextValue="@string/nickname"
             tongjo:righttextValue="@string/nickname" />
@@ -41,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_transparent"
+            tongjo:iconsrc="@drawable/icon_man"
             tongjo:iconvisiable="visiable"
             tongjo:lefttextValue="@string/sex"
             tongjo:righttextValue="@string/sex" />
@@ -50,6 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_transparent"
+            tongjo:iconsrc="@drawable/icon_school"
             tongjo:iconvisiable="visiable"
             tongjo:lefttextValue="@string/school"
             tongjo:righttextValue="@string/school" />
@@ -59,16 +62,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_transparent"
+            tongjo:iconsrc="@drawable/icon_phone"
             tongjo:iconvisiable="visiable"
             tongjo:lefttextValue="@string/phonenumber"
             tongjo:righttextValue="@string/phonenumber" />
     </LinearLayout>
-<Button
-    android:id="@+id/exit" 
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/margin_60"
-    android:layout_alignParentBottom="true"
-    android:layout_margin="@dimen/margin_10"
-    android:text="@string/exit"
-    />
+
+    <Button
+        android:id="@+id/exit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_60"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/margin_10"
+        android:background="@drawable/selector_bg_button_sure"
+        android:text="@string/exit" />
+
 </RelativeLayout>

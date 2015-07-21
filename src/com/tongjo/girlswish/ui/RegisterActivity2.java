@@ -140,7 +140,7 @@ public class RegisterActivity2 extends BaseActivity implements OnClickListener {
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLCOORDINATES, userSchool.getCoordinates());
 						}
 					}
-					Intent intent = new Intent(RegisterActivity2.this, RegisterActivity3.class);
+					Intent intent = new Intent(RegisterActivity2.this, UploadAvatarActivity.class);
 					startActivity(intent);
 					RegisterActivity2.this.finish();
 

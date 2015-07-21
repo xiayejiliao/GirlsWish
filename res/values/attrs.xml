@@ -41,8 +41,7 @@
         <attr name="imageClickSrc" format="reference"></attr>
         <attr name="textClickColor" format="color"></attr>
     </declare-styleable>
-    
-    
+
     <!-- viewpage indicator -->
     <declare-styleable name="ViewPagerIndicator">
 
@@ -157,9 +156,8 @@
         <attr name="android:background" />
     </declare-styleable>
 
-    
     <!-- 下拉刷新 -->
-     <declare-styleable name="PullToRefresh">
+    <declare-styleable name="PullToRefresh">
 
         <!-- A drawable to use as the background of the Refreshable View -->
         <attr name="ptrRefreshableViewBackground" format="reference|color" />
@@ -234,4 +232,11 @@
         <attr name="ptrDrawableTop" format="reference" />
         <attr name="ptrDrawableBottom" format="reference" />
     </declare-styleable>
+    <!-- 圆形图片属性 -->
+    <declare-styleable name="CircleImageView">
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+        <attr name="border_overlay" format="boolean" />
+    </declare-styleable>
+
 </resources>

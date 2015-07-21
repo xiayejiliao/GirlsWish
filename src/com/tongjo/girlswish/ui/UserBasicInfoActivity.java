@@ -25,6 +25,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.girlswish.R;
@@ -36,6 +39,7 @@ import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.ButtonWithArrow;
+import com.tongjo.girlswish.widget.CircleImageView;
 import com.tongjo.girlwish.data.DataContainer;
 
 /**
@@ -50,8 +54,9 @@ public class UserBasicInfoActivity extends BaseActivity {
 	private ButtonWithArrow mSex;
 	private ButtonWithArrow mSchool;
 	private ButtonWithArrow mPhone;
-	private ImageView avatar;
+	private CircleImageView avatar;
 	private Button exit;
+	private DisplayImageOptions displayImageOptions;
 
 	public static final String IMAGE_UNSPECIFIED = "image/*";
 	public static final int TAKE = 0; // 拍摄图片
@@ -67,7 +72,21 @@ public class UserBasicInfoActivity extends BaseActivity {
 		setContentView(R.layout.activity_userbasicinfo);
 
 		setTitle(getResources().getString(R.string.basicinfo));
+		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.image_imageloading) // 设置图片下载期间显示的图片
+				.showImageForEmptyUri(R.drawable.image_imageloadneterror) // 设置图片Uri为空或是错误的时候显示的图片
+				.showImageOnFail(R.drawable.image_imageloaderror) // 设置图片加载或解码过程中发生错误显示的图片
+				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
+				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
+				.imageScaleType(ImageScaleType.EXACTLY)// 缩放模式按比例缩放
+				.build(); // 创建配置过得DisplayImageOption对象
 		InitView();
+		InitData();
+	}
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
 		InitData();
 	}
 
@@ -76,57 +95,60 @@ public class UserBasicInfoActivity extends BaseActivity {
 		mSex = (ButtonWithArrow) findViewById(R.id.userbasicinfo_sex);
 		mSchool = (ButtonWithArrow) findViewById(R.id.userbasicinfo_school);
 		mPhone = (ButtonWithArrow) findViewById(R.id.userbasicinfo_phone);
-		avatar = (ImageView) findViewById(R.id.avatar);
+		avatar = (CircleImageView) findViewById(R.id.avatar);
 		exit = (Button) findViewById(R.id.exit);
 		avatar.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				DialogFragment newFragment = MyDialogFragment
-						.newInstance(avatarDialog);
-				newFragment.show(getFragmentManager(), "dialog");
+				// DialogFragment newFragment =
+				// MyDialogFragment.newInstance(avatarDialog);
+				// newFragment.show(getFragmentManager(), "dialog");
+				startActivity(new Intent(UserBasicInfoActivity.this, UploadAvatarActivity.class));
 			}
 
 		});
 		exit.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				asyncHttpClient.post(AppConstant.URL_BASE+AppConstant.URL_LOGOUT, logouTextHttpResponseHandler);
-				
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_LOGOUT, logouTextHttpResponseHandler);
+
 			}
 		});
 	}
-	private TextHttpResponseHandler logouTextHttpResponseHandler=new TextHttpResponseHandler("UTF-8") {
-		
+
+	private TextHttpResponseHandler logouTextHttpResponseHandler = new TextHttpResponseHandler("UTF-8") {
+
 		@Override
 		public void onSuccess(int arg0, Header[] arg1, String arg2) {
 			// TODO Auto-generated method stub
-			if(arg0==200){
+			if (arg0 == 200) {
 				Type type = new TypeToken<TJResponse<TJUserInfo>>() {
 				}.getType();
-				TJResponse<TJUserInfo> response= new Gson().fromJson(arg2, type);
-				if(response.getResult().getCode()==0){
+				TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
+				if (response.getResult().getCode() == 0) {
 					SpUtils.put(getApplicationContext(), AppConstant.USER_ID, "");
 					SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, 0);
 					SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, "");
 					SpUtils.put(getApplicationContext(), AppConstant.USER_NAME, "");
-					SpUtils.put(getApplicationContext(), AppConstant.USER_LOGINSTATE,0);
-					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL,"");
-					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME,"");
+					SpUtils.put(getApplicationContext(), AppConstant.USER_LOGINSTATE, 0);
+					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, "");
+					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME, "");
 					setResult(AppConstant.FORRESULT_MEINFO_LOGOUT);
 					finish();
-					
+
 				}
 			}
 		}
-		
+
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 			// TODO Auto-generated method stub
-			
+
 		}
 	};
+
 	public void InitData() {
 		if (DataContainer.userInfo != null) {
 			if (!StringUtils.isBlank(DataContainer.userInfo.getNickname())) {
@@ -135,22 +157,28 @@ public class UserBasicInfoActivity extends BaseActivity {
 			if (!StringUtils.isBlank(DataContainer.userInfo.getTel())) {
 				mPhone.setRightText(DataContainer.userInfo.getTel());
 			}
-			mSex.setRightText(SexUtils.getSexString(DataContainer.userInfo
-					.getGender()));
+			mSex.setRightText(SexUtils.getSexString(DataContainer.userInfo.getGender()));
 
 			if (!StringUtils.isBlank(DataContainer.userInfo.getSchoolName())) {
 				mSchool.setRightText(DataContainer.userInfo.getSchoolName());
 			}
 
 			if (!StringUtils.isBlank(DataContainer.userInfo.getAvatarUrl())) {
-				Bitmap bit = ImageFileUtils
-						.readBitmapFromLocal(DataContainer.userInfo
-								.getAvatarUrl());
+				Bitmap bit = ImageFileUtils.readBitmapFromLocal(DataContainer.userInfo.getAvatarUrl());
 				if (bit != null) {
-					avatar.setImageBitmap(ImageUtils.getRoundCornerDrawable(
-							bit, 2000));
+					avatar.setImageBitmap(ImageUtils.getRoundCornerDrawable(bit, 2000));
 				}
 			}
+			int sex = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_SEX, 1);
+			if (sex == 0) {
+				mSex.setRightText("女");
+				mSex.setLeftIcon(R.drawable.icon_women);
+			} else {
+				mSex.setRightText("男");
+				mSex.setLeftIcon(R.drawable.icon_man);
+			}
+			String avatarurl = (String) SpUtils.get(getApplicationContext(), AppConstant.USER_ICONURL, "");
+			imageLoader.displayImage(avatarurl, avatar, displayImageOptions);
 		}
 	}
 
@@ -165,8 +193,7 @@ public class UserBasicInfoActivity extends BaseActivity {
 					if (bitmap != null) {
 						ImageFileUtils.SaveBitmap(bitmap);
 					} else {
-						Toast.makeText(UserBasicInfoActivity.this, "没有图片",
-								Toast.LENGTH_LONG).show();
+						Toast.makeText(UserBasicInfoActivity.this, "没有图片", Toast.LENGTH_LONG).show();
 					}
 					File temp = new File(ImageFileUtils.current_picturepath);
 					startPhotoZoom(Uri.fromFile(temp));
@@ -253,8 +280,7 @@ public class UserBasicInfoActivity extends BaseActivity {
 			@Override
 			public void onClick(DialogInterface dialog, int position) {
 				if (position == 0) {
-					Intent intent = new Intent(
-							android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+					Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 					intent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
 					startActivityForResult(intent, TAKE);
 				} else if (position == 1) {
