@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RadioGroup
+        android:id="@+id/rg_fragmegirlwish_chose"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/rl_fragme_main"
+        android:background="@color/lblue"
+        android:orientation="horizontal" > 
+
+        <RadioButton
+            android:id="@+id/rb_fragmegirlwish_unpick"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rb_background_mywish"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="未摘" />
+
+        <RadioButton
+            android:id="@+id/rb_fragmegirlwish_picked"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rb_background_mywish"
+            android:button="@null"
+            android:gravity="center"
+            android:text="进行" />
+          <RadioButton
+            android:id="@+id/rb_fragmegirlwish_finish"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rb_background_mywish"
+            android:button="@null"
+      
+            android:gravity="center"
+            android:text="结束" />
+    </RadioGroup>
+
+    <ListView
+        android:id="@+id/lv_fragmegirlwhish_wishs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </ListView>
+
+</LinearLayout>

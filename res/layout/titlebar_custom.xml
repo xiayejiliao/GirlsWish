@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tongjo="http://schemas.android.com/apk/res/com.tongjo.girlswish"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="@dimen/margin_50"
     android:layout_gravity="center"
     android:layout_marginLeft="0dip"
     android:gravity="center"

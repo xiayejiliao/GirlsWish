@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+   <RadioGroup
+        android:id="@+id/rg_fragmeboywish_chose"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/rl_fragme_main"
+        android:background="@color/lblue"
+        android:orientation="horizontal" >
+	
+        <RadioButton
+            android:id="@+id/rb_fragmeboywish_uncompleted"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rb_background_mywish"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="未完成" />
+
+        <RadioButton
+            android:id="@+id/rb_fragmeboywish_completed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/rb_background_mywish"
+            android:button="@null"
+            android:gravity="center"
+            android:text="已完成" />
+      
+    </RadioGroup>
+
+        <ListView
+            android:id="@+id/lv_fragmeboylwhish_wishs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </ListView>
+
+
+</LinearLayout>

@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     tools:context="com.tongjo.girlswish.LoginActivity" >
 
-    <ImageButton
+    <ImageView
         android:id="@+id/iv_login_personico"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:background="@color/lblue" />
+        android:contentDescription="@string/login_iconDescription" />
 
     <LinearLayout
         android:id="@+id/linerlayout_login_input"
@@ -20,26 +20,54 @@
         android:layout_centerInParent="true"
         android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/et_login_name"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@null"
-            android:drawableLeft="@drawable/test"
-            android:hint="手机号" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/login_phonedescription"
+                android:src="@drawable/icon_phone" />
+
+            <EditText
+                android:id="@+id/et_login_name"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@null"
+                android:digits="0123456789"
+                android:hint="@string/login_phone"
+                android:inputType="number"
+                android:maxLength="11" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
             android:background="@color/black" />
 
-        <EditText
-            android:id="@+id/et_login_pass"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@null"
-            android:drawableLeft="@drawable/test"
-            android:hint="密码" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/login_passDescription"
+                android:src="@drawable/icon_password" />
+
+            <EditText
+                android:id="@+id/et_login_pass"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@null"
+                android:hint="@string/login_password"
+                android:inputType="textPassword" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -52,15 +80,31 @@
             android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="登陆"
-            android:textColor="@color/white" />
+            android:text="@string/login_login"
+            android:textColor="@color/white" 
+            android:background="@drawable/selector_bg_button_sure"/>
 
-        <com.tongjo.girlswish.widget.LinkTextView
-            android:id="@+id/ltv_login_forget"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:clickcolor="@color/red"
-            app:linktext="忘记密码？" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <CheckBox
+                android:id="@+id/cb_login_isremenberpass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/login_remenberpassword" />
+
+            <com.tongjo.girlswish.widget.LinkTextView
+                android:id="@+id/ltv_login_forget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                app:clickcolor="@color/red"
+                app:linktext="忘记密码？" />
+        </RelativeLayout>
     </LinearLayout>
 
     <com.tongjo.girlswish.widget.LinkTextView
@@ -68,8 +112,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/linerlayout_login_input"
-        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         app:clickcolor="@color/red"
         app:linktext="还没有账号？注册" />
 

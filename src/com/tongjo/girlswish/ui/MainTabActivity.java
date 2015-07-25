@@ -21,6 +21,8 @@ import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.SpUtils;
 
 /**
  * 应用程序主界面，含有多个fragment
@@ -30,6 +32,7 @@ import com.tongjo.girlswish.R;
  * 后续应该会有其他功能加入
  * 
  * Copyright 2015
+ * 
  * @author preparing
  * @date 2015-6-14
  */
@@ -40,6 +43,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 	private final int count = 3;
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
+	private int currentpager = 0;
 
 	// 三个Tab 每个Tab都是一个单独的Layout
 	private RelativeLayout section1;
@@ -75,8 +79,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_maintab);
 
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		mViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
@@ -84,7 +87,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 		mViewPager.setOffscreenPageLimit(4);
 
 		InitTitleBar();
-		
+
 		InitView();
 
 		setViewPagerScrollSpeed();
@@ -92,22 +95,32 @@ public class MainTabActivity extends BaseFragmentActivity {
 		mViewPager.setCurrentItem(0);
 		setSelectTextColor(0);
 		setSelectImage(0);
-	}
-
-	public void InitTitleBar(){
-		hideBackBtn();
-		setRightBtn(R.drawable.add);
-		getRightBtnImageView().setOnClickListener(new View.OnClickListener(){
+		getRightBtnImageView().setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(getApplicationContext(),AddWishActivity.class);
-				startActivity(intent);
+				// TODO Auto-generated method stub
+				if (currentpager == 2) {
+					startActivity(new Intent(MainTabActivity.this, SettingActivity.class));
+				}
 			}
-			
 		});
 	}
-	
+
+	public void InitTitleBar() {
+		hideBackBtn();
+		setRightBtn(R.drawable.add);
+		getRightBtnImageView().setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), AddWishActivity.class);
+				startActivity(intent);
+			}
+
+		});
+	}
+
 	/** 加载基本的View文件 */
 	private void InitView() {
 		section1 = (RelativeLayout) findViewById(R.id.viewpage_title_section1);
@@ -153,14 +166,14 @@ public class MainTabActivity extends BaseFragmentActivity {
 
 	/**
 	 * 设置滚动时底下文字颜色的变化过程
+	 * 
 	 * @param oldTab
 	 * @param oldColor
 	 * @param newTab
 	 * @param newColor
 	 */
-	public void setGradientText(int oldTab, int oldColor, int newTab,
-			int newColor) {
-		/*System.out.println(Integer.toHexString(oldColor));*/
+	public void setGradientText(int oldTab, int oldColor, int newTab, int newColor) {
+		/* System.out.println(Integer.toHexString(oldColor)); */
 
 		int oldblue = oldColor % 256;
 		int oldgreen = ((int) (oldColor >> 8)) % 256;
@@ -223,10 +236,10 @@ public class MainTabActivity extends BaseFragmentActivity {
 	 * 
 	 * @param tab
 	 */
-	public void setGradientImage(int oldTab,int newTab,int percent) {
-		
+	public void setGradientImage(int oldTab, int newTab, int percent) {
+
 	}
-	
+
 	/** Tab上的Tab点击监听 */
 	private class MyOnClickListener implements OnClickListener {
 		private int index = 0;
@@ -323,9 +336,10 @@ public class MainTabActivity extends BaseFragmentActivity {
 
 		/** 三个参数分别为当前的页面，当前页面偏移百分比，当前页面偏移的像素 */
 		public void onPageScrolled(int arg0, float arg1, int arg2) {
-			/*System.out.println("onPageScrolled:" + arg0 + ";" + arg1 + ";"
-					+ currIndex);*/
-
+			/*
+			 * System.out.println("onPageScrolled:" + arg0 + ";" + arg1 + ";" +
+			 * currIndex);
+			 */
 			/** 为了避开最后一次改变后的触发，采用这种判断方式 */
 			if (arg1 < 0.0001 || arg1 > 0.9999) {
 				return;
@@ -340,10 +354,8 @@ public class MainTabActivity extends BaseFragmentActivity {
 				int oldoffset2 = (int) ((0xff - 0xbb) * arg1);
 				int newoffset2 = 0xff - oldoffset2;
 
-				int oldColor = (((oldoffset << 8) + (0xbb + oldoffset2)) << 8)
-						+ oldoffset;
-				int newColor = (((newoffset << 8) + newoffset2) << 8)
-						+ newoffset;
+				int oldColor = (((oldoffset << 8) + (0xbb + oldoffset2)) << 8) + oldoffset;
+				int newColor = (((newoffset << 8) + newoffset2) << 8) + newoffset;
 				/* System.out.println(Integer.toHexString(newColor)); */
 				setGradientText(arg0, oldColor, arg0 + 1, newColor);
 				currentPercentage = arg1;
@@ -356,10 +368,8 @@ public class MainTabActivity extends BaseFragmentActivity {
 				int oldoffset2 = (int) ((0xff - 0xbb) * (1 - arg1));
 				int newoffset2 = 0xff - oldoffset2;
 
-				int oldColor = (((oldoffset << 8) + (0xbb + oldoffset2)) << 8)
-						+ oldoffset;
-				int newColor = (((newoffset << 8) + newoffset2) << 8)
-						+ newoffset;
+				int oldColor = (((oldoffset << 8) + (0xbb + oldoffset2)) << 8) + oldoffset;
+				int newColor = (((newoffset << 8) + newoffset2) << 8) + newoffset;
 				/* System.out.println(Integer.toHexString(oldColor)); */
 				setGradientText(arg0 + 1, oldColor, arg0, newColor);
 				currentPercentage = arg1;
@@ -370,6 +380,26 @@ public class MainTabActivity extends BaseFragmentActivity {
 		public void onPageSelected(int arg0) {
 			setSelectImage(arg0);
 			setSelectTextColor(arg0);
+			currentpager = arg0;
+			switch (arg0) {
+			case 0:
+				setRightBtn(R.drawable.transparency);
+				break;
+			case 1:
+				int sex = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_SEX, 0);
+				if (sex == 0) {
+					setRightBtn(R.drawable.add);
+				} else {
+					setRightBtn(R.drawable.transparency);
+				}
+				break;
+			case 2:
+				setRightBtn(R.drawable.setting_n);
+				break;
+
+			default:
+				break;
+			}
 		}
 	}
 
@@ -382,8 +412,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 			Field mScroller = null;
 			mScroller = ViewPager.class.getDeclaredField("mScroller");
 			mScroller.setAccessible(true);
-			FixedSpeedScroller scroller = new FixedSpeedScroller(
-					mViewPager.getContext());
+			FixedSpeedScroller scroller = new FixedSpeedScroller(mViewPager.getContext());
 			mScroller.set(mViewPager, scroller);
 		} catch (NoSuchFieldException e) {
 
@@ -395,11 +424,9 @@ public class MainTabActivity extends BaseFragmentActivity {
 	}
 
 	/**
-	 * 用于设置viewpager手动切换时的切换速度
-	 * 这边需要分开判断，手动切换页面时应该时没有滑动效果
-	 * 在屏幕上滑动切换时应该是有切换效果的
+	 * 用于设置viewpager手动切换时的切换速度 这边需要分开判断，手动切换页面时应该时没有滑动效果 在屏幕上滑动切换时应该是有切换效果的
 	 * 
-	 *  Copyright 2015
+	 * Copyright 2015
 	 * 
 	 * @author preparing
 	 * @date 2015-6-14
@@ -416,14 +443,12 @@ public class MainTabActivity extends BaseFragmentActivity {
 			super(context, interpolator);
 		}
 
-		public FixedSpeedScroller(Context context, Interpolator interpolator,
-				boolean flywheel) {
+		public FixedSpeedScroller(Context context, Interpolator interpolator, boolean flywheel) {
 			super(context, interpolator, flywheel);
 		}
 
 		@Override
-		public void startScroll(int startX, int startY, int dx, int dy,
-				int duration) {
+		public void startScroll(int startX, int startY, int dx, int dy, int duration) {
 			if (isClick) {
 				super.startScroll(startX, startY, dx, dy, mDuration);
 			} else {
@@ -443,12 +468,12 @@ public class MainTabActivity extends BaseFragmentActivity {
 
 		/**
 		 * 通过查看源代码，这边在滚动时会回调，滚动结束的标志也基本是在这边设置的
-		 * 其他一些手动设置滚动结束的情况还不清楚是否会执行该函数
+		 * 其他一些手动设置滚动结束的情况还不清楚是否会执行该函数，暂时先使用该方法
 		 */
 		@Override
-		public boolean computeScrollOffset(){
+		public boolean computeScrollOffset() {
 			boolean bool = super.computeScrollOffset();
-			if(isFinished()){
+			if (isFinished()) {
 				isClick = false;
 			}
 			return bool;

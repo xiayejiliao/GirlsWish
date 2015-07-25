@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="18"
+        android:minSdkVersion="8"
         android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,30 +14,69 @@
     <application
         android:name=".BaseApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/icon_lunch"
         android:label="@string/app_name"
         android:theme="@style/DefaultStyle" >
         <activity
             android:name="com.tongjo.girlswish.ui.MainTabActivity"
             android:label="@string/app_name" >
-             <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.RegisterActivity1" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.LoginActivity"
+            android:launchMode="singleInstance" >
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.LoginActivity" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.RegisterActivity1"
+            android:launchMode="singleInstance" >
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.RegisterActivity2" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.RegisterActivity2"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.UploadAvatarActivity"
+            android:launchMode="singleInstance" >
         </activity>
         <activity android:name="com.tongjo.girlswish.test.TestActivity" >
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.ResetPassActivity1" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.ResetPassActivity1"
+            android:launchMode="singleInstance" >
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.ResetPassActivity2" >
+        <activity
+            android:name="com.tongjo.girlswish.ui.ResetPassActivity2"
+            android:launchMode="singleInstance" >
         </activity>
-         <activity android:name="com.tongjo.girlswish.ui.AddWishActivity" >
+        <activity android:name="com.tongjo.girlswish.ui.AddWishActivity" >
+        </activity>
+        <activity android:name="com.tongjo.girlswish.ui.UserBasicInfoActivity" >
+        </activity>
+        <activity android:name="com.tongjo.girlswish.ui.GirlFinishWishActivity" >
+        </activity>
+        <activity android:name="com.tongjo.girlswish.ui.GirlUnderwayWishActivity" >
+        </activity>
+        <activity android:name="com.tongjo.girlswish.ui.GirlUnpickedWishActivity" >
+        </activity>
+        <activity android:name="com.tongjo.girlswish.ui.BoyCompleteWishActivity" >
+        </activity>
+        <activity android:name="com.tongjo.girlswish.ui.BoyUncompleteWishActivity" >
+        </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.RegisterSchollChooseActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.RegisterSexChooseActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.SettingActivity"
+            android:launchMode="singleInstance" >
         </activity>
     </application>
 

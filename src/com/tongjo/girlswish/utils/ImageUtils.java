@@ -37,7 +37,9 @@ public class ImageUtils {
 	 * @return
 	 */
 	public static Bitmap getRoundCornerDrawable(Bitmap image, float roundPX) {
-
+		if(image == null){
+			return null;
+		}
 		Bitmap output = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Config.ARGB_8888);
 		Canvas canvas = new Canvas(output);
 
