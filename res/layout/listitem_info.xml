@@ -2,33 +2,42 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal" 
-    android:background="@color/lblue">
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/info_list_height"
-        android:background="@drawable/list_item_bg"
         android:descendantFocusability="blocksDescendants"
         android:gravity="center_vertical"
         android:paddingBottom="@dimen/info_list_padding_top_bottom"
         android:paddingLeft="@dimen/info_list_padding_left_right"
         android:paddingRight="@dimen/info_list_padding_left_right"
-        android:paddingTop="@dimen/info_list_padding_top_bottom" >
+        android:paddingTop="@dimen/info_list_padding_top_bottom" 
+        >
 
-        <ImageView
+       <!-- <ImageView
             android:id="@+id/info_list_icon"
             android:layout_width="@dimen/info_list_img_width"
             android:layout_height="@dimen/info_list_img_height"
             android:paddingRight="@dimen/info_list_padding_left_right"
-            android:src="@drawable/sound" />
+            android:src="@drawable/sound" /> -->
+        
+        <com.tongjo.girlswish.widget.CircleImageView
+            android:id="@+id/info_list_icon"
+            android:layout_width="@dimen/info_list_img_width"
+            android:layout_height="@dimen/info_list_img_height"
+            android:src="@drawable/testimg"
+            android:layout_marginRight="@dimen/info_list_img_margin_right" 
+            />
 
         <TextView
             android:id="@+id/info_list_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/info_list_icon"
-            android:textColor="@color/black"
-            android:textSize="@dimen/info_list_title_text_size" />
+            android:textColor="@color/info_list_title"
+            android:textSize="@dimen/info_list_title_text_size"
+             />
 
         <TextView
             android:id="@+id/info_list_msg"
@@ -36,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/info_list_icon"
             android:layout_alignLeft="@id/info_list_title"
-            android:textColor="@color/grey"
+            android:textColor="@color/info_list_msg"
             android:textSize="@dimen/info_list_msg_text_size" />
 
         <TextView
@@ -45,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@id/info_list_title"
-            android:textColor="@color/grey" />
+            android:textColor="@color/info_list_time" />
     </RelativeLayout>
 
     <RelativeLayout

@@ -2,6 +2,7 @@ package com.tongjo.girlswish;
 
 import java.util.UUID;
 
+import com.easemob.chat.EMChat;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.PersistentCookieStore;
@@ -11,6 +12,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tongjo.bean.TJLocalUserInfo;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.db.OrmLiteHelper;
+import com.tongjo.emchat.GWHXSDKHelper;
 import com.tongjo.girlswish.model.LoginState;
 import com.tongjo.girlswish.model.UserSex;
 import com.tongjo.girlswish.utils.AppConstant;
@@ -34,6 +36,9 @@ public class BaseApplication extends Application {
 	private SyncHttpClient syncHttpClient;
 	// 持久化在 SharedPreferences里的cookie，每个app只创建一个
 	private PersistentCookieStore persistentCookieStore;
+	
+	//环信
+	public static GWHXSDKHelper hxSDKHelper = new GWHXSDKHelper();
 
 	@Override
 	public void onCreate() {
@@ -48,6 +53,9 @@ public class BaseApplication extends Application {
 		super.onCreate();
 		ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getBaseContext()));
 		DataContainer.userInfo = LoadLocalUserInfo();
+		
+		/** 初始化环信 */
+		hxSDKHelper.onInit(this.getApplicationContext());
 	}
 
 	/**
@@ -136,5 +144,4 @@ public class BaseApplication extends Application {
 			PersistentCookieStore persistentCookieStore) {
 		this.persistentCookieStore = persistentCookieStore;
 	}
-
 }
