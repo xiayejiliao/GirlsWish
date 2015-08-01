@@ -1,12 +1,13 @@
 package com.tongjo.bean;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName="wish")
-public class TJWish {
+public class TJWish implements Serializable{
 	@DatabaseField(id=true,index=true)
 	private UUID _id;
 	@DatabaseField(foreign=true,foreignAutoRefresh=true)
