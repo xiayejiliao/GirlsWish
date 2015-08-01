@@ -10,6 +10,10 @@ public class TJMessage {
 	@DatabaseField(id=true,index=true)
 	private UUID _id;
 	@DatabaseField
+	private int type;
+	@DatabaseField
+	private String title;
+	@DatabaseField
 	private String content;
 	@DatabaseField(foreign=true,foreignAutoRefresh=true)
 	private TJWish wish;
@@ -21,7 +25,6 @@ public class TJMessage {
 	private String createdTime;
 	public TJMessage() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public UUID get_id() {
 		return _id;
@@ -30,6 +33,18 @@ public class TJMessage {
 		this._id = _id;
 	}
 	
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	public String getContent() {
 		return content;
 	}
@@ -62,7 +77,7 @@ public class TJMessage {
 	}
 	@Override
 	public String toString() {
-		return "TJMessage [_id=" + _id + ", content=" + content + ", wish=" + wish + ", noticeUrl=" + noticeUrl + ", createdTime=" + createdTime + "]";
+		return "TJMessage [_id=" + _id + ", type" + type + ", title=" + title + ", content=" + content + ", wish=" + wish + ", noticeUrl=" + noticeUrl + ", createdTime=" + createdTime + "]";
 	}
 	
 	

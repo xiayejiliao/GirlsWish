@@ -29,6 +29,7 @@ import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlwish.data.DataContainer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -80,6 +81,22 @@ public class MainTabInfoFragment extends BaseFragment {
 
 			@Override
 			public void MItemClick(View v, int position) {
+				TJMessage message = DataContainer.MessageList.get(position);
+				if(message != null){
+					if(message.getType() != 0){
+						Intent intent = new Intent();
+						switch(message.getType()){
+						case 1 : intent.setClass(MainTabInfoFragment.this.getActivity(), GirlUnderwayWishActivity.class); break;
+						case 2 : intent.setClass(MainTabInfoFragment.this.getActivity(), GirlFinishWishActivity.class); break;
+						case 3 : intent.setClass(MainTabInfoFragment.this.getActivity(), GirlUnpickedWishActivity.class); break;
+						case 4 : intent.setClass(MainTabInfoFragment.this.getActivity(), BoyUncompleteWishActivity.class); break;
+						case 5 : intent.setClass(MainTabInfoFragment.this.getActivity(), BoyCompleteWishActivity.class); break;
+						case 6 : intent.setClass(MainTabInfoFragment.this.getActivity(), BoyUncompleteWishActivity.class); break;
+						}
+						intent.putExtra("wish", message.getWish());
+						startActivity(intent);
+					}
+				}
 			}
 
 		});

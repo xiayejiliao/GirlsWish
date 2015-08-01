@@ -77,5 +77,9 @@
     <!-- 学校选择界面 -->
     <color name="schoolchoose_eraritem_press">#eeeeee</color>
     <color name="schoolchoose_eraritem_up">#ffffff</color>
-
+    
+    <!-- 消息列表界面  -->
+    <color name="info_list_msg">#9B9B9B</color>
+    <color name="info_list_title">#4A4A4A</color>
+    <color name="info_list_time">#9B9B9B</color>
 </resources>

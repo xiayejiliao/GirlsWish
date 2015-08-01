@@ -95,8 +95,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 			LayoutInflater mInflater = LayoutInflater.from(mContext);
 			convertView = mInflater.inflate(R.layout.listitem_info, null);
 
-			holder.iconImageView = (ImageView) convertView
-					.findViewById(R.id.info_list_icon);
+			holder.iconImageView = (ImageView) convertView.findViewById(R.id.info_list_icon);
 			holder.titleTextVIew = (TextView) convertView
 					.findViewById(R.id.info_list_title);
 			holder.msgTextView = (TextView) convertView
@@ -109,11 +108,11 @@ public class MainTabInfoAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		TJMessage message = mList.get(arg0);
-		holder.iconImageView.setImageResource(R.drawable.sound);
-		holder.titleTextVIew.setText("您的心愿被摘啦");
+		//holder.iconImageView.setImageResource(R.drawable.sound);
+		holder.titleTextVIew.setText(message.getTitle());
 		holder.msgTextView.setText(message.getContent());
 		holder.timeTextView.setText(message.getCreatedTime());
-		if (arg0 % 4 == 0) {
+		/*if (arg0 % 4 == 0) {
 			convertView.setBackgroundColor(mContext.getResources().getColor(
 					R.color.addwish_blueColor));
 		} else if (arg0 % 4 == 1) {
@@ -125,7 +124,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		} else {
 			convertView.setBackgroundColor(mContext.getResources().getColor(
 					R.color.addwish_yellowColor));
-		}
+		}*/
 		
 		convertView.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
