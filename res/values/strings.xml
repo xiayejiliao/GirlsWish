@@ -75,8 +75,8 @@
     <string name="confirm_resend">确认重发</string>
     <string name="resend">重发</string>
     <!-- 登录界面 -->
-    <string name="login_phone">手机号</string>
-    <string name="login_password">密码</string>
+    <string name="login_phone">请输入手机号</string>
+    <string name="login_password">请输入密码</string>
     <string name="login_login">登录</string>
     <string name="login_phonedescription">手机号</string>
     <string name="login_passDescription">密码</string>

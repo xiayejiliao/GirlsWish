@@ -89,7 +89,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private ImageView iv_personico;
 	private LinkTextView ltv_forgetpass;
 	private LinkTextView ltv_register;
-	private CheckBox cb_isremenberpass;
 	private DisplayImageOptions displayImageOptions;
 
 	@Override
@@ -103,7 +102,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		ltv_forgetpass = (LinkTextView) findViewById(R.id.ltv_login_forget);
 		ltv_register = (LinkTextView) findViewById(R.id.ltv_login_register);
 		iv_personico = (ImageView) findViewById(R.id.iv_login_personico);
-		cb_isremenberpass = (CheckBox) findViewById(R.id.cb_login_isremenberpass);
+
 
 		bt_login.setOnClickListener(this);
 		iv_personico.setOnClickListener(this);
@@ -127,16 +126,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		} else {
 			et_phone.getEditableText().clear();
 		}
-
-		if (isremenberpassword == 1) {
-			cb_isremenberpass.setChecked(true);
-			String pass = (String) SpUtils.get(getApplicationContext(), AppConstant.USER_PASSWORD, "10086");
-			et_pass.setText(pass);
-		} else {
-			cb_isremenberpass.setChecked(false);
-		}
-		Log.d(TAG,""+ isremenberpassword);
-		Log.d(TAG,""+ isremenberphone);
 		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.image_imageloading) // 设置图片下载期间显示的图片
 				.showImageForEmptyUri(R.drawable.image_imageloadneterror) // 设置图片Uri为空或是错误的时候显示的图片
 				.showImageOnFail(R.drawable.image_imageloaderror) // 设置图片加载或解码过程中发生错误显示的图片
@@ -144,7 +133,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
 				.imageScaleType(ImageScaleType.EXACTLY)// 缩放模式按比例缩放
 				.build(); // 创建配置过得DisplayImageOption对象
-		imageLoader.displayImage("drawable://" + R.drawable.icon_lunch, iv_personico, displayImageOptions);
+	//	imageLoader.displayImage("drawable://" + R.drawable.icon_lunch, iv_personico, displayImageOptions);
 	}
 	
 	@Override
@@ -179,10 +168,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 							SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, tel);
 							
 							//设置是否记住密码
-							if (cb_isremenberpass.isChecked()) {
-								SpUtils.put(getApplicationContext(), AppConstant.USER_ISREMEMBERPASSWORD, 1);
-								SpUtils.put(getApplicationContext(), AppConstant.USER_PASSWORD, password);
-							}
 							//持久化个人信息到getSharedPreferences
 							TJUserInfo userInfo = response.getData();
 							if (userInfo != null) {
