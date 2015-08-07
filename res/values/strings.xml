@@ -98,6 +98,6 @@
     <string name="register_next">下一步</string>
     <string name="register_getpic">获取图片</string>
     <string name="register_uploadpic">上传图片</string>
-    <!-- 我的测试 -->
+    <!--   我的测试 -->
     <string name="test">测试</string>
 </resources>
