@@ -14,6 +14,9 @@ import java.util.UUID;
 
 import org.apache.http.Header;
 
+import com.easemob.EMCallBack;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMGroupManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -199,6 +202,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 									SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLCOORDINATES, userSchool.getCoordinates());
 								}
 								imageLoader.displayImage(userInfo.getAvatarUrl(), iv_personico, displayImageOptions);
+								
+								// 登陆环信
+								loginEMChat(userInfo.get_id().toString(), password);
 							}
 							//通过EvenBus发送登录成功事件
 							Message message=new Message();
@@ -234,5 +240,35 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			break;
 		}
 
+	}
+	/**
+	 * 用户登陆后登陆环信
+	 * @param username //username是第三方用户体系中的primarykey。需要在appkey的范围内唯一。
+	 * @param password //密码。为保证第三方用户体系中的账号密码不必要的泄露给环信，建议对第三方用户体系的账号密码做一次hash算法。然后在手机端登录环信时，客户端同样适用hash后的密码登录。
+	 */
+	private void loginEMChat(String username, String password){
+		
+		EMChatManager.getInstance().login(username,password,new EMCallBack() {//回调
+			@Override
+			public void onSuccess() {
+				runOnUiThread(new Runnable() {
+					public void run() {
+						EMGroupManager.getInstance().loadAllGroups();
+						EMChatManager.getInstance().loadAllConversations();
+						Log.d("main", "登陆聊天服务器成功！");		
+					}
+				});
+			}
+
+			@Override
+			public void onProgress(int progress, String status) {
+
+			}
+
+			@Override
+			public void onError(int code, String message) {
+				Log.d("main", "登陆聊天服务器失败！");
+			}
+		});
 	}
 }

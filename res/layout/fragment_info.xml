@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
 
     <!--  <com.tongjo.girlswish.widget.RefreshableView
         android:id="@+id/info_refreshable_view"
@@ -35,7 +37,7 @@
 	        android:layout_height="wrap_content"
 	        android:text="暂无消息"
 	        android:textSize="@dimen/text_size_24"
-	        android:textColor="@color/white"
+	        android:textColor="@color/black"
 	        />
 	</LinearLayout>
 
@@ -47,7 +49,7 @@
         android:layout_marginBottom="@dimen/margin_50"
         android:cacheColorHint="#00000000"
         android:divider="#19000000"
-        android:dividerHeight="4dp"
+        android:dividerHeight="2dp"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"

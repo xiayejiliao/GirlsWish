@@ -53,6 +53,27 @@
     
     <!-- 消息界面 -->
     <string name="delete">删除</string>
+    <string name="receive_the_passthrough">收到透传：action：</string>
+    <string name="move_up_to_cancel">手指上滑，取消发送</string>
+    <!-- 聊天界面 -->
+    <string name="button_send">发送</string>
+    <string name="attach_smile">表情</string>
+    <string name="attach_picture">图片</string>
+    <string name="attach_take_pic">拍照</string>
+    <string name="attach_location">位置</string>
+    <string name="attach_video">视频</string>
+    <string name="attach_file">文件</string>
+    <string name="unable_to_get_loaction">获取不到位置信息</string>
+    <string name="no_more_messages">暂无新消息</string>
+    <string name="cant_find_pictures">图片不存在</string>
+    <string name="file_does_not_exist">文件不存在</string>
+    <string name="the_file_is_not_greater_than_10_m">文件不能超过10M</string>
+    <string name="text_ack_msg">已读</string>
+    <string name="text_delivered_msg">送达</string>
+    <string name="send_fail">发送失败</string>
+    <string name="connect_failuer_toast">网络连接失败</string>
+    <string name="confirm_resend">确认重发</string>
+    <string name="resend">重发</string>
     <!-- 登录界面 -->
     <string name="login_phone">手机号</string>
     <string name="login_password">密码</string>
@@ -77,4 +98,6 @@
     <string name="register_next">下一步</string>
     <string name="register_getpic">获取图片</string>
     <string name="register_uploadpic">上传图片</string>
+    <!--   我的测试 -->
+    <string name="test">测试</string>
 </resources>
