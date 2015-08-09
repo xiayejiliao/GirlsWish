@@ -59,9 +59,13 @@ public class MyinfoActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_myinfo);
 		iv_icon = (ImageView) findViewById(R.id.iv_myinfo_icon);
 		tv_nicker = (TextView) findViewById(R.id.tv_myinfo_nicker);
 		tv_school = (TextView) findViewById(R.id.tv_myinfo_school);
+		tv_nicker.setOnClickListener(this);
+		tv_school.setOnClickListener(this);
+		iv_icon.setOnClickListener(this);
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 	}
 
@@ -100,7 +104,7 @@ public class MyinfoActivity extends Activity implements OnClickListener {
 			if (requestCode == CAMER) {
 				String path = mImageCaptureUri.getPath();
 				Bitmap bitmap = BitmapFactory.decodeFile(path);
-				bitmap = ImageUtils.scaleImageTo(bitmap, iv_icon.getWidth(), iv_icon.getHeight());
+				//bitmap = ImageUtils.scaleImageTo(bitmap, iv_icon.getWidth(), iv_icon.getHeight());
 				bitmap = com.easemob.util.ImageUtils.getRoundedCornerBitmap(bitmap);
 				iv_icon.setImageBitmap(bitmap);
 				RequestParams params = new RequestParams();
@@ -114,7 +118,8 @@ public class MyinfoActivity extends Activity implements OnClickListener {
 					path = mImageCaptureUri.getPath(); // from File Manager
 				if (path != null) {
 					Bitmap bitmap = BitmapFactory.decodeFile(path);
-					bitmap = ImageUtils.scaleImageTo(bitmap, iv_icon.getWidth(), iv_icon.getHeight());
+					//iv_icon.setImageBitmap(bitmap);
+					//bitmap = ImageUtils.scaleImageTo(bitmap, iv_icon.getWidth(), iv_icon.getHeight());
 					bitmap = com.easemob.util.ImageUtils.getRoundedCornerBitmap(bitmap);
 					iv_icon.setImageBitmap(bitmap);
 					RequestParams params = new RequestParams();
@@ -133,8 +138,8 @@ public class MyinfoActivity extends Activity implements OnClickListener {
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
 				switch (which) {
-				case 0:
-					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				case 1:
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
 					File file = new File(Environment.getExternalStorageDirectory(), "tmp_avatar_" + String.valueOf(System.currentTimeMillis()) + ".jpg");
 					mImageCaptureUri = Uri.fromFile(file);
 					try {
@@ -145,10 +150,10 @@ public class MyinfoActivity extends Activity implements OnClickListener {
 						e.printStackTrace();
 					}
 					break;
-				case 1:
+				case 0:
 					Intent imageIntent = new Intent();
 					imageIntent.setType("image/*");
-					imageIntent.setAction(Intent.ACTION_GET_CONTENT);
+					imageIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 					startActivityForResult(Intent.createChooser(imageIntent, "选择图片"), GALLERY);
 					break;
 				case 2:

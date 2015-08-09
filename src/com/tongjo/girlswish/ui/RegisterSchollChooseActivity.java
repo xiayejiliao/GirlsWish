@@ -115,7 +115,7 @@ public class RegisterSchollChooseActivity extends BaseActivity {
 						String name= jsonObject.getString("name");
 						Intent intent=new Intent();
 						intent.putExtra("schoolname", name);
-						setResult(AppConstant.RESULTCODE_REGISTER_SCHOOL, intent);
+						setResult(RESULT_OK, intent);
 						RegisterSchollChooseActivity.this.finish();
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
