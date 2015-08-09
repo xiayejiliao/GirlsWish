@@ -334,7 +334,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		//toChatUsername = toChatUser.get_id().toString();
 		
 		//设置标题栏
-		//this.setCenterText(toChatUsername);
+		this.setCenterText(toChatUsername);
 	}
 
 	protected void onConversationInit(){
