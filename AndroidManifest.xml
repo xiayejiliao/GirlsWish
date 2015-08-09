@@ -95,7 +95,7 @@
         <activity android:name="com.tongjo.girlswish.test.TestActivity" >
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.ResetPassActivity1"
+            android:name="com.tongjo.girlswish.ui.ResetPassActivity"
             android:launchMode="singleInstance" >
         </activity>
         <activity

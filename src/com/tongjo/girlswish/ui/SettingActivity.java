@@ -33,7 +33,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.bt_setting_resetpass:
-			startActivity(new Intent(SettingActivity.this, ResetPassActivity1.class));
+			startActivity(new Intent(SettingActivity.this, ResetPassActivity.class));
 			break;
 		case R.id.bt_setting_about:
 			ToastUtils.show(getApplicationContext(), "about");

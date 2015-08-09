@@ -229,7 +229,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			});
 			break;
 		case R.id.ltv_login_forget:
-			Intent intent1=new Intent(LoginActivity.this, ResetPassActivity1.class);
+			Intent intent1=new Intent(LoginActivity.this, ResetPassActivity.class);
 			startActivity(intent1);
 			break;
 		case R.id.ltv_login_register:
