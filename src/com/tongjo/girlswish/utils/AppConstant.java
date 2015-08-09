@@ -44,6 +44,7 @@ public class AppConstant {
 	public static final String URL_REGISTER = "/register";
 	public static final String URL_PROFILE = "/profile";
 	public static final String URL_UPLOADICON = "/user/avatar";
+	public static final String URL_USEREDIT = "/user/edit";
 
 	// intent
 	public static final int FORRESULT_LOG = 10101;
