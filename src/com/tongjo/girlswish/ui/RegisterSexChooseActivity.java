@@ -41,7 +41,7 @@ public class RegisterSexChooseActivity extends BaseActivity implements OnClickLi
 	@Override
 	public void onClick(View v) {
 		if(v.getId()==R.id.ll_register_sexchose){
-			Intent intent=new Intent(RegisterSexChooseActivity.this,RegisterActivity1.class);
+			Intent intent=new Intent(RegisterSexChooseActivity.this,RegisterActivity.class);
 			if(choose==GIRL){
 				intent.putExtra("sex",GIRL);
 				startActivity(intent);

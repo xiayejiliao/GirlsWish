@@ -1,5 +1,10 @@
 package com.tongjo.girlswish.ui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 
 import org.apache.http.Header;
@@ -8,6 +13,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJSchool;
 import com.tongjo.bean.TJUserInfo;
@@ -15,26 +23,42 @@ import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.ui.TakePicturePopup.ChoicedItem;
 import com.tongjo.girlswish.ui.TakePicturePopup.onChoiced;
 import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.FileUtils;
+import com.tongjo.girlswish.utils.ImageFileUtils;
+import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 
 import de.greenrobot.event.EventBus;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
+import android.provider.MediaStore;
+import android.provider.MediaStore.MediaColumns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
@@ -45,39 +69,44 @@ import android.widget.PopupWindow;
  * @author 16ren
  *
  */
-public class RegisterActivity2 extends BaseActivity implements OnClickListener {
+public class MyInfoEditActivity extends BaseActivity implements OnClickListener {
+	private int REQUEST_CAMERA = 3621;
+	private int SELECT_FILE = 6523;
 	private EditText et_name;
 	private EditText et_school;
 	private Button bt_next;
+	private ImageView iv_icon;
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_register2);
-		setCenterText("注册");
-		et_name = (EditText) findViewById(R.id.et_register2_name);
-		et_school = (EditText) findViewById(R.id.et_register2_school);
-		bt_next = (Button) findViewById(R.id.bt_register2_next);
-		bt_next.setOnClickListener(this);
+		setContentView(R.layout.activity_myinfoedit);
+		et_name = (EditText) findViewById(R.id.et_myinfo_name);
+		et_school = (EditText) findViewById(R.id.et_myinfo_school);
+		bt_next = (Button) findViewById(R.id.bt_myinfo_next);
+		iv_icon = (ImageView) findViewById(R.id.iv_myinfo_personico);
 
+		bt_next.setOnClickListener(this);
+		iv_icon.setOnClickListener(this);
 		et_school.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
 				if (hasFocus) {
-					Intent intent = new Intent(RegisterActivity2.this, RegisterSchollChooseActivity.class);
+					Intent intent = new Intent(MyInfoEditActivity.this, RegisterSchollChooseActivity.class);
 					startActivityForResult(intent, AppConstant.STARTFORCODE_REGISTER_SCHOOL);
 				}
 			}
 		});
-
+		;
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.bt_register2_next:
+		case R.id.bt_myinfo_next:
 			String name = et_name.getText().toString();
 			String school = et_school.getText().toString();
 			if (StringUtils.isEmpty(name)) {
@@ -93,22 +122,84 @@ public class RegisterActivity2 extends BaseActivity implements OnClickListener {
 			requestParams.put("schoolId", school);
 			asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_PROFILE, requestParams, httpprofile);
 			break;
-		case R.id.et_register2_school:
-			Intent intent = new Intent(RegisterActivity2.this, RegisterSchollChooseActivity.class);
-			startActivityForResult(intent, AppConstant.STARTFORCODE_REGISTER_SCHOOL);
+		case R.id.et_myinfo_school:
+			/*
+			 * Intent intent = new Intent(MyInfoEditActivity.this,
+			 * RegisterSchollChooseActivity.class);
+			 * startActivityForResult(intent,
+			 * AppConstant.STARTFORCODE_REGISTER_SCHOOL);
+			 */
+			break;
+		case R.id.iv_myinfo_personico:
+			selectImage();
 			break;
 		default:
 			break;
 		}
 	}
 
+	private void selectImage() {
+		final CharSequence[] items = { "照相机", "相册", "取消" };
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(MyInfoEditActivity.this);
+		builder.setTitle("Add Photo!");
+		builder.setItems(items, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int item) {
+				if (items[item].equals("照相机")) {
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
+					File f = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "temp.jpg");
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+					startActivityForResult(intent, REQUEST_CAMERA);
+				} else if (items[item].equals("相册")) {
+					Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+					intent.setType("image/*");
+					startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+				} else if (items[item].equals("取消")) {
+					dialog.dismiss();
+				}
+			}
+		});
+		builder.show();
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == AppConstant.STARTFORCODE_REGISTER_SCHOOL && resultCode == AppConstant.RESULTCODE_REGISTER_SCHOOL) {
-			String schooname = data.getStringExtra("schoolname");
-			et_school.setText(schooname);
+		System.out.println(resultCode);
+		if (resultCode == RESULT_OK) {
+			if (requestCode == REQUEST_CAMERA) {
+				File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
+				for (File temp : f.listFiles()) {
+					if (temp.getName().equals("temp.jpg")) {
+						f = temp;
+						break;
+					}
+				}
+				Bitmap bm;
+				bm = BitmapFactory.decodeFile(f.getAbsolutePath());
+				bm = Bitmap.createScaledBitmap(bm, iv_icon.getWidth(), iv_icon.getHeight(), true);
+				bm = ImageUtils.getRoundedCornerBitmap(bm);
+				iv_icon.setImageBitmap(bm);
+
+			} else if (requestCode == SELECT_FILE) {
+				Uri selectedImage = data.getData();
+				String[] filePathColumn = { MediaStore.Images.Media.DATA };
+				// Get the cursor
+				Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+				// Move to first row
+				cursor.moveToFirst();
+				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+				String imgDecodableString = cursor.getString(columnIndex);
+				cursor.close();
+				Bitmap bm = BitmapFactory.decodeFile(imgDecodableString);
+				bm = ImageUtils.scaleImageTo(bm, iv_icon.getWidth(), iv_icon.getHeight());
+				bm = ImageUtils.getRoundedCornerBitmap(bm);
+				iv_icon.setImageBitmap(bm);
+			} else if (requestCode == AppConstant.STARTFORCODE_REGISTER_SCHOOL) {
+				String school = data.getStringExtra("schoolname");
+				et_school.setText(school);
+			}
 		}
 	}
 
@@ -140,9 +231,9 @@ public class RegisterActivity2 extends BaseActivity implements OnClickListener {
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLCOORDINATES, userSchool.getCoordinates());
 						}
 					}
-					Intent intent = new Intent(RegisterActivity2.this, UploadAvatarActivity.class);
+					Intent intent = new Intent(MyInfoEditActivity.this, UploadAvatarActivity.class);
 					startActivity(intent);
-					RegisterActivity2.this.finish();
+					MyInfoEditActivity.this.finish();
 
 				} else {
 					Toast.makeText(getApplicationContext(), "完善信息失败:" + response.getResult().getMessage(), Toast.LENGTH_LONG).show();
