@@ -66,65 +66,66 @@
         <service android:name="com.easemob.chat.EMChatService" />
 
         <activity
-            android:name="com.tongjo.girlswish.ui.MainTabActivity"
+            android:name=".ui.MainTabActivity"
             android:label="@string/app_name" >
+        </activity>
+        <activity android:name="com.tongjo.girlswish.ui.ChatActivity" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.tongjo.girlswish.ui.ChatActivity" >
-        </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.LoginActivity"
+            android:name=".ui.LoginActivity"
             android:launchMode="singleInstance" >
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.RegisterActivity1"
+            android:name=".ui.RegisterActivity1"
             android:launchMode="singleInstance" >
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.RegisterActivity2"
+            android:name=".ui.RegisterActivity2"
             android:launchMode="singleInstance" >
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.UploadAvatarActivity"
+            android:name=".ui.UploadAvatarActivity"
             android:launchMode="singleInstance" >
         </activity>
-        <activity android:name="com.tongjo.girlswish.test.TestActivity" >
+        <activity android:name=".test.TestActivity" >
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.ResetPassActivity1"
-            android:launchMode="singleInstance" >
-        </activity>
-        <activity
-            android:name="com.tongjo.girlswish.ui.ResetPassActivity2"
-            android:launchMode="singleInstance" >
-        </activity>
-        <activity android:name="com.tongjo.girlswish.ui.AddWishActivity" >
-        </activity>
-        <activity android:name="com.tongjo.girlswish.ui.UserBasicInfoActivity" >
-        </activity>
-        <activity android:name="com.tongjo.girlswish.ui.GirlFinishWishActivity" >
-        </activity>
-        <activity android:name="com.tongjo.girlswish.ui.GirlUnderwayWishActivity" >
-        </activity>
-        <activity android:name="com.tongjo.girlswish.ui.GirlUnpickedWishActivity" >
-        </activity>
-        <activity android:name="com.tongjo.girlswish.ui.BoyCompleteWishActivity" >
-        </activity>
-        <activity android:name="com.tongjo.girlswish.ui.BoyUncompleteWishActivity" >
-        </activity>
-        <activity
-            android:name="com.tongjo.girlswish.ui.RegisterSchollChooseActivity"
+            android:name=".ui.ResetPassActivity"
             android:launchMode="singleInstance" >
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.RegisterSexChooseActivity"
+            android:name=".ui.ResetPassActivity2"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity android:name=".ui.AddWishActivity" >
+        </activity>
+        <activity android:name=".ui.UserBasicInfoActivity" >
+        </activity>
+        <activity android:name=".ui.GirlFinishWishActivity" >
+        </activity>
+        <activity android:name=".ui.GirlUnderwayWishActivity" >
+        </activity>
+        <activity android:name=".ui.GirlUnpickedWishActivity" >
+        </activity>
+        <activity android:name=".ui.BoyCompleteWishActivity" >
+        </activity>
+        <activity android:name=".ui.BoyUncompleteWishActivity" >
+        </activity>
+        <activity
+            android:name=".ui.RegisterSchollChooseActivity"
             android:launchMode="singleInstance" >
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.SettingActivity"
+            android:name=".ui.RegisterSexChooseActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name=".ui.SettingActivity"
             android:launchMode="singleInstance" >
         </activity>
         <!-- 详细系统消息界面 -->
@@ -132,8 +133,12 @@
             android:launchMode="singleInstance">
         </activity>
         <activity
-            android:name="com.tongjo.girlswish.ui.GuideActivity"
+            android:name=".ui.GuideActivity"
             android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.MyinfoActivity"
+            android:launchMode="singleInstance" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -9,7 +9,6 @@
     <string name="school">学校</string>
     <string name="phonenumber">手机号</string>
     <string name="exit">退出</string>
-    
     <string name="app_name">GirlsWish</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -32,11 +31,10 @@
 
     <string name="title_message">我的消息</string>
     <string name="title_wishes">已收消息</string>
-
     <string name="title_section1">消息</string>
     <string name="title_section2">心愿墙</string>
     <string name="title_section3">我的</string>
-    
+
     <!-- 下拉刷新界面 -->
     <string name="pull_to_refresh">下拉可以刷新</string>
     <string name="release_to_refresh">释放立即刷新</string>
@@ -45,12 +43,11 @@
     <string name="updated_at">上次更新于%1$s前</string>
     <string name="updated_just_now">刚刚更新</string>
     <string name="time_error">时间有问题</string>
-
     <string name="pull_listview_tap_label">点击刷新...</string>
     <string name="pull_listview_pull_label">下拉刷新...</string>
     <string name="pull_listview_release_label">松开刷新...</string>
     <string name="pull_listview_refreshing_label">正在加载...</string>
-    
+
     <!-- 消息界面 -->
     <string name="delete">删除</string>
     <string name="receive_the_passthrough">收到透传：action：</string>
@@ -79,18 +76,21 @@
     <string name="login_password">密码</string>
     <string name="login_login">登录</string>
     <string name="login_phonedescription">手机号</string>
-    <string name="login_passDescription">密码</string>
+    <string name="login_passDescription">输入密码</string>
     <string name="login_iconDescription">头像</string>
     <string name="login_remenberpassword">记住密码</string>
-    
-    <!-- 忘记密码界面-->
-    <string name="resetpass_phone">手机号</string>
+
+    <!-- 忘记密码界面 -->
+    <string name="resetpass_phone">手机号 :</string>
+    <string name="resetpass_phonedescription">请输入手机号</string>
+    <string name="resetpass_newpass">密码:</string>
+    <string name="resetpass_newpassdescription">请输入新密码</string>
     <string name="resetpass_getcaptcha">获取验证码</string>
     <string name="resetpass_captcha">验证码</string>
     <string name="resetpass_sure">确认</string>
-    
+
     <!-- 注册界面 -->
-      <string name="register_phone">手机号</string>
+    <string name="register_phone">手机号</string>
     <string name="register_getcaptcha">获取验证码</string>
     <string name="register_captcha">验证码</string>
     <string name="register_password">密码(最少六位)</string>
@@ -98,6 +98,14 @@
     <string name="register_next">下一步</string>
     <string name="register_getpic">获取图片</string>
     <string name="register_uploadpic">上传图片</string>
-    <!--   我的测试 -->
+    <!-- 我的测试 -->
     <string name="test">测试</string>
+    <string name="title_activity_myinfo">MyinfoActivity</string>
+	
+     <!-- 我的资料界面 -->
+     <string name="myinfo_icon">头像</string>
+     <string name="myinfo_school">学校</string>
+     <string name="myinfo_nicker">昵称</string>
+     <string name="myinfo_sex">性别</string>
+     <string name="myinfo_phone">电话</string>
 </resources>
