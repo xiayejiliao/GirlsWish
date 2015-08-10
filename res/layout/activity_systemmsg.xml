@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+   <LinearLayout
+	    android:id="@+id/info_empty_view" 
+	    android:layout_width="match_parent"
+        android:layout_height="@dimen/info_empty_view_height"
+        android:layout_marginTop="@dimen/margin_50"
+        android:layout_marginBottom="@dimen/margin_10"
+        android:orientation="vertical"
+        android:gravity="center|top"
+        android:visibility="gone"
+	    >
+	    <TextView 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="暂无消息"
+	        android:textSize="@dimen/text_size_24"
+	        android:textColor="@color/black"
+	        />
+	</LinearLayout>
+
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/info_listview"
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/margin_50"
+        android:cacheColorHint="#00000000"
+        android:divider="#19000000"
+        android:dividerHeight="2dp"
+        android:fadingEdge="none"
+        android:fastScrollEnabled="false"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:smoothScrollbar="true"
+         >
+    </com.handmark.pulltorefresh.library.PullToRefreshListView>
+
+</LinearLayout>

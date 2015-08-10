@@ -150,7 +150,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 				ToastUtils.show(getApplicationContext(), "请完善登陆信息");
 				return;
 			}
-			if(!isMobileNO(tel)){
+			if (!isMobileNO(tel)) {
 				ToastUtils.show(getApplicationContext(), "手机号不正确");
 				return;
 			}
@@ -197,7 +197,9 @@ public class LoginActivity extends Activity implements OnClickListener {
 								// iv_personico, displayImageOptions);
 
 								// 登陆环信
-								loginEMChat(userInfo.get_id().toString(), password);
+								loginEMChat(userInfo.get_id().toString().replaceAll("-", ""), "123");
+								startActivity(new Intent(getApplicationContext(), MainTabActivity.class));
+								finish();
 							}
 							// 通过EvenBus发送登录成功事件
 							Message message = new Message();
@@ -222,7 +224,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 			});
 			break;
 		case R.id.ltv_login_forget:
-			Intent intent1 = new Intent(LoginActivity.this, ResetPassActivity1.class);
+			Intent intent1 = new Intent(LoginActivity.this, ResetPassActivity.class);
+
 			startActivity(intent1);
 			break;
 		case R.id.ltv_login_register:
@@ -273,7 +276,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 	/**
 	 * 验证手机格式
 	 */
-	private static boolean isMobileNO(String mobiles) {
+	private boolean isMobileNO(String mobiles) {
 		/*
 		 * 移动：134、135、136、137、138、139、150、151、157(TD)、158、159、187、188
 		 * 联通：130、131、132、152、155、156、185、186 电信：133、153、180、189、（1349卫通）
