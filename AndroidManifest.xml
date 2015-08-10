@@ -127,6 +127,10 @@
             android:name="com.tongjo.girlswish.ui.SettingActivity"
             android:launchMode="singleInstance" >
         </activity>
+        <!-- 详细系统消息界面 -->
+        <activity android:name="com.tongjo.girlswish.ui.SystemMsgActivity"
+            android:launchMode="singleInstance">
+        </activity>
         <activity
             android:name="com.tongjo.girlswish.ui.GuideActivity"
             android:theme="@android:style/Theme.NoTitleBar" >

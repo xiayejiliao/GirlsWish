@@ -2,12 +2,12 @@ package com.tongjo.girlswish.ui;
 
 import java.lang.reflect.Type;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.http.Header;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +32,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tongjo.bean.TJMessage;
@@ -41,11 +41,9 @@ import com.tongjo.bean.TJResponse;
 import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
-import com.tongjo.girlswish.ui.AddWishActivity.ColorClickListener;
 import com.tongjo.girlswish.ui.SystemMsgAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.SystemMsgAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.utils.AppConstant;
-import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlwish.data.DataContainer;
 
@@ -75,7 +73,7 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 		// mRefreshableView = (RefreshableView)
 		// view.findViewById(R.id.info_refreshable_view);
 		mListAdapter = new SystemMsgAdapter(this.getApplicationContext(),
-				DataContainer.MessageList);
+				DataContainer.SystemMsgList);
 		// MockData();
 		selectData();
 		mListView.setAdapter(mListAdapter);
@@ -85,7 +83,7 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 
 			@Override
 			public void MItemClick(View v, int position) {
-				TJMessage message = DataContainer.MessageList.get(position);
+				TJMessage message = DataContainer.SystemMsgList.get(position);
 				if (message != null) {
 					if (message.getType() != 0) {
 						Intent intent = new Intent();
@@ -160,9 +158,9 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 			TJMessage message = new TJMessage();
 			message.setCreatedTime("12-8");
 			message.setContent("青岛爆炸满月：大量鱼虾死亡");
-			DataContainer.MessageList.add(message);
+			DataContainer.SystemMsgList.add(message);
 		}
-		mListAdapter.setList(DataContainer.MessageList);
+		mListAdapter.setList(DataContainer.SystemMsgList);
 	}
 
 	private void selectData() {
@@ -171,9 +169,13 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 					.getTJMessageDao();
 			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao
 					.queryBuilder();
+			Where<TJMessage, UUID> where = builder.where();
+			// 详细的系统消息
+			where.in("type", Arrays.asList(1,2,3,4,5,6));
+			builder.setWhere(where);
 			builder.orderBy("createdTime", false);
 			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
-			DataContainer.MessageList
+			DataContainer.SystemMsgList
 					.addAll(mTJMessageDao.query(preparedQuery));
 			mListAdapter.notifyDataSetChanged();
 		} catch (SQLException e) {
@@ -183,12 +185,12 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 
 	public void deleteMessage(int itemId) {
 
-		if (itemId >= 0 && itemId < DataContainer.MessageList.size()) {
+		if (itemId >= 0 && itemId < DataContainer.SystemMsgList.size()) {
 			try {
 				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this)
 						.getTJMessageDao();
-				mTJMessageDao.delete(DataContainer.MessageList.get(itemId));
-				DataContainer.MessageList.remove(itemId);
+				mTJMessageDao.delete(DataContainer.SystemMsgList.get(itemId));
+				DataContainer.SystemMsgList.remove(itemId);
 				mListAdapter.notifyDataSetChanged();
 			} catch (SQLException e) {
 				Log.e(TAG, e.getStackTrace().toString());
@@ -197,10 +199,10 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 
 	}
 
-	public void addMessage(List<TJMessage> messageList) {
+	public void addMessage(List<TJMessage> SystemMsgList) {
 		Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this)
 				.getTJMessageDao();
-		for (TJMessage message : messageList) {
+		for (TJMessage message : SystemMsgList) {
 			try {
 				mTJMessageDao.createIfNotExists(message);
 			} catch (SQLException e) {
@@ -257,7 +259,7 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 									addMessage((List<TJMessage>) response
 											.getData().getNotices());
 									// 加入内存List
-									DataContainer.MessageList
+									DataContainer.SystemMsgList
 											.addAll((List<TJMessage>) response
 													.getData().getNotices());
 									updateUi();
