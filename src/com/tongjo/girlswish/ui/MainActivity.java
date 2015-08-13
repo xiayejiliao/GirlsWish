@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 	private ActionBar actionBar;
 	private NavigationView navigationView;
 	private ActionBarDrawerToggle actionBarDrawerToggle;
-
+	private MainTabWishFragment wishFragment;
 
 	/**
 	 * Used to store the last screen title. For use in
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 		mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		actionBar = getSupportActionBar();
 		//actionBar.setHomeAsUpIndicator(R.drawable.ic_reorder_white_24dp);
+		//设置返回按钮
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		navigationView = (NavigationView) findViewById(R.id.naviagionview);
@@ -57,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
 		//Animate the Hamburger Icon
 		actionBarDrawerToggle= new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
 		mDrawer.setDrawerListener(actionBarDrawerToggle);
+		
+		//设置主界面
+		getFragmentManager().beginTransaction().replace(R.id.container,new android.app.Fragment()).commit();
 	}
 
 	private void setupDrawerContent(NavigationView navigationView) {
@@ -90,17 +94,18 @@ public class MainActivity extends AppCompatActivity {
 		default:
 			break;
 		}
-		if(actionBarDrawerToggle.onOptionsItemSelected(item))
+		if (actionBarDrawerToggle.onOptionsItemSelected(item))
 			return true;
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onPostCreate(savedInstanceState);
 		actionBarDrawerToggle.syncState();
 	}
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		// TODO Auto-generated method stub
