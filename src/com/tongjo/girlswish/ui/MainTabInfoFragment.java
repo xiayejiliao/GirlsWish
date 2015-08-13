@@ -2,6 +2,7 @@ package com.tongjo.girlswish.ui;
 
 import java.lang.reflect.Type;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,11 +17,13 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tongjo.bean.TJMessage;
 import com.tongjo.bean.TJMessageList;
 import com.tongjo.bean.TJResponse;
+import com.tongjo.bean.TJUserInfo;
 import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.ui.MainTabInfoAdapter.MItemClickListener;
@@ -86,12 +89,12 @@ public class MainTabInfoFragment extends BaseFragment {
 					if(message.getType() != 0){
 						Intent intent = new Intent();
 						switch(message.getType()){
-						case 1 : intent.setClass(MainTabInfoFragment.this.getActivity(), GirlUnderwayWishActivity.class); break;
-						case 2 : intent.setClass(MainTabInfoFragment.this.getActivity(), GirlFinishWishActivity.class); break;
-						case 3 : intent.setClass(MainTabInfoFragment.this.getActivity(), GirlUnpickedWishActivity.class); break;
-						case 4 : intent.setClass(MainTabInfoFragment.this.getActivity(), BoyUncompleteWishActivity.class); break;
-						case 5 : intent.setClass(MainTabInfoFragment.this.getActivity(), BoyCompleteWishActivity.class); break;
-						case 6 : intent.setClass(MainTabInfoFragment.this.getActivity(), BoyUncompleteWishActivity.class); break;
+						case -1 : 
+							intent.putExtra("toUser", getUserByUserId(message.getUserId()));
+							intent.setClass(MainTabInfoFragment.this.getActivity(), ChatActivity.class);
+							break;
+						case 0 : 
+							intent.setClass(MainTabInfoFragment.this.getActivity(), SystemMsgActivity.class); break;
 						}
 						intent.putExtra("wish", message.getWish());
 						startActivity(intent);
@@ -160,6 +163,10 @@ public class MainTabInfoFragment extends BaseFragment {
 		try {
 			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this.getActivity()).getTJMessageDao();
 			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
+			Where<TJMessage, UUID> where = builder.where();
+			// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息,-1:聊天记录，0表示系统消息
+			where.in("type", Arrays.asList(-1,0));
+			builder.setWhere(where);
 			builder.orderBy("createdTime", false);
 			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
 			DataContainer.MessageList.addAll(mTJMessageDao.query(preparedQuery));
@@ -193,6 +200,26 @@ public class MainTabInfoFragment extends BaseFragment {
 				Log.e(TAG, e.getStackTrace().toString());
 			}
 		}
+	}
+	
+	private TJUserInfo getUserByUserId(String userId){
+		try {
+			Dao<TJUserInfo, UUID> mTJUserDao = new OrmLiteHelper(this.getActivity()).getTJUserInfoDao();
+			QueryBuilder<TJUserInfo, UUID> builder = mTJUserDao.queryBuilder();
+			Where<TJUserInfo, UUID> where = builder.where();
+			where.eq("_id", userId);
+			builder.setWhere(where);
+			PreparedQuery<TJUserInfo> preparedQuery = builder.prepare();
+			List<TJUserInfo> queryUserInfoList = mTJUserDao.query(preparedQuery);
+			if(queryUserInfoList.size() > 0){
+				return queryUserInfoList.get(0);
+			}else{
+				// TODO从服务器获取
+			}
+		} catch (SQLException e) {
+			Log.e(TAG, e.getStackTrace().toString());
+		}
+		return null;
 	}
 
 	public void updateUi(){
