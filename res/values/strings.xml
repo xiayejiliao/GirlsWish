@@ -11,16 +11,12 @@
     <string name="app_name">GirlsWish</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="drawer_open">Drawer Open</string>
-    <string name="drawer_close">Drawer Close</string>
     <string name="nav_item_wishes">已摘心愿</string>
     <string name="nav_item_message">我的消息</string>
 
-    <!-- navigation drawer item labels -->
-    <string-array name="nav_drawer_labels">
-        <item>@string/nav_item_wishes</item>
-        <item>@string/nav_item_message</item>
-    </string-array>
+    <!-- navigation -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
     <!-- Keep them in order as the titles are in -->
     <array name="nav_drawer_icons">

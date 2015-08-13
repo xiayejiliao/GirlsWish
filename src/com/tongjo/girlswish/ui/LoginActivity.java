@@ -198,7 +198,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 								// 登陆环信
 								loginEMChat(userInfo.get_id().toString().replaceAll("-", ""), "123");
-								startActivity(new Intent(getApplicationContext(), MainTabActivity.class));
+								startActivity(new Intent(getApplicationContext(), MainActivity.class));
 								finish();
 							}
 							// 通过EvenBus发送登录成功事件

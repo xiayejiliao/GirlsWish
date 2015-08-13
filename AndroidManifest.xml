@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="21"
+        android:minSdkVersion="14"
         android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -140,21 +140,27 @@
             android:launchMode="singleInstance" >
         </activity>
         <!-- 详细系统消息界面 -->
-        <activity android:name="com.tongjo.girlswish.ui.SystemMsgActivity"
-            android:launchMode="singleInstance">
+        <activity
+            android:name="com.tongjo.girlswish.ui.SystemMsgActivity"
+            android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name=".ui.GuideActivity"
             android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.MyinfoActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.tongjo.girlswish.ui.MainActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/MaterialAppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.tongjo.girlswish.ui.MyinfoActivity"
-            android:launchMode="singleInstance" >
         </activity>
     </application>
 
