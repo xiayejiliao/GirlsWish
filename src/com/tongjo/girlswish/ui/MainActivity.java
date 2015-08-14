@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
 		initDrawerheader();
 		super.onStart();
 	}
+
 	// 初始化抽屉导航的header（个人信息）
 	public void initDrawerheader() {
 		tv_nick.setText(SpUtils.get(getApplicationContext(), AppConstant.USER_NICKNAME, "姓名").toString());
@@ -196,12 +197,16 @@ public class MainActivity extends AppCompatActivity {
 		@Override
 		public Fragment getItem(int arg0) {
 			// TODO Auto-generated method stub
-			Fragment fragment = new Fragment();
-			return fragment;
+			if (arg0 == 0) {
+				return new MainTabWishFragment();
+			} else {
+				return new MainTabInfoFragment();
+			}
+
 		}
 
 		@Override
-		public int getCount() {
+		public int getCount() {+
 			// TODO Auto-generated method stub
 			return PAGE_COUNT;
 		}
