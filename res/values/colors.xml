@@ -83,11 +83,16 @@
     <!-- 我的资料界面 -->
     <color name="myinfo_broder">#FAFAFA</color>
     <color name="actionbartextcolor">#FAFAFA</color>
+    
+    <!-- seting 界面 -->
+    <color name="setting_broder">#FAFAFA</color>
+    <color name="setting_background">#FFFFFF</color>
 
     <!-- material color -->
     <color name="colorAccent">#FF80AB</color>
     <color name="colorPrimary">#2CA7DB</color>
     <color name="colorPrimaryDark">#2E93BD</color>
     <color name="textColorPrimary">#FFFFFF</color>
+    
 
 </resources>

@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_header"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="150dp"
     android:background="?attr/colorPrimaryDark"
     android:orientation="horizontal"
     android:padding="16dp"
+    android:paddingTop="40dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark" >
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+    <com.tongjo.girlswish.widget.CircleImageView
+        android:id="@+id/iv_drawer_icon"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_launcher" />
 
@@ -17,17 +21,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
         android:orientation="vertical" >
 
         <TextView
+            android:id="@+id/tv_drawer_nick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nickname" />
+            android:singleLine="true"
+            android:text="@string/nickname"
+            android:textSize="25sp" />
 
         <TextView
+            android:id="@+id/tv_drawer_schoolname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/school"  />
+            android:layout_marginTop="10dp"
+            android:singleLine="true"
+            android:text="@string/school" />
     </LinearLayout>
 
 </LinearLayout>

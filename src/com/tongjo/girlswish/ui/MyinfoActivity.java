@@ -13,16 +13,22 @@ import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.squareup.picasso.Picasso;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.event.UserIconChange;
+import com.tongjo.girlswish.event.UserNicknameChange;
+import com.tongjo.girlswish.event.UserSchoolnameChange;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
+import com.tongjo.girlswish.widget.CircleImageView;
 
-import android.app.ActionBar;
+import de.greenrobot.event.EventBus;
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -35,7 +41,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,28 +56,69 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MyinfoActivity extends Activity implements OnClickListener {
+public class MyinfoActivity extends AppCompatActivity implements OnClickListener {
 	private final static int SCHOOL = 123;
 	private final static int CAMER = 456;
 	private final static int GALLERY = 789;
-	private ImageView iv_icon;
+	private int REQUEST_CAMERA = 3621;
+	private int SELECT_FILE = 6523;
+	private CircleImageView iv_icon;
 	private TextView tv_nicker;
 	private TextView tv_school;
+	private TextView tv_sex;
+	private TextView tv_phone;
 	private AsyncHttpClient asyncHttpClient;
 	private Uri mImageCaptureUri;
+	private ActionBar actionBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_myinfo);
-		iv_icon = (ImageView) findViewById(R.id.iv_myinfo_icon);
+
+		actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setTitle("主页");
+
+		iv_icon = (CircleImageView) findViewById(R.id.iv_myinfo_icon);
 		tv_nicker = (TextView) findViewById(R.id.tv_myinfo_nicker);
 		tv_school = (TextView) findViewById(R.id.tv_myinfo_school);
+		tv_phone = (TextView) findViewById(R.id.tv_myinfo_phone);
+		tv_sex = (TextView) findViewById(R.id.tv_myinfo_sex);
 		tv_nicker.setOnClickListener(this);
 		tv_school.setOnClickListener(this);
 		iv_icon.setOnClickListener(this);
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
+
+		tv_nicker.setText(SpUtils.get(getApplicationContext(), AppConstant.USER_NICKNAME, "姓名").toString());
+		tv_school.setText(SpUtils.get(getApplicationContext(), AppConstant.USER_SCHOOLNAME, "学校").toString());
+		Integer sex = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_SEX, 1);
+		if (sex.equals(1)) {
+			tv_sex.setText("男");
+		} else {
+			tv_sex.setText("女");
+		}
+
+		tv_phone.setText(SpUtils.get(getApplicationContext(), AppConstant.USER_PHONE, "电话").toString());
+		String iconurl = SpUtils.get(getApplicationContext(), AppConstant.USER_ICONURL, "").toString();
+		Picasso.with(this).load(iconurl).into(iv_icon);
+		
+		
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+		default:
+			break;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -101,66 +153,62 @@ public class MyinfoActivity extends Activity implements OnClickListener {
 				params.put("schoolId", tv_school.getText());
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, updatenikeandschool);
 			}
-			if (requestCode == CAMER) {
-				String path = mImageCaptureUri.getPath();
-				Bitmap bitmap = BitmapFactory.decodeFile(path);
-				//bitmap = ImageUtils.scaleImageTo(bitmap, iv_icon.getWidth(), iv_icon.getHeight());
-				bitmap = com.easemob.util.ImageUtils.getRoundedCornerBitmap(bitmap);
-				iv_icon.setImageBitmap(bitmap);
+			if (requestCode == REQUEST_CAMERA) {
+				File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
+				for (File temp : f.listFiles()) {
+					if (temp.getName().equals("temp.jpg")) {
+						f = temp;
+						break;
+					}
+				}
+				Bitmap bm;
+				bm = BitmapFactory.decodeFile(f.getAbsolutePath());
+				bm = Bitmap.createScaledBitmap(bm, iv_icon.getWidth(), iv_icon.getHeight(), true);
+				bm = ImageUtils.getRoundedCornerBitmap(bm);
+				iv_icon.setImageBitmap(bm);
 				RequestParams params = new RequestParams();
-				params.put("image", bitmap);
+				params.put("image", bm);
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+
+			} else if (requestCode == SELECT_FILE) {
+				Uri selectedImage = data.getData();
+				String[] filePathColumn = { MediaStore.Images.Media.DATA };
+				// Get the cursor
+				Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+				// Move to first row
+				cursor.moveToFirst();
+				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+				String imgDecodableString = cursor.getString(columnIndex);
+				cursor.close();
+				Bitmap bm = BitmapFactory.decodeFile(imgDecodableString);
+				bm = ImageUtils.scaleImageTo(bm, iv_icon.getWidth(), iv_icon.getHeight());
+				bm = ImageUtils.getRoundedCornerBitmap(bm);
+				iv_icon.setImageBitmap(bm);
+				RequestParams params = new RequestParams();
+				params.put("image", bm);
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
 			}
-			if (requestCode == GALLERY) {
-				mImageCaptureUri = data.getData();
-				String path = getRealPathFromURI(mImageCaptureUri); // from
-				if (path == null)
-					path = mImageCaptureUri.getPath(); // from File Manager
-				if (path != null) {
-					Bitmap bitmap = BitmapFactory.decodeFile(path);
-					//iv_icon.setImageBitmap(bitmap);
-					//bitmap = ImageUtils.scaleImageTo(bitmap, iv_icon.getWidth(), iv_icon.getHeight());
-					bitmap = com.easemob.util.ImageUtils.getRoundedCornerBitmap(bitmap);
-					iv_icon.setImageBitmap(bitmap);
-					RequestParams params = new RequestParams();
-					params.put("image", bitmap);
-					asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
-				}
-			}
+
 		}
 	}
 
 	private void geticon() {
-		String[] item = { "相册", "照相机", "取消" };
+		final String[] items = { "相册", "照相机", "取消" };
 		Builder builder = new Builder(this);
-		builder.setItems(item, new DialogInterface.OnClickListener() {
+		builder.setItems(items, new DialogInterface.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				switch (which) {
-				case 1:
+			public void onClick(DialogInterface dialog, int item) {
+				if (items[item].equals("照相机")) {
 					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
-					File file = new File(Environment.getExternalStorageDirectory(), "tmp_avatar_" + String.valueOf(System.currentTimeMillis()) + ".jpg");
-					mImageCaptureUri = Uri.fromFile(file);
-					try {
-						intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
-						intent.putExtra("return-data", true);
-						startActivityForResult(intent, CAMER);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					break;
-				case 0:
-					Intent imageIntent = new Intent();
-					imageIntent.setType("image/*");
-					imageIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-					startActivityForResult(Intent.createChooser(imageIntent, "选择图片"), GALLERY);
-					break;
-				case 2:
+					File f = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "temp.jpg");
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+					startActivityForResult(intent, REQUEST_CAMERA);
+				} else if (items[item].equals("相册")) {
+					Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+					intent.setType("image/*");
+					startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+				} else if (items[item].equals("取消")) {
 					dialog.dismiss();
-					break;
-				default:
-					break;
 				}
 			}
 		});
@@ -211,6 +259,8 @@ public class MyinfoActivity extends Activity implements OnClickListener {
 					ToastUtils.show(MyinfoActivity.this, "修改成功");
 					SpUtils.put(getApplicationContext(), AppConstant.USER_NICKNAME, tv_nicker.getText());
 					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME, tv_school.getText());
+					EventBus.getDefault().post(new UserNicknameChange(tv_nicker.getText().toString()));
+					EventBus.getDefault().post(new UserSchoolnameChange(tv_school.getText().toString()));
 				} else {
 					ToastUtils.show(MyinfoActivity.this, "修改失败" + response.getResult().getMessage());
 				}
@@ -236,6 +286,7 @@ public class MyinfoActivity extends Activity implements OnClickListener {
 				if (response.getResult().getCode() == 0) {
 					ToastUtils.show(MyinfoActivity.this, "修改头像成功");
 					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, response.getData().toString());
+					EventBus.getDefault().post(new UserIconChange(response.getData().toString()));
 				} else {
 					ToastUtils.show(MyinfoActivity.this, "修改头像失败" + response.getResult().getMessage());
 				}
@@ -247,7 +298,8 @@ public class MyinfoActivity extends Activity implements OnClickListener {
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 			// TODO Auto-generated method stub
-			ToastUtils.show(MyinfoActivity.this, "(" + arg1 + ")" + arg3.toString());
+			ToastUtils.show(MyinfoActivity.this, "(" + arg0 + ")" + arg3.toString());
 		}
 	};
+
 }

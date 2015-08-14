@@ -116,5 +116,7 @@
     <string name="myinfo_nicker">昵称</string>
     <string name="myinfo_sex">性别</string>
     <string name="myinfo_phone">电话</string>
+    <string name="title_activity_about">AboutActivity</string>
+    <string name="title_activity_suggest">SuggestActivity</string>
 
 </resources>
