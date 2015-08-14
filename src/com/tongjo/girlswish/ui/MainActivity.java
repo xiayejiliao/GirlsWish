@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 		@Override
-		public int getCount() {+
+		public int getCount() {
 			// TODO Auto-generated method stub
 			return PAGE_COUNT;
 		}
