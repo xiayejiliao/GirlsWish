@@ -37,7 +37,7 @@ public class ImageUtils {
 	 * @return
 	 */
 	public static Bitmap getRoundCornerDrawable(Bitmap image, float roundPX) {
-		if(image == null){
+		if (image == null) {
 			return null;
 		}
 		Bitmap output = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Config.ARGB_8888);
@@ -58,6 +58,30 @@ public class ImageUtils {
 		canvas.drawBitmap(image, rect, rect, paint);
 
 		return output;
+	}
+
+	/**
+	 * @Title: getRoundedCornerBitmap
+	 * @Description: 获取圆形图片
+	 * @param bitmap
+	 * @return Bitmap
+	 * @throws
+	 */
+	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+		Bitmap outBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+		Canvas canvas = new Canvas(outBitmap);
+		final int color = 0xff424242;
+		final Paint paint = new Paint();
+		final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+		final RectF rectF = new RectF(rect);
+		final float roundPX = bitmap.getWidth() / 2;
+		paint.setAntiAlias(true);
+		canvas.drawARGB(0, 0, 0, 0);
+		paint.setColor(color);
+		canvas.drawRoundRect(rectF, roundPX, roundPX, paint);
+		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+		canvas.drawBitmap(bitmap, rect, rect, paint);
+		return outBitmap;
 	}
 
 	/**

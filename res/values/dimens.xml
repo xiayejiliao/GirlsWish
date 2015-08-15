@@ -37,5 +37,6 @@
     <dimen name="sidebar_text_size">10dp</dimen>
     <dimen name="image_thumbnail_size">100dp</dimen>
     <dimen name="image_thumbnail_spacing">1dp</dimen>
-    
+    <!-- 抽屉界面 -->
+    <dimen name="navigation_drawer_width">240dp</dimen>
 </resources>

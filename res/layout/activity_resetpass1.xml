@@ -57,7 +57,7 @@
                 android:layout_width="28dp"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:contentDescription="@string/login_passDescription"
+                android:contentDescription="@string/login_passworddescription"
                 android:src="@drawable/icon_captcha" />
 
             <Button

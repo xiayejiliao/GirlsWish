@@ -76,6 +76,9 @@ public class BaseActivity extends Activity {
 		/*actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayShowHomeEnabled(false);
+		actionBar = getActionBar();
+		//actionBar.setDisplayShowTitleEnabled(false);
+		//actionBar.setDisplayShowHomeEnabled(false);
 		View addView = getLayoutInflater().inflate(R.layout.titlebar_custom, null);
 		actionBar.setCustomView(addView);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);

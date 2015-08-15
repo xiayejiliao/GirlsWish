@@ -330,11 +330,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(
 				PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
 		
-		//toChatUser = (TJUserInfo) getIntent().getSerializableExtra("chatToUser");
-		//toChatUsername = toChatUser.get_id().toString();
+		toChatUser = (TJUserInfo) getIntent().getSerializableExtra("chatToUser");
+		toChatUsername = toChatUser.getNickname();
 		
 		//设置标题栏
-		//this.setCenterText(toChatUsername);
+		this.setCenterText(toChatUsername);
 	}
 
 	protected void onConversationInit(){

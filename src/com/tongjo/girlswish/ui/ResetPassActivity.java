@@ -6,15 +6,19 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.Header;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
+import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.ui.TakePicturePopup.onChoiced;
 import com.tongjo.girlswish.utils.AppConstant;
@@ -36,45 +40,51 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * 
  * @author 16ren 更改密码时，获取手机验证码，验证手机
  */
-public class ResetPassActivity1 extends BaseActivity {
+public class ResetPassActivity extends AppCompatActivity {
 	private final static String TAG = "ResetPassActivity1";
 	public final static int MESSAGE_TIMERUNING = 100;
 	public final static int MESSAGE_TIMESTOP = 200;
-	private Button bt_getcaptcha;
+	private TextView bt_getcaptcha;
 	private Button bt_sure;
 	private EditText et_phone;
 	private EditText et_captcha;
 	private EditText et_newpassword;
-	private ImageView iv_logo;
 	private String captcha = "1234";
 	private String sendphone;
 	private String nespassword;
+	
+	private ActionBar mActionBar;
+	private AsyncHttpClient asyncHttpClient;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_resetpass1);
-		setCenterText("密码重置");
-		bt_getcaptcha = (Button) findViewById(R.id.bt_resetpass1_getcaptcha);
-		bt_sure = (Button) findViewById(R.id.bt_resetpass1_sure);
-		et_phone = (EditText) findViewById(R.id.et_resetpass1_phone);
-		et_captcha = (EditText) findViewById(R.id.et_resetpass1_captcha);
-		et_newpassword = (EditText) findViewById(R.id.et_resetpass1_newpass);
-		iv_logo = (ImageView) findViewById(R.id.iv_resetpass1_logo);
+		setContentView(R.layout.activity_resetpass);
+		mActionBar=getSupportActionBar();
+		mActionBar.setTitle("密码重置");
+		bt_getcaptcha = (TextView) findViewById(R.id.bt_resetpass_getcaptcha);
+		bt_sure = (Button) findViewById(R.id.bt_resetpass_sure);
+		et_phone = (EditText) findViewById(R.id.et_resetpass_phone);
+		et_captcha = (EditText) findViewById(R.id.et_resetpass_captcha);
+		et_newpassword = (EditText) findViewById(R.id.et_resetpass_newpass);
 		bt_getcaptcha.setOnClickListener(onClickListener);
 		bt_sure.setOnClickListener(onClickListener);
+		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 
 	}
 
@@ -84,7 +94,7 @@ public class ResetPassActivity1 extends BaseActivity {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			switch (v.getId()) {
-			case R.id.bt_resetpass1_getcaptcha:
+			case R.id.bt_resetpass_getcaptcha:
 				sendphone = et_phone.getText().toString();
 				if (StringUtils.isEmpty(sendphone)) {
 					ToastUtils.show(getApplicationContext(), "号码为空");
@@ -94,11 +104,14 @@ public class ResetPassActivity1 extends BaseActivity {
 					ToastUtils.show(getApplicationContext(), "手机号长度不正确");
 					return;
 				}
+				if(isMobileNO(sendphone)){
+					ToastUtils.show(getApplicationContext(), "手机号格式不正确");
+				}
 				RequestParams requestParams = new RequestParams();
 				requestParams.put("tel", sendphone);
 				asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_GETCAPTCHA, requestParams, httpgetcaptch);
 				break;
-			case R.id.bt_resetpass1_sure:
+			case R.id.bt_resetpass_sure:
 				captcha = et_captcha.getText().toString();
 				nespassword = et_newpassword.getText().toString();
 				if (StringUtils.isEmpty(captcha)) {
@@ -147,8 +160,9 @@ public class ResetPassActivity1 extends BaseActivity {
 									public void onStart() {
 										// TODO Auto-generated method stub
 										bt_getcaptcha.setEnabled(false);
-										bt_getcaptcha.setTextColor(Color.YELLOW);
-										;
+										bt_getcaptcha.setTextColor(Color.BLUE);
+										et_phone.setEnabled(false);
+										
 									}
 
 									@Override
@@ -162,8 +176,8 @@ public class ResetPassActivity1 extends BaseActivity {
 										// TODO Auto-generated method stub
 										bt_getcaptcha.setEnabled(true);
 										bt_getcaptcha.setTextColor(Color.BLACK);
-										;
 										bt_getcaptcha.setText("获取验证码");
+										et_phone.setEnabled(true);
 									}
 								});
 							} else {
@@ -196,12 +210,12 @@ public class ResetPassActivity1 extends BaseActivity {
 				TJResponse<Object> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
 					ToastUtils.show(getApplicationContext(), "修改成功");
-					int isremenberpassword= (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_ISREMEMBERPASSWORD, 0);
-					int isremenberphone= (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_ISREMEMBERPHONE, 0);
-					if(isremenberpassword==1){
+					int isremenberpassword = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_ISREMEMBERPASSWORD, 0);
+					int isremenberphone = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_ISREMEMBERPHONE, 0);
+					if (isremenberpassword == 1) {
 						SpUtils.put(getApplicationContext(), AppConstant.USER_PASSWORD, nespassword);
 					}
-					if(isremenberphone==1){
+					if (isremenberphone == 1) {
 						SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, sendphone);
 					}
 				} else {
@@ -219,4 +233,13 @@ public class ResetPassActivity1 extends BaseActivity {
 		}
 	};
 
+	public static boolean isMobileNO(String mobiles) {
+		if(StringUtils.isEmpty(mobiles))
+		{
+			return false;
+		}
+		Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
+		Matcher m = p.matcher(mobiles);
+		return m.matches();
+	}
 }

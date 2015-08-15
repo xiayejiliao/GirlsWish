@@ -18,6 +18,7 @@ import com.tongjo.girlswish.utils.StringUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ import android.widget.TextView;
  * @author dell
  *
  */
-public class RegisterSchollChooseActivity extends BaseActivity {
+public class RegisterSchollChooseActivity extends AppCompatActivity {
 	private enum CHOOSE {
 		COUNTRY, PROVINCE, SHOOL;
 	}
@@ -42,12 +43,11 @@ public class RegisterSchollChooseActivity extends BaseActivity {
 	private ListView listView;
 	private CHOOSE choose = CHOOSE.COUNTRY;
 	private JSONArray tempjsonArray;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setCenterText("选择国籍");
 		setContentView(R.layout.activity_register_schoolchoose);
 		listView = (ListView) findViewById(R.id.lv_register_school);
 
@@ -115,7 +115,7 @@ public class RegisterSchollChooseActivity extends BaseActivity {
 						String name= jsonObject.getString("name");
 						Intent intent=new Intent();
 						intent.putExtra("schoolname", name);
-						setResult(AppConstant.RESULTCODE_REGISTER_SCHOOL, intent);
+						setResult(RESULT_OK, intent);
 						RegisterSchollChooseActivity.this.finish();
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
@@ -348,5 +348,7 @@ public class RegisterSchollChooseActivity extends BaseActivity {
 		private TextView text;
 		private ImageView iv;
 	}
-
+	private void setCenterText(String title){
+		getSupportActionBar().setTitle(title);
+	};
 }

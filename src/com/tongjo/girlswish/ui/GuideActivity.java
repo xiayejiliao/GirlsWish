@@ -6,10 +6,13 @@ import java.util.List;
 import u.aly.v;
 
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.SpUtils;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -26,10 +29,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 /**
-* @Description: 引导界面
-* @author 16ren 
-* @date 2015年8月1日 下午2:59:45 
-*
+ * @Description: 引导界面
+ * @author 16ren
+ * @date 2015年8月1日 下午2:59:45
+ *
  */
 public class GuideActivity extends FragmentActivity {
 	private ViewPager viewpager;
@@ -38,8 +41,16 @@ public class GuideActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		int logintimes = (Integer) SpUtils.get(getApplicationContext(), AppConstant.logintimes, 0);
+		if (logintimes == 0) {
+			SpUtils.put(getApplicationContext(), AppConstant.logintimes, logintimes + 1);
+		} else {
+			SpUtils.put(getApplicationContext(), AppConstant.logintimes, logintimes + 1);
+			startActivity(new Intent(GuideActivity.this, LoginActivity.class));
+			GuideActivity.this.finish();
+		}
+
 		setContentView(R.layout.activity_guide);
 		viewpager = (ViewPager) findViewById(R.id.page_guide);
 		circlePageIndicator = (CirclePageIndicator) findViewById(R.id.indicator_guide);
@@ -77,7 +88,8 @@ public class GuideActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
+				startActivity(new Intent(GuideActivity.this, LoginActivity.class));
+				GuideActivity.this.finish();
 			}
 		});
 	}
@@ -89,11 +101,11 @@ public class GuideActivity extends FragmentActivity {
 	}
 
 	/**
-	* @ClassName: GuideAdapter 
-	* @Description: TODO
-	* @author 16ren 
-	* @date 2015年8月1日 下午2:57:57 
-	*
+	 * @ClassName: GuideAdapter
+	 * @Description: TODO
+	 * @author 16ren
+	 * @date 2015年8月1日 下午2:57:57
+	 *
 	 */
 	class GuideAdapter extends PagerAdapter {
 		private final int[] pics = { R.drawable.guide1, R.drawable.guide2, R.drawable.guide3, R.drawable.guide4 };
