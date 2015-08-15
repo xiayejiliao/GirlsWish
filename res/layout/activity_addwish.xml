@@ -2,7 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical" >
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/toolbar" />
 
     <View
         android:layout_width="match_parent"
@@ -32,11 +39,11 @@
                 android:id="@+id/addwish_edit"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:gravity="left|top"
-                android:background="@color/transparent"
-                android:padding="@dimen/margin_6"
-                android:minLines="3"
                 android:layout_marginBottom="@dimen/margin_40"
+                android:background="@color/transparent"
+                android:gravity="left|top"
+                android:minLines="3"
+                android:padding="@dimen/margin_6"
                 android:textSize="@dimen/text_size_16" />
 
             <LinearLayout
@@ -53,6 +60,7 @@
                     android:layout_weight="1"
                     android:background="@color/addwish_greenColor"
                     android:padding="0dp" />
+
                 <View
                     android:id="@+id/addwish_btn2"
                     android:layout_width="0dp"
@@ -61,6 +69,7 @@
                     android:layout_weight="1"
                     android:background="@color/addwish_yellowColor"
                     android:padding="0dp" />
+
                 <View
                     android:id="@+id/addwish_btn3"
                     android:layout_width="0dp"
@@ -69,6 +78,7 @@
                     android:layout_weight="1"
                     android:background="@color/addwish_redColor"
                     android:padding="0dp" />
+
                 <View
                     android:id="@+id/addwish_btn4"
                     android:layout_width="0dp"

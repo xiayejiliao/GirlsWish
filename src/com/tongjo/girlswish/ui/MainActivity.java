@@ -55,11 +55,9 @@ public class MainActivity extends AppCompatActivity {
 	private ViewPager mViewPager;
 	private TabLayout mTabLayout;
 	private LinearLayout drawerheader;
-
 	private CircleImageView iv_icon;
 	private TextView tv_nick;
 	private TextView tv_school;
-
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.

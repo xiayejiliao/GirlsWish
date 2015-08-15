@@ -61,6 +61,8 @@
     <color name="addwish_yellowColor">#F1F1BC</color>
     <color name="addwish_redColor">#EBD0E6</color>
     <color name="addwish_blueColor">#9AB8D8</color>
+    <color name="wish_background">#FAFAFA</color>
+    <color name="wish_floatingactionbutton">#4FC3F7</color>
     <!-- 我的界面颜色 -->
 
     <color name="me_info_bg">#f3d2d5</color>
@@ -83,7 +85,7 @@
     <!-- 我的资料界面 -->
     <color name="myinfo_broder">#FAFAFA</color>
     <color name="actionbartextcolor">#FAFAFA</color>
-    
+
     <!-- seting 界面 -->
     <color name="setting_broder">#FAFAFA</color>
     <color name="setting_background">#FFFFFF</color>
@@ -93,6 +95,5 @@
     <color name="colorPrimary">#2CA7DB</color>
     <color name="colorPrimaryDark">#2E93BD</color>
     <color name="textColorPrimary">#FFFFFF</color>
-    
 
 </resources>

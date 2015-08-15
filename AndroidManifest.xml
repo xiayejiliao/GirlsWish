@@ -78,11 +78,6 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Loginactivitystyle" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.RegisterActivity"
@@ -104,7 +99,9 @@
             android:name=".ui.UploadAvatarActivity"
             android:launchMode="singleInstance" >
         </activity>
-        <activity android:name=".test.TestActivity" >
+        <activity
+            android:name=".test.TestActivity"
+            android:theme="@style/ToolBartitle" >
         </activity>
         <activity
             android:name=".ui.ResetPassActivity"
@@ -114,7 +111,9 @@
             android:name=".ui.ResetPassActivity2"
             android:launchMode="singleInstance" >
         </activity>
-        <activity android:name=".ui.AddWishActivity" >
+        <activity
+            android:name=".ui.AddWishActivity"
+            android:theme="@style/MaterialAppTheme.NoActionBar" >
         </activity>
         <activity android:name=".ui.UserBasicInfoActivity" >
         </activity>
@@ -158,6 +157,11 @@
             android:name=".ui.MainActivity"
             android:launchMode="singleInstance"
             android:theme="@style/MaterialAppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.AboutActivity"
@@ -166,6 +170,14 @@
         <activity
             android:name=".ui.SuggestActivity"
             android:label="@string/title_activity_suggest" >
+        </activity>
+        <activity
+            android:name=".ui.MyPickWishActivity"
+            android:label="@string/title_activity_my_pick_wish" >
+        </activity>
+        <activity
+            android:name=".ui..MyPushWishActivity"
+            android:label="@string/title_activity_my_push_wish" >
         </activity>
     </application>
 
