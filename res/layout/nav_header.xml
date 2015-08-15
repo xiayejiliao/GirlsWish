@@ -6,8 +6,7 @@
     android:layout_height="150dp"
     android:background="?attr/colorPrimaryDark"
     android:orientation="horizontal"
-    android:padding="16dp"
-    android:paddingTop="40dp"
+    android:paddingLeft="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark" >
 
     <com.tongjo.girlswish.widget.CircleImageView

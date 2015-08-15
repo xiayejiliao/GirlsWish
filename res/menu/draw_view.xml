@@ -5,23 +5,19 @@
         <item
             android:id="@+id/nav_pushwish"
             android:icon="@drawable/selector_favorite"
-            android:title="许下的心愿"/>
+            android:title="@string/nav_pushwish"/>
         <item
             android:id="@+id/nav_pickwish"
             android:icon="@drawable/selector_favorite"
-            android:title="摘取的心愿"/>
-        <item android:title="设置">
-            <menu>
-                <item
-                    android:id="@+id/nav_person"
-                    android:icon="@drawable/icon_person"
-                    android:title="个人资料"/>
-                <item
-                    android:id="@+id/nav_seting"
-                    android:icon="@drawable/icon_set"
-                    android:title="系统设置"/>
-            </menu>
-        </item>
+            android:title="@string/nav_pickwish"/>
+    </group>
+    <group
+        android:checkableBehavior="single"
+        android:menuCategory="secondary" >
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/selector_setting"
+            android:title="@string/nav_setting"/>
     </group>
 
 </menu>

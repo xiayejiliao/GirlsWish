@@ -30,10 +30,10 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
-            android:paddingLeft="20dp" >
+            android:paddingLeft="15dp" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:text="@string/resetpass_phone" />
@@ -58,10 +58,10 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
-            android:paddingLeft="20dp" >
+            android:paddingLeft="15dp" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:text="@string/resetpass_newpass" />
@@ -83,11 +83,11 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
-            android:paddingLeft="20dp" >
+            android:paddingLeft="15dp" >
 
             <TextView
                 android:id="@+id/bt_resetpass_getcaptcha"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:text="@string/resetpass_getcaptcha" />

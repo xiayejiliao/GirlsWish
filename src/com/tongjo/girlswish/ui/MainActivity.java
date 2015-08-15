@@ -92,10 +92,7 @@ public class MainActivity extends AppCompatActivity {
 				case R.id.nav_pickwish:
 
 					break;
-				case R.id.nav_person:
-
-					break;
-				case R.id.nav_seting:
+				case R.id.nav_setting:
 					startActivity(new Intent(MainActivity.this, SettingActivity.class));
 					break;
 				}

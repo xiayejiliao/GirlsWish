@@ -170,7 +170,7 @@ public class RegisterActivity extends AppCompatActivity {
 									@Override
 									public void onProgress(int toals, int remaining) {
 										// TODO Auto-generated method stub
-										bt_getcaptcha.setText(remaining + "后重新获取");
+										bt_getcaptcha.setText(remaining + "s");
 									}
 
 									@Override
