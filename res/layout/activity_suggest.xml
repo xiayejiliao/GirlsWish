@@ -29,6 +29,8 @@
         android:layout_above="@id/bt_suggest_commit"
         android:layout_below="@id/tvvvv"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="10dp"
+        android:gravity="top|left"
+        android:text="建议" />
 
 </RelativeLayout>

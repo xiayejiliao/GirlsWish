@@ -19,10 +19,13 @@ import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.ButtonWithArrow;
 
 import de.greenrobot.event.EventBus;
+import android.R.anim;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -33,12 +36,16 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
 	private ButtonWithArrow bt_suggest;
 	private Button bt_exit;
 	private AsyncHttpClient mAsyncHttpClient;
+	private ActionBar mActionBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setting);
+		mActionBar=getSupportActionBar();
+		mActionBar.setDisplayHomeAsUpEnabled(true);
+		mActionBar.setTitle("设置");
 		bt_resetpass = (ButtonWithArrow) findViewById(R.id.bt_setting_resetpass);
 		bt_about = (ButtonWithArrow) findViewById(R.id.bt_setting_about);
 		bt_exit = (Button) findViewById(R.id.bt_setting_exit);
@@ -50,7 +57,19 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
 
 		mAsyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
 
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub

@@ -29,6 +29,8 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -45,7 +47,7 @@ import android.widget.TextView;
  * @author 16ren
  * @data 2015/7/17
  */
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends AppCompatActivity {
 	private final static String TAG = "RegisterActivity1";
 	private EditText et_phone;
 	private EditText et_password;
@@ -55,14 +57,16 @@ public class RegisterActivity extends Activity {
 	private String sendphone;
 	private AsyncHttpClient asyncHttpClient;
 	private ProgressDialog progressdialog ;
+	
+	private ActionBar mActionBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
-		getActionBar().setTitle("登录");
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeActionContentDescription("登录");
+		mActionBar=getSupportActionBar();
+		mActionBar.setTitle("登录");
+		mActionBar.setDisplayHomeAsUpEnabled(true);
 		et_phone = (EditText) findViewById(R.id.et_register_phone);
 		et_password = (EditText) findViewById(R.id.et_register_pass);
 		et_captcha = (EditText) findViewById(R.id.et_register_captcha);

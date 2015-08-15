@@ -29,6 +29,7 @@ public class SuggestActivity extends AppCompatActivity {
 		mActionBar.setTitle("建议");
 		mAsyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 		Button bt=(Button)findViewById(R.id.bt_suggest_commit);
+
 		bt.setOnClickListener(new OnClickListener() {
 			
 			@Override
