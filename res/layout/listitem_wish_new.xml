@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 心愿墙的页面的Item布局 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+	<!-- 心愿内容 -->
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/margin_45"
+        android:layout_marginLeft="@dimen/margin_14"
+        android:layout_marginRight="@dimen/margin_14"
+        android:background="@drawable/bg_wish_item"
+        android:orientation="vertical"
+        >
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/margin_10"
+            android:paddingLeft="@dimen/margin_10"
+            android:paddingRight="@dimen/margin_10"
+            >
+            <ImageView 
+                android:id="@+id/wish_avatar"
+                android:layout_width="@dimen/margin_60"
+                android:layout_height="@dimen/margin_60"
+                android:src="@drawable/wish"
+                />
+            <LinearLayout 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_6"
+                android:layout_marginLeft="@dimen/margin_6"
+                android:orientation="vertical"
+                >
+                <TextView 
+                    android:id="@+id/wish_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_16"
+                    android:text="用户名"
+                    />
+                <ImageView 
+                    android:id="@+id/wish_sex"
+                    android:layout_width="@dimen/margin_24"
+                    android:layout_height="@dimen/margin_24"
+                    android:layout_marginTop="@dimen/margin_6"
+                    android:src="@drawable/femail"
+                    />
+            </LinearLayout>
+            <TextView 
+                android:id="@+id/public_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/margin_6"
+                android:layout_weight="1.0"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:text="6分钟前"
+                />
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/margin_40"
+            android:paddingBottom="@dimen/margin_10"
+            android:paddingLeft="@dimen/margin_10"
+            android:paddingRight="@dimen/margin_10"
+            >
+            <TextView 
+                android:id="@+id/wish_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/margin_8"
+                android:maxLines="3"
+                android:text="\t\t我在测试下划线我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线"
+                />
+        </LinearLayout>
+    </LinearLayout>
+    
+    <!-- 上面的绳子 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_60"
+        android:layout_alignParentTop="true" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:padding="0dp"
+            android:background="@drawable/line_horizontal" />
+
+         <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/click" />
+    </RelativeLayout>
+    
+</RelativeLayout>

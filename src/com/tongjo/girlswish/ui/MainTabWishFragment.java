@@ -6,8 +6,11 @@ import java.util.List;
 import org.apache.http.Header;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -55,6 +58,8 @@ public class MainTabWishFragment extends BaseFragment {
 	private WishDialogFragment dialog = null;
 	private ViewGroup mEmptyView = null;
 
+	CoordinatorLayout layout = null;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -79,8 +84,29 @@ public class MainTabWishFragment extends BaseFragment {
 			@Override
 			public void MItemClick(View v, int position) {
 				Log.d(TAG, String.valueOf(position));
-				dialog = new WishDialogFragment(position);
-				dialog.show(getFragmentManager(), "WishDialogFragment");
+				/*dialog = new WishDialogFragment(position);
+				dialog.show(getFragmentManager(), "WishDialogFragment");*/
+				final TJWish wish = DataContainer.WishList.get(position);
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());   
+		        builder.setTitle("摘取心愿");  
+		        builder.setMessage("确定要摘取心愿");  
+		        builder.setPositiveButton("确定",  
+		                new DialogInterface.OnClickListener() {  
+		                    public void onClick(DialogInterface dialog, int whichButton) {  
+		                    	if (wish != null && wish.get_id() != null) {
+		    						pickWish(wish.get_id().toString());
+		    					} else {
+		    						Toast.makeText(getActivity(), "系统出错!", Toast.LENGTH_LONG).show();
+		    					}
+		                    }  
+		                });  
+		        builder.setNegativeButton("取消",  
+		                new DialogInterface.OnClickListener() {  
+		                    public void onClick(DialogInterface dialog, int whichButton) {  
+		                        
+		                    }  
+		                });  
+		        builder.show();  
 			}
 
 		});

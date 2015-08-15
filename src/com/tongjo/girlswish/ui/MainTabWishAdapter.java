@@ -6,6 +6,8 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.text.Html;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -101,19 +103,21 @@ public class MainTabWishAdapter extends BaseAdapter {
 
 			holder = new ViewHolder();
 			LayoutInflater mInflater = LayoutInflater.from(mContext);
-			convertView = mInflater.inflate(R.layout.listitem_wish, null);
+			convertView = mInflater.inflate(R.layout.listitem_wish_new, null);
 
-			holder.logo = (ImageView) convertView.findViewById(R.id.wish_logo);
+			holder.sex = (ImageView) convertView.findViewById(R.id.wish_sex);
 			holder.avatar = (ImageView) convertView
 					.findViewById(R.id.wish_avatar);
 			holder.content = (TextView) convertView
 					.findViewById(R.id.wish_content);
-			holder.school = (TextView) convertView
-					.findViewById(R.id.wish_schoolname);
+			/*holder.content.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);*/
+			
+			holder.content.setText(Html.fromHtml("<u>\t\t我在测试下划线我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线</u>"));
+			
 			holder.nickname = (TextView) convertView
 					.findViewById(R.id.wish_username);
-			holder.bottomBg = (ViewGroup) convertView
-					.findViewById(R.id.wish_bottom);
+			holder.publicTime = (TextView) convertView
+					.findViewById(R.id.public_time);
 			convertView.setTag(holder);
 
 		} else {
@@ -123,33 +127,32 @@ public class MainTabWishAdapter extends BaseAdapter {
 		TJWish wish = mList.get(arg0);
 		if (wish != null) {
 			if (wish.getContent() != null) {
-				holder.content.setText(wish.getContent());
+				/* holder.content.setText(wish.getContent()); */
 			}
 
 			if (wish.getCreatorUser() != null
 					&& wish.getCreatorUser().getNickname() != null) {
 				holder.nickname.setText(wish.getCreatorUser().getNickname());
 			}
-			if (wish.getCreatorUser() != null
-					&& wish.getCreatorUser().getSchool() != null
-					&& wish.getCreatorUser().getSchool().getName() != null) {
-				holder.school.setText(wish.getCreatorUser().getSchool()
-						.getName());
+			if (wish.getCreatedTime() != null) {
+				holder.publicTime.setText(wish.getCreatedTime());
 			}
-			if (!StringUtils.isEmpty(wish.getBackgroundColor())) {
-				int color = 0;
-				try {
-					color = Integer.parseInt(wish.getBackgroundColor(), 16);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				int red = color >> 4;
-				int green = (color >> 2) % 256;
-				int blue = color % 256;
-				//holder.bottomBg.setBackgroundColor(Color.rgb(red, green, blue));
-				holder.bottomBg.setBackgroundColor(Color.parseColor("#"+wish.getBackgroundColor()));
-			}
+			/*
+			 * if (wish.getCreatorUser() != null &&
+			 * wish.getCreatorUser().getSchool() != null &&
+			 * wish.getCreatorUser().getSchool().getName() != null) {
+			 * holder.school.setText(wish.getCreatorUser().getSchool()
+			 * .getName()); } if
+			 * (!StringUtils.isEmpty(wish.getBackgroundColor())) { int color =
+			 * 0; try { color = Integer.parseInt(wish.getBackgroundColor(), 16);
+			 * } catch (Exception e) { e.printStackTrace(); }
+			 * 
+			 * int red = color >> 4; int green = (color >> 2) % 256; int blue =
+			 * color % 256; //holder.bottomBg.setBackgroundColor(Color.rgb(red,
+			 * green, blue));
+			 * holder.bottomBg.setBackgroundColor(Color.parseColor
+			 * ("#"+wish.getBackgroundColor())); }
+			 */
 
 			final ViewHolder finalholder = holder;
 			if (!StringUtils.isEmpty(wish.getCreatorUser().getAvatarUrl())) {
@@ -195,12 +198,11 @@ public class MainTabWishAdapter extends BaseAdapter {
 	}
 
 	public final class ViewHolder {
-		public ImageView logo;
 		public ImageView avatar;
+		public ImageView sex;
 		public TextView content;
-		public TextView school;
 		public TextView nickname;
-		public ViewGroup bottomBg;
+		public TextView publicTime;
 	}
 
 	/** Item点击对应的事件 */

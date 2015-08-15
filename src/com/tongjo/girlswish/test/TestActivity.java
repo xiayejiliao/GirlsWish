@@ -46,8 +46,8 @@ public class TestActivity extends BaseActivity {
 		setCenterText("测试页面");
 
 		// 第一组测试，直接使用返回按钮,leftBtn和backBtn只能显示一个
-		setBackBtnText("返回");
-		setRightBtn(R.drawable.btn_setting);
+		/*setBackBtnText("返回");
+		setRightBtn(R.drawable.btn_setting);*/
 
 		// 第二组测试，不显示返回按钮，改用图片显示
 		/*
@@ -60,13 +60,13 @@ public class TestActivity extends BaseActivity {
 		 */
 
 		/* setBackBtnText("返回"); */
-		setbackBtnListener(new OnClickListener() {
+		/*setbackBtnListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				
 			}
 		});
-		testregister();
+		testregister();*/
 	}
 
 	public void testregister() {

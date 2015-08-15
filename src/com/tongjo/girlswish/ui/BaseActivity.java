@@ -73,7 +73,7 @@ public class BaseActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		actionBar = getActionBar();
+		/*actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayShowHomeEnabled(false);
 		View addView = getLayoutInflater().inflate(R.layout.titlebar_custom, null);
@@ -90,7 +90,7 @@ public class BaseActivity extends Activity {
 			public void onClick(View view) {
 				BaseActivity.this.finish();
 			}
-		});
+		});*/
 
 		ormLiteHelper = OpenHelperManager.getHelper(getApplicationContext(), OrmLiteHelper.class);
 		tjuserinfoDao = ormLiteHelper.getTJUserInfoDao();

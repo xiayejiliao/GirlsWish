@@ -32,7 +32,7 @@
          <item name="android:textColor">@color/lblack</item>  
      </style>
     
-    <style name="ActionBartitle" parent="android:Theme.Holo.Light">
+    <style name="ActionBartitle" parent="Theme.AppCompat.Light">
         <item name="android:titleTextStyle">@style/actionbar_title_text</item>
         <item name="android:actionBarStyle">@style/actionbar_style</item>
         <item name="android:windowTitleSize">50dp</item>
