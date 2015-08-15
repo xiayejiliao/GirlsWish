@@ -118,5 +118,8 @@
     <string name="myinfo_phone">电话</string>
     <string name="title_activity_about">AboutActivity</string>
     <string name="title_activity_suggest">SuggestActivity</string>
+    
+    <!-- 心愿 -->
+    <string name="wish_complete">完成</string>
 
 </resources>

@@ -78,9 +78,8 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Loginactivitystyle" >
-            <intent-filter>
+           <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -104,7 +103,9 @@
             android:name=".ui.UploadAvatarActivity"
             android:launchMode="singleInstance" >
         </activity>
-        <activity android:name=".test.TestActivity" >
+        <activity android:name=".test.TestActivity" 
+            android:theme="@style/ToolBartitle" 
+            >
         </activity>
         <activity
             android:name=".ui.ResetPassActivity"
@@ -114,7 +115,9 @@
             android:name=".ui.ResetPassActivity2"
             android:launchMode="singleInstance" >
         </activity>
-        <activity android:name=".ui.AddWishActivity" >
+        <activity android:name=".ui.AddWishActivity" 
+            android:theme="@style/MaterialAppTheme.NoActionBar"
+            >
         </activity>
         <activity android:name=".ui.UserBasicInfoActivity" >
         </activity>
@@ -166,7 +169,6 @@
         <activity
             android:name=".ui..SuggestActivity"
             android:label="@string/title_activity_suggest" >
->>>>>>> 1e4de610676997d38bd8213ff7e1c4c6a8434ff0
         </activity>
     </application>
 

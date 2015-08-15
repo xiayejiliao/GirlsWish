@@ -2,31 +2,30 @@ package com.tongjo.girlswish.ui;
 
 import java.util.UUID;
 
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.SyncHttpClient;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tongjo.bean.TJMessage;
 import com.tongjo.bean.TJSchool;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
 import com.tongjo.db.OrmLiteHelper;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.SyncHttpClient;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.widget.TextWithImageButton;
-
-import android.app.ActionBar;
-import android.app.Activity;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * 基本Activity，主要是提供了操作ActionBar的方法 Copyright 2015
@@ -34,7 +33,7 @@ import android.widget.TextView;
  * @author preparing
  * @date 2015-6-14
  */
-public class BaseActivity extends Activity {
+public class BaseActivity extends AppCompatActivity {
 	/** 主要用来判断当前Activity是否在前端 */
 	public static boolean isFront = false;
 
@@ -58,6 +57,7 @@ public class BaseActivity extends Activity {
 	}
 
 	/** 标题栏相关信息 */
+	private Toolbar toolbar;
 	private ActionBar actionBar;
 	private ImageView backImg = null;
 	private TextView backText = null;
@@ -105,6 +105,18 @@ public class BaseActivity extends Activity {
 		syncHttpClient = ((BaseApplication) getApplication()).getSyncHttpClient();
 	}
 
+	/**
+	 * ActionBar测试
+	 */
+	public void InitActionBar(){
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		actionBar = getSupportActionBar();
+		View addView = getLayoutInflater().inflate(R.layout.titlebar_custom, null);
+		actionBar.setCustomView(addView);
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+	}
+	
 	public ActionBar getMyActionBar() {
 		return this.actionBar;
 	}

@@ -3,7 +3,9 @@ package com.tongjo.girlswish.ui;
 import org.apache.http.Header;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -33,17 +35,50 @@ public class AddWishActivity extends BaseActivity {
 			R.color.addwish_blueColor };
 	
 	private int currentColor = 0;
+	
+	private Toolbar toolbar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_addwish);
 
-		setRightBtn("完成");
+		/*setRightBtn("完成");*/
 		InitView();
 	}
 
 	public void InitView() {
+		
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
+		toolbar.setTitle("添加心愿");
+		toolbar.inflateMenu(R.menu.addwish);
+		
+		//设置导航按钮
+		toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+		    @Override
+		    public void onClick(View v) {
+		    	AddWishActivity.this.finish();
+		    }
+		});
+		//menu点击事件
+		toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+		    @Override
+		    public boolean onMenuItemClick(MenuItem item) {
+		        int id = item.getItemId();
+		        if (id == R.id.action_addwish) {
+		        	String content = mEditText.getText().toString().trim();
+					if(StringUtils.isEmpty(content)){
+						ToastUtils.show(getApplicationContext(), "内容不能为空");
+						return false;
+					}
+					
+					addWish(content);
+		        }
+		        return false;
+		    }
+		});
+		
 		mEditText = (EditText) findViewById(R.id.addwish_edit);
 		mBtn1 = (View) findViewById(R.id.addwish_btn1);
 		mBtn2 = (View) findViewById(R.id.addwish_btn2);
@@ -56,7 +91,7 @@ public class AddWishActivity extends BaseActivity {
 		mBtn3.setOnClickListener(new ColorClickListener(2));
 		mBtn4.setOnClickListener(new ColorClickListener(3));
 		
-		getRightBtnTextView().setOnClickListener(new OnClickListener(){
+		/*getRightBtnTextView().setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				String content = mEditText.getText().toString().trim();
@@ -67,7 +102,7 @@ public class AddWishActivity extends BaseActivity {
 				
 				addWish(content);
 			}
-		});
+		});*/
 	}
 
 	public void addWish(String content){

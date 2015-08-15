@@ -37,6 +37,8 @@ public class TestActivity extends BaseActivity {
 		Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.testimg);
 		mImageView.setImageBitmap(ImageUtils.getRoundCornerDrawable(bmp, 360));
 
+		/*InitActionBar();*/
+		
 		/**
 		 * 设置titlebar的相关信息 title的左边可以是一个返回按钮，可以选择要不要有对应的文字
 		 * title的左边也可以是一个图片或者一个文字，文字和图片由自己定义 title的中间是一个文字

@@ -32,7 +32,7 @@
          <item name="android:textColor">@color/lblack</item>  
      </style>
     
-    <style name="ActionBartitle" parent="Theme.AppCompat.Light">
+    <style name="ActionBartitle" parent="Theme.AppCompat">
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFrame">@null</item>
@@ -48,6 +48,12 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:windowBackground">@drawable/bg_login</item>
         <item name="android:windowContentOverlay">@null</item>
+    </style>
+    
+    <!-- toolbar -->
+    <style name="ToolBartitle" parent="Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <!-- 信息提示，红色，圆形，小字体 -->
