@@ -6,6 +6,8 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.text.Html;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -18,15 +20,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.tongjo.bean.TJWish;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.StringUtils;
+import com.tongjo.girlswish.widget.CircleImageView;
 
 /**
  * 心愿墙页面对应的Adapter
@@ -45,11 +51,19 @@ public class MainTabWishAdapter extends BaseAdapter {
 
 	private View curView = null;
 	private int curPosition = 0;
+	private DisplayImageOptions displayImageOptions;
 
 	public MainTabWishAdapter(Context context) {
 		super();
 		gestureDetector = new GestureDetector(context, new MyGestureListener());
 		this.mContext = context;
+		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.testimg) // 设置图片下载期间显示的图片
+				.showImageForEmptyUri(R.drawable.testimg) // 设置图片Uri为空或是错误的时候显示的图片
+				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
+				.cacheInMemory(false) // 设置下载的图片是否缓存在内存中
+				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
+				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
+				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
 	}
 
 	public MainTabWishAdapter(Context context, List<TJWish> list) {
@@ -57,6 +71,13 @@ public class MainTabWishAdapter extends BaseAdapter {
 		gestureDetector = new GestureDetector(context, new MyGestureListener());
 		this.mContext = context;
 		this.mList = list;
+		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.testimg) // 设置图片下载期间显示的图片
+				.showImageForEmptyUri(R.drawable.testimg) // 设置图片Uri为空或是错误的时候显示的图片
+				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
+				.cacheInMemory(false) // 设置下载的图片是否缓存在内存中
+				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
+				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
+				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
 	}
 
 	public void setList(List<TJWish> list) {
@@ -101,19 +122,17 @@ public class MainTabWishAdapter extends BaseAdapter {
 
 			holder = new ViewHolder();
 			LayoutInflater mInflater = LayoutInflater.from(mContext);
-			convertView = mInflater.inflate(R.layout.listitem_wish, null);
+			convertView = mInflater.inflate(R.layout.listitem_wish_new, null);
 
-			holder.logo = (ImageView) convertView.findViewById(R.id.wish_logo);
-			holder.avatar = (ImageView) convertView
-					.findViewById(R.id.wish_avatar);
-			holder.content = (TextView) convertView
-					.findViewById(R.id.wish_content);
-			holder.school = (TextView) convertView
-					.findViewById(R.id.wish_schoolname);
-			holder.nickname = (TextView) convertView
-					.findViewById(R.id.wish_username);
-			holder.bottomBg = (ViewGroup) convertView
-					.findViewById(R.id.wish_bottom);
+			holder.sex = (ImageView) convertView.findViewById(R.id.wish_sex);
+			holder.avatar = (ImageView) convertView.findViewById(R.id.wish_avatar);
+			holder.content = (TextView) convertView.findViewById(R.id.wish_content);
+			/* holder.content.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); */
+
+			holder.content.setText(Html.fromHtml("<u>\t\t我在测试下划线我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线</u>"));
+
+			holder.nickname = (TextView) convertView.findViewById(R.id.wish_username);
+			holder.publicTime = (TextView) convertView.findViewById(R.id.public_time);
 			convertView.setTag(holder);
 
 		} else {
@@ -123,59 +142,35 @@ public class MainTabWishAdapter extends BaseAdapter {
 		TJWish wish = mList.get(arg0);
 		if (wish != null) {
 			if (wish.getContent() != null) {
-				holder.content.setText(wish.getContent());
+				/* holder.content.setText(wish.getContent()); */
 			}
 
-			if (wish.getCreatorUser() != null
-					&& wish.getCreatorUser().getNickname() != null) {
+			if (wish.getCreatorUser() != null && wish.getCreatorUser().getNickname() != null) {
 				holder.nickname.setText(wish.getCreatorUser().getNickname());
 			}
-			if (wish.getCreatorUser() != null
-					&& wish.getCreatorUser().getSchool() != null
-					&& wish.getCreatorUser().getSchool().getName() != null) {
-				holder.school.setText(wish.getCreatorUser().getSchool()
-						.getName());
+			if (wish.getCreatedTime() != null) {
+				holder.publicTime.setText(wish.getCreatedTime());
 			}
-			if (!StringUtils.isEmpty(wish.getBackgroundColor())) {
-				int color = 0;
-				try {
-					color = Integer.parseInt(wish.getBackgroundColor(), 16);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				int red = color >> 4;
-				int green = (color >> 2) % 256;
-				int blue = color % 256;
-				//holder.bottomBg.setBackgroundColor(Color.rgb(red, green, blue));
-				holder.bottomBg.setBackgroundColor(Color.parseColor("#"+wish.getBackgroundColor()));
-			}
+			/*
+			 * if (wish.getCreatorUser() != null &&
+			 * wish.getCreatorUser().getSchool() != null &&
+			 * wish.getCreatorUser().getSchool().getName() != null) {
+			 * holder.school.setText(wish.getCreatorUser().getSchool()
+			 * .getName()); } if
+			 * (!StringUtils.isEmpty(wish.getBackgroundColor())) { int color =
+			 * 0; try { color = Integer.parseInt(wish.getBackgroundColor(), 16);
+			 * } catch (Exception e) { e.printStackTrace(); }
+			 * 
+			 * int red = color >> 4; int green = (color >> 2) % 256; int blue =
+			 * color % 256; //holder.bottomBg.setBackgroundColor(Color.rgb(red,
+			 * green, blue));
+			 * holder.bottomBg.setBackgroundColor(Color.parseColor
+			 * ("#"+wish.getBackgroundColor())); }
+			 */
 
 			final ViewHolder finalholder = holder;
 			if (!StringUtils.isEmpty(wish.getCreatorUser().getAvatarUrl())) {
-				ImageLoaderConfiguration configuration = ImageLoaderConfiguration
-						.createDefault(mContext);
-				ImageLoader.getInstance().init(configuration);
-
-				ImageLoader.getInstance().loadImage(
-						wish.getCreatorUser().getAvatarUrl(),
-						new ImageSize(200, 200),
-						new SimpleImageLoadingListener() {
-							public void onLoadingComplete(String imageUri,
-									View view, Bitmap loadedImage) {
-								if (loadedImage != null) {
-									finalholder.avatar
-											.setImageBitmap(ImageUtils
-													.getRoundCornerDrawable(
-															loadedImage, 360));
-								}
-							};
-
-							public void onLoadingFailed(String imageUri,
-									View view, FailReason failReason) {
-								Log.d(TAG, "头像加载失败");
-							};
-						});
+				ImageLoader.getInstance().displayImage(wish.getCreatorUser().getAvatarUrl(), holder.avatar, displayImageOptions);
 			}
 		}
 
@@ -195,12 +190,11 @@ public class MainTabWishAdapter extends BaseAdapter {
 	}
 
 	public final class ViewHolder {
-		public ImageView logo;
 		public ImageView avatar;
+		public ImageView sex;
 		public TextView content;
-		public TextView school;
 		public TextView nickname;
-		public ViewGroup bottomBg;
+		public TextView publicTime;
 	}
 
 	/** Item点击对应的事件 */
@@ -243,8 +237,7 @@ public class MainTabWishAdapter extends BaseAdapter {
 
 		// 手势移动操作，移动时触发
 		@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY) {
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			System.out.println("onScroll");
 			return true;
 		}
@@ -257,8 +250,7 @@ public class MainTabWishAdapter extends BaseAdapter {
 
 		// 手势移动操作，UP时才会触发
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			System.out.println("onFling");
 			return false;
 		}

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <corners android:radius="8dp" />
+    <corners android:radius="3dp" />
 
-    <solid android:color="#CCCCDD" />
+    <solid android:color="#2CA7DB" />
    <!-- 填充的颜色 -->
 
 

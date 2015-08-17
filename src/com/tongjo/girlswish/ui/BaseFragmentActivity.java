@@ -49,7 +49,7 @@ public class BaseFragmentActivity extends FragmentActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		actionBar = getActionBar();
+		/*actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayShowHomeEnabled(false);
 		View addView = getLayoutInflater().inflate(R.layout.titlebar_custom,
@@ -67,7 +67,7 @@ public class BaseFragmentActivity extends FragmentActivity{
 			public void onClick(View view) {
 				BaseFragmentActivity.this.finish();
 			}
-		});
+		});*/
 	}
 
 	public ActionBar getMyActionBar() {

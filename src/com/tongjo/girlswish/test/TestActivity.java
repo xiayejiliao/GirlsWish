@@ -37,6 +37,8 @@ public class TestActivity extends BaseActivity {
 		Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.testimg);
 		mImageView.setImageBitmap(ImageUtils.getRoundCornerDrawable(bmp, 360));
 
+		/*InitActionBar();*/
+		
 		/**
 		 * 设置titlebar的相关信息 title的左边可以是一个返回按钮，可以选择要不要有对应的文字
 		 * title的左边也可以是一个图片或者一个文字，文字和图片由自己定义 title的中间是一个文字
@@ -46,8 +48,8 @@ public class TestActivity extends BaseActivity {
 		setCenterText("测试页面");
 
 		// 第一组测试，直接使用返回按钮,leftBtn和backBtn只能显示一个
-		setBackBtnText("返回");
-		setRightBtn(R.drawable.btn_setting);
+		/*setBackBtnText("返回");
+		setRightBtn(R.drawable.btn_setting);*/
 
 		// 第二组测试，不显示返回按钮，改用图片显示
 		/*
@@ -60,13 +62,13 @@ public class TestActivity extends BaseActivity {
 		 */
 
 		/* setBackBtnText("返回"); */
-		setbackBtnListener(new OnClickListener() {
+		/*setbackBtnListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				
 			}
 		});
-		testregister();
+		testregister();*/
 	}
 
 	public void testregister() {

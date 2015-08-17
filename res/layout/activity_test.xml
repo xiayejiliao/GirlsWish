@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tongjo="http://schemas.android.com/apk/res/com.tongjo.girlswish"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize" >
+    </android.support.v7.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -12,9 +19,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="20px"
+            android:orientation="vertical"
             android:paddingBottom="20px"
-            android:orientation="vertical" >
+            android:paddingTop="20px" >
 
             <TextView
                 android:layout_width="match_parent"
@@ -46,11 +53,10 @@
                 <com.tongjo.girlswish.widget.ButtonWithArrow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tongjo:iconvisiable="gone"
                     tongjo:arrowvisiable="invisible"
+                    tongjo:iconvisiable="gone"
                     tongjo:lefttextValue="测试左边"
                     tongjo:righttextValue="测试右边" />
-
 
                 <Button
                     android:layout_width="match_parent"
@@ -95,8 +101,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="20dip"
                 android:layout_marginRight="20dip" />
-            
-            
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -123,9 +128,13 @@
                 android:padding="10dip"
                 tongjo:hint="请输入密码"
                 tongjo:password="true" />
-
-            
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:src="@drawable/add" />
+
+</android.support.design.widget.CoordinatorLayout>

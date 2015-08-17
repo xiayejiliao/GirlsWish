@@ -89,7 +89,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 		// 设置缓存界面个数，防止反复Create
 		mViewPager.setOffscreenPageLimit(4);
 
-		InitTitleBar();
+		/*InitTitleBar();*/
 
 		InitView();
 

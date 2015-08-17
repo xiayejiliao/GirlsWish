@@ -68,12 +68,14 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -81,7 +83,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class LoginActivity extends BaseActivity implements OnClickListener {
+public class LoginActivity extends Activity implements OnClickListener {
 	private final String TAG = "LoginActivity";
 	private Button bt_login;
 	private EditText et_phone;
@@ -89,21 +91,19 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private ImageView iv_personico;
 	private LinkTextView ltv_forgetpass;
 	private LinkTextView ltv_register;
-	private CheckBox cb_isremenberpass;
 	private DisplayImageOptions displayImageOptions;
+	private AsyncHttpClient asyncHttpClient;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		setCenterText("登陆");
 		bt_login = (Button) findViewById(R.id.bt_login_sure);
 		et_phone = (EditText) findViewById(R.id.et_login_name);
 		et_pass = (EditText) findViewById(R.id.et_login_pass);
 		ltv_forgetpass = (LinkTextView) findViewById(R.id.ltv_login_forget);
 		ltv_register = (LinkTextView) findViewById(R.id.ltv_login_register);
 		iv_personico = (ImageView) findViewById(R.id.iv_login_personico);
-		cb_isremenberpass = (CheckBox) findViewById(R.id.cb_login_isremenberpass);
 
 		bt_login.setOnClickListener(this);
 		iv_personico.setOnClickListener(this);
@@ -112,6 +112,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 		et_phone.setText((String) SpUtils.get(getApplicationContext(), AppConstant.USER_PHONE, ""));
 
+		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 		/*
 		 * setbackBtnListener(new OnClickListener() {
 		 * 
@@ -127,16 +128,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		} else {
 			et_phone.getEditableText().clear();
 		}
-
-		if (isremenberpassword == 1) {
-			cb_isremenberpass.setChecked(true);
-			String pass = (String) SpUtils.get(getApplicationContext(), AppConstant.USER_PASSWORD, "10086");
-			et_pass.setText(pass);
-		} else {
-			cb_isremenberpass.setChecked(false);
-		}
-		Log.d(TAG,""+ isremenberpassword);
-		Log.d(TAG,""+ isremenberphone);
 		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.image_imageloading) // 设置图片下载期间显示的图片
 				.showImageForEmptyUri(R.drawable.image_imageloadneterror) // 设置图片Uri为空或是错误的时候显示的图片
 				.showImageOnFail(R.drawable.image_imageloaderror) // 设置图片加载或解码过程中发生错误显示的图片
@@ -144,9 +135,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
 				.imageScaleType(ImageScaleType.EXACTLY)// 缩放模式按比例缩放
 				.build(); // 创建配置过得DisplayImageOption对象
-		imageLoader.displayImage("drawable://" + R.drawable.icon_lunch, iv_personico, displayImageOptions);
+		// imageLoader.displayImage("drawable://" + R.drawable.icon_lunch,
+		// iv_personico, displayImageOptions);
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -156,6 +148,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			final String password = et_pass.getText().toString();
 			if (StringUtils.isEmpty(tel) || StringUtils.isEmpty(password)) {
 				ToastUtils.show(getApplicationContext(), "请完善登陆信息");
+				return;
+			}
+			if (!isMobileNO(tel)) {
+				ToastUtils.show(getApplicationContext(), "手机号不正确");
 				return;
 			}
 			requestParams.add("tel", tel);
@@ -172,18 +168,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 						Type type = new TypeToken<TJResponse<TJUserInfo>>() {
 						}.getType();
 						TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
-						//登录成功
+						// 登录成功
 						if (response.getResult().getCode() == 0) {
-							//设置记住账号
+							// 设置记住账号
 							SpUtils.put(getApplicationContext(), AppConstant.USER_ISREMEMBERPHONE, 1);
 							SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, tel);
-							
-							//设置是否记住密码
-							if (cb_isremenberpass.isChecked()) {
-								SpUtils.put(getApplicationContext(), AppConstant.USER_ISREMEMBERPASSWORD, 1);
-								SpUtils.put(getApplicationContext(), AppConstant.USER_PASSWORD, password);
-							}
-							//持久化个人信息到getSharedPreferences
+
+							// 设置是否记住密码
+							// 持久化个人信息到getSharedPreferences
 							TJUserInfo userInfo = response.getData();
 							if (userInfo != null) {
 								SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, tel);
@@ -201,14 +193,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 									SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME, userSchool.getName());
 									SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLCOORDINATES, userSchool.getCoordinates());
 								}
-								imageLoader.displayImage(userInfo.getAvatarUrl(), iv_personico, displayImageOptions);
-								
+								// imageLoader.displayImage(userInfo.getAvatarUrl(),
+								// iv_personico, displayImageOptions);
+
 								// 登陆环信
 								loginEMChat(userInfo.getHxid(), userInfo.getHxpassword());
+								startActivity(new Intent(getApplicationContext(), MainActivity.class));
+								finish();
 							}
-							//通过EvenBus发送登录成功事件
-							Message message=new Message();
-							message.what=AppConstant.MESSAGE_WHAT_USER_LOGIN;
+							// 通过EvenBus发送登录成功事件
+							Message message = new Message();
+							message.what = AppConstant.MESSAGE_WHAT_USER_LOGIN;
 							EventBus.getDefault().post(message);
 							dialog.dismiss();
 
@@ -229,11 +224,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			});
 			break;
 		case R.id.ltv_login_forget:
-			Intent intent1=new Intent(LoginActivity.this, ResetPassActivity.class);
+			Intent intent1 = new Intent(LoginActivity.this, ResetPassActivity.class);
+
 			startActivity(intent1);
 			break;
 		case R.id.ltv_login_register:
-			Intent intent2=new Intent(LoginActivity.this, RegisterSexChooseActivity.class);
+			Intent intent2 = new Intent(LoginActivity.this, RegisterActivity.class);
 			startActivity(intent2);
 			break;
 		default:
@@ -241,35 +237,55 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		}
 
 	}
+
 	/**
 	 * 用户登陆后登陆环信
-	 * @param username //username是第三方用户体系中的primarykey。需要在appkey的范围内唯一。
-	 * @param password //密码。为保证第三方用户体系中的账号密码不必要的泄露给环信，建议对第三方用户体系的账号密码做一次hash算法。然后在手机端登录环信时，客户端同样适用hash后的密码登录。
+	 * 
+	 * @param username
+	 *            //username是第三方用户体系中的primarykey。需要在appkey的范围内唯一。
+	 * @param password
+	 *            //密码。为保证第三方用户体系中的账号密码不必要的泄露给环信，建议对第三方用户体系的账号密码做一次hash算法。
+	 *            然后在手机端登录环信时，客户端同样适用hash后的密码登录。
 	 */
-	private void loginEMChat(String username, String password){
-		
-		Log.d("main", username + ":" + password);
-		EMChatManager.getInstance().login(username,password,new EMCallBack() {//回调
-			@Override
-			public void onSuccess() {
-				runOnUiThread(new Runnable() {
-					public void run() {
-						EMGroupManager.getInstance().loadAllGroups();
-						EMChatManager.getInstance().loadAllConversations();
-						Log.d("main", "登陆聊天服务器成功！");		
+	private void loginEMChat(String username, String password) {
+
+		EMChatManager.getInstance().login(username, password, new EMCallBack() {// 回调
+					@Override
+					public void onSuccess() {
+						runOnUiThread(new Runnable() {
+							public void run() {
+								EMGroupManager.getInstance().loadAllGroups();
+								EMChatManager.getInstance().loadAllConversations();
+								Log.d("main", "登陆聊天服务器成功！");
+							}
+						});
+					}
+
+					@Override
+					public void onProgress(int progress, String status) {
+
+					}
+
+					@Override
+					public void onError(int code, String message) {
+						Log.d("main", "登陆聊天服务器失败！");
 					}
 				});
-			}
+	}
 
-			@Override
-			public void onProgress(int progress, String status) {
-
-			}
-
-			@Override
-			public void onError(int code, String message) {
-				Log.d("main", "登陆聊天服务器失败！");
-			}
-		});
+	/**
+	 * 验证手机格式
+	 */
+	private boolean isMobileNO(String mobiles) {
+		/*
+		 * 移动：134、135、136、137、138、139、150、151、157(TD)、158、159、187、188
+		 * 联通：130、131、132、152、155、156、185、186 电信：133、153、180、189、（1349卫通）
+		 * 总结起来就是第一位必定为1，第二位必定为3或5或8，其他位置的可以为0-9
+		 */
+		String telRegex = "[1][358]\\d{9}";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+		if (TextUtils.isEmpty(mobiles))
+			return false;
+		else
+			return mobiles.matches(telRegex);
 	}
 }

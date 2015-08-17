@@ -13,10 +13,12 @@ import org.apache.http.Header;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
+import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.ui.TakePicturePopup.onChoiced;
 import com.tongjo.girlswish.utils.AppConstant;
@@ -38,6 +40,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,7 +55,7 @@ import android.widget.Toast;
  * 
  * @author 16ren 更改密码时，获取手机验证码，验证手机
  */
-public class ResetPassActivity extends BaseActivity {
+public class ResetPassActivity extends AppCompatActivity {
 	private final static String TAG = "ResetPassActivity1";
 	public final static int MESSAGE_TIMERUNING = 100;
 	public final static int MESSAGE_TIMESTOP = 200;
@@ -63,12 +67,16 @@ public class ResetPassActivity extends BaseActivity {
 	private String captcha = "1234";
 	private String sendphone;
 	private String nespassword;
+	
+	private ActionBar mActionBar;
+	private AsyncHttpClient asyncHttpClient;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_resetpass);
-		setCenterText("密码重置");
+		mActionBar=getSupportActionBar();
+		mActionBar.setTitle("密码重置");
 		bt_getcaptcha = (TextView) findViewById(R.id.bt_resetpass_getcaptcha);
 		bt_sure = (Button) findViewById(R.id.bt_resetpass_sure);
 		et_phone = (EditText) findViewById(R.id.et_resetpass_phone);
@@ -76,6 +84,7 @@ public class ResetPassActivity extends BaseActivity {
 		et_newpassword = (EditText) findViewById(R.id.et_resetpass_newpass);
 		bt_getcaptcha.setOnClickListener(onClickListener);
 		bt_sure.setOnClickListener(onClickListener);
+		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 
 	}
 
@@ -159,7 +168,7 @@ public class ResetPassActivity extends BaseActivity {
 									@Override
 									public void onProgress(int toals, int remaining) {
 										// TODO Auto-generated method stub
-										bt_getcaptcha.setText(remaining + "后重新获取");
+										bt_getcaptcha.setText(remaining + "s");
 									}
 
 									@Override

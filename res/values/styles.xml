@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="AppTheme.Base"></style>
@@ -32,17 +32,28 @@
          <item name="android:textColor">@color/lblack</item>  
      </style>
     
-    <style name="ActionBartitle" parent="android:Theme.Holo.Light">
-        <item name="android:titleTextStyle">@style/actionbar_title_text</item>
-        <item name="android:actionBarStyle">@style/actionbar_style</item>
-        <item name="android:windowTitleSize">50dp</item>
+    <style name="ActionBartitle" parent="Theme.AppCompat">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:paddingLeft">@dimen/margin_4</item>
+        <item name="android:paddingRight">@dimen/margin_4</item>
+        <item name="android:textColor">@color/lblack</item>
     </style>
+
     <style name="DefaultStyle" parent="ActionBartitle">
         <item name="android:textColorPrimaryInverse">@android:color/black</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/mlblack</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:windowBackground">@drawable/bg_login</item>
         <item name="android:windowContentOverlay">@null</item>
+    </style>
+    
+    <!-- toolbar -->
+    <style name="ToolBartitle" parent="Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <!-- 信息提示，红色，圆形，小字体 -->
@@ -154,12 +165,13 @@
         <item name="fadeDelay">1000</item>
     </style>
 
-    
-         <!-- dialog风格 -->
-	<!-- 要设置椭圆对话框， windowBackground或者background其中设置为椭圆
-	另一个设置为透明或者两个设置为两同的椭圆的就可以-->
-	<style name="MsgDialogStyle" parent="@android:style/Theme.Dialog">
-	    <item name="android:background">@color/transparent</item>
+    <!-- dialog风格 -->
+    <!--
+    要设置椭圆对话框， windowBackground或者background其中设置为椭圆
+	另一个设置为透明或者两个设置为两同的椭圆的就可以
+    -->
+    <style name="MsgDialogStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:background">@color/transparent</item>
         <item name="android:windowBackground">@drawable/re_coeeee_pd2662_lwihte</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
@@ -168,9 +180,9 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
-    
-	<!-- 聊天消息 -->
-	<style name="chat_content_date_style">
+
+    <!-- 聊天消息 -->
+    <style name="chat_content_date_style">
         <item name="android:minHeight">50dp</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">#000000</item>
@@ -186,7 +198,7 @@
         <item name="android:textSize">15sp</item>
         <item name="android:gravity">center</item>
     </style>
-    
+
     <style name="chat_text_date_style">
         <item name="android:padding">2dp</item>
         <item name="android:paddingTop">2dip</item>
@@ -197,4 +209,5 @@
         <item name="android:textSize">12sp</item>
         <item name="android:background">@drawable/timestampe_bg</item>
     </style>
+
 </resources>

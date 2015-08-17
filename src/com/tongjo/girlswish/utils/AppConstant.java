@@ -13,6 +13,8 @@ import android.os.Environment;
 public class AppConstant {
 	// path
 	public static final String path = Environment.getExternalStorageDirectory().getPath() + "/girlWish";
+	public static final String logintimes= "logintimes";
+	
 
 	// SharedPreferences
 	public static final String USER_ID = "user_id";

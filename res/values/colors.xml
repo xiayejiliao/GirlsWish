@@ -33,12 +33,9 @@
     <color name="llgreen">#00CC99</color>
 
     <!-- 其他颜色 -->
-    <color name="colorPrimary">#F50057</color>
-    <color name="colorPrimaryDark">#C51162</color>
-    <color name="textColorPrimary">#FFFFFF</color>
+
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#FF80AB</color>
     <color name="counter_text_bg">#FF80AB</color>
     <color name="list_background">#F50057</color>
     <color name="list_background_pressed">#FFFFFF</color>
@@ -64,6 +61,8 @@
     <color name="addwish_yellowColor">#F1F1BC</color>
     <color name="addwish_redColor">#EBD0E6</color>
     <color name="addwish_blueColor">#9AB8D8</color>
+    <color name="wish_background">#FAFAFA</color>
+    <color name="wish_floatingactionbutton">#4FC3F7</color>
     <!-- 我的界面颜色 -->
 
     <color name="me_info_bg">#f3d2d5</color>
@@ -77,12 +76,24 @@
     <!-- 学校选择界面 -->
     <color name="schoolchoose_eraritem_press">#eeeeee</color>
     <color name="schoolchoose_eraritem_up">#ffffff</color>
-    
-    <!-- 消息列表界面  -->
+
+    <!-- 消息列表界面 -->
     <color name="info_list_msg">#9B9B9B</color>
     <color name="info_list_title">#4A4A4A</color>
     <color name="info_list_time">#9B9B9B</color>
-    
+
     <!-- 我的资料界面 -->
     <color name="myinfo_broder">#FAFAFA</color>
+    <color name="actionbartextcolor">#FAFAFA</color>
+
+    <!-- seting 界面 -->
+    <color name="setting_broder">#FAFAFA</color>
+    <color name="setting_background">#FFFFFF</color>
+
+    <!-- material color -->
+    <color name="colorAccent">#FF80AB</color>
+    <color name="colorPrimary">#2CA7DB</color>
+    <color name="colorPrimaryDark">#2E93BD</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+
 </resources>

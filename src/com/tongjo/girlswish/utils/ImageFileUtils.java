@@ -3,9 +3,13 @@ package com.tongjo.girlswish.utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Environment;
 
 /**
@@ -15,6 +19,8 @@ import android.os.Environment;
  * @date 2015-7-13
  */
 public class ImageFileUtils {
+	private static final String JPEG_FILE_PREFIX = "IMG_";
+	private static final String JPEG_FILE_SUFFIX = ".jpg";
 	public static final String picturepath = AppConstant.path;
 	public static File file;
 	public static String current_picturepath = null;
@@ -27,8 +33,7 @@ public class ImageFileUtils {
 			if (!hasSdcard())
 				file = File.createTempFile(title, attribute);
 			else if (isFileExit(picturepath)) {
-				file = File.createTempFile(title, attribute,
-						ImageFileUtils.file);
+				file = File.createTempFile(title, attribute, ImageFileUtils.file);
 			} else {
 				file = File.createTempFile(title, attribute);
 			}
@@ -118,5 +123,33 @@ public class ImageFileUtils {
 			e.printStackTrace();
 		}
 		return bitmap;
+	}
+
+	/**
+	 * @throws IOException 
+	 * 
+	 * @Title: createImageFile
+	 * @Description: TODO
+	 * @return
+	 * @throws IOException
+	 *             File
+	 * @throws
+	 */
+	public static File createImageFile() throws IOException{
+		// Create an image file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+		File albumF = null;
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+				albumF = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+			} else {
+				albumF = Environment.getExternalStorageDirectory();
+			}
+		} else {
+			albumF = Environment.getDataDirectory();
+		}
+		File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+		return imageF;
 	}
 }

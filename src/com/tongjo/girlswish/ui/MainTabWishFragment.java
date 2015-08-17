@@ -6,8 +6,12 @@ import java.util.List;
 import org.apache.http.Header;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -55,6 +59,8 @@ public class MainTabWishFragment extends BaseFragment {
 	private WishDialogFragment dialog = null;
 	private ViewGroup mEmptyView = null;
 
+	private FloatingActionButton mFloatBtn = null;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -70,8 +76,18 @@ public class MainTabWishFragment extends BaseFragment {
 	}
 
 	public void InitView(View view) {
+		mFloatBtn = (FloatingActionButton)view.findViewById(R.id.floatbtn);
+		mFloatBtn.setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), AddWishActivity.class);
+				startActivity(intent);
+			}
+			
+		});
 		mListView = (PullToRefreshListView) view.findViewById(R.id.listview);
-		mEmptyView = (ViewGroup)view.findViewById(R.id.empty_view);
+		mEmptyView = (ViewGroup) view.findViewById(R.id.empty_view);
 		mAdapter = new MainTabWishAdapter(getActivity(), DataContainer.WishList);
 		mListView.setAdapter(mAdapter);
 		mAdapter.setMItemClickListener(new MItemClickListener() {
@@ -79,8 +95,35 @@ public class MainTabWishFragment extends BaseFragment {
 			@Override
 			public void MItemClick(View v, int position) {
 				Log.d(TAG, String.valueOf(position));
-				dialog = new WishDialogFragment(position);
-				dialog.show(getFragmentManager(), "WishDialogFragment");
+				/*
+				 * dialog = new WishDialogFragment(position);
+				 * dialog.show(getFragmentManager(), "WishDialogFragment");
+				 */
+				final TJWish wish = DataContainer.WishList.get(position);
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						getActivity());
+				builder.setTitle("摘取心愿");
+				builder.setMessage("确定要摘取心愿");
+				builder.setPositiveButton("确定",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								if (wish != null && wish.get_id() != null) {
+									pickWish(wish.get_id().toString());
+								} else {
+									Toast.makeText(getActivity(), "系统出错!",
+											Toast.LENGTH_LONG).show();
+								}
+							}
+						});
+				builder.setNegativeButton("取消",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+
+							}
+						});
+				builder.show();
 			}
 
 		});
@@ -112,22 +155,22 @@ public class MainTabWishFragment extends BaseFragment {
 
 	}
 
-	public void updateUi(boolean isEmpty){
-		if(isEmpty){
+	public void updateUi(boolean isEmpty) {
+		if (isEmpty) {
 			mEmptyView.setVisibility(View.VISIBLE);
 			mListView.setVisibility(View.GONE);
 		}
-		
-		if(DataContainer.WishList.size() <1){
+
+		if (DataContainer.WishList.size() < 1) {
 			mEmptyView.setVisibility(View.VISIBLE);
 			mListView.setVisibility(View.GONE);
-		}else{
+		} else {
 			mEmptyView.setVisibility(View.GONE);
 			mListView.setVisibility(View.VISIBLE);
 			mAdapter.notifyDataSetChanged();
 		}
 	}
-	
+
 	/** 长按按钮弹出的对话框的按键操作 */
 	private DialogClickListener mListener = new DialogClickListener() {
 		@Override
