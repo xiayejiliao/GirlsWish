@@ -4,6 +4,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.ToastUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -47,5 +48,17 @@ public class SuggestActivity extends AppCompatActivity {
 			finish();
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);//友盟页面统计
+	}
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);//友盟页面统计
 	}
 }
