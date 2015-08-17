@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 	private CircleImageView iv_icon;
 	private TextView tv_nick;
 	private TextView tv_school;
+
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -86,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
 				switch (menuItem.getItemId()) {
 				case R.id.nav_pushwish:
 					System.out.println("++++++");
+					startActivity(new Intent(MainActivity.this, MyPushWishActivity.class));
 					break;
 				case R.id.nav_pickwish:
-
+					startActivity(new Intent(MainActivity.this, MyPickWishActivity.class));
 					break;
 				case R.id.nav_setting:
 					startActivity(new Intent(MainActivity.this, SettingActivity.class));
@@ -150,6 +152,12 @@ public class MainActivity extends AppCompatActivity {
 		super.onDestroy();
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+
+		return super.onCreateOptionsMenu(menu);
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
