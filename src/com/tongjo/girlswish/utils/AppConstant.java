@@ -1,5 +1,7 @@
 package com.tongjo.girlswish.utils;
 
+import java.util.UUID;
+
 import android.os.Environment;
 
 /**
@@ -45,6 +47,7 @@ public class AppConstant {
 	public static final String URL_PROFILE = "/profile";
 	public static final String URL_UPLOADICON = "/user/avatar";
 	public static final String URL_USEREDIT = "/user/edit";
+	public static final String URL_USERGET = "/user";
 
 	// intent
 	public static final int FORRESULT_LOG = 10101;
@@ -76,5 +79,14 @@ public class AppConstant {
 
 	public static final int MESSAGE_WHAT_USER_LOGIN = 10410;
 	public static final int MESSAGE_WHAT_USER_LOGOUT = 10410;
-
+	
+	//Message Type
+	public static final int MSG_TYPE_CHAT = -2;
+	public static final int MSG_TYPE_SYSTEM = -1;
+	public static final int MSG_TYPE_NOTICE = 0;
+	public static final int MSG_TYPE_WISH_PICKED = 1;
+	public static final int MSG_TYPE_WISH_FINISH = 2;
+	
+	//SystemMessage UUID
+	public static final String MSG_SYSTEM_UUID = "00000000-0000-0000-0000-000000000000";
 }

@@ -48,7 +48,9 @@ import com.easemob.util.EasyUtils;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.emchat.HXNotifier.HXNotificationInfoProvider;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.ui.ChatActivity;
 import com.tongjo.girlswish.ui.MainTabActivity;
+import com.tongjo.girlswish.utils.AppConstant;
 
 /**
  * Demo UI HX SDK helper class which subclass HXSDKHelper
@@ -57,7 +59,7 @@ import com.tongjo.girlswish.ui.MainTabActivity;
  */
 public class GWHXSDKHelper extends HXSDKHelper{
 
-    private static final String TAG = "DemoHXSDKHelper";
+    private static final String TAG = "GWHXSDKHelper";
     
     /**
      * EMEventListener
@@ -277,9 +279,15 @@ public class GWHXSDKHelper extends HXSDKHelper{
             
             @Override
             public Intent getLaunchIntent(EMMessage message) {
-                //设置点击通知栏跳转事件
-                Intent intent = new Intent(appContext, MainTabActivity.class);
-                return intent;
+				// 设置点击通知栏跳转事件
+				Intent intent = new Intent(appContext, MainTabActivity.class);
+				int msg_type = message.getIntAttribute("type",
+						AppConstant.MSG_TYPE_SYSTEM);
+				if (msg_type == AppConstant.MSG_TYPE_CHAT) {
+					intent = new Intent(appContext, ChatActivity.class);
+					intent.putExtra("toUserHxid", message.getFrom());
+				}
+				return intent;
             }
         };
     }

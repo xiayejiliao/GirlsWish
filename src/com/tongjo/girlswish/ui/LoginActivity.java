@@ -204,7 +204,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 								imageLoader.displayImage(userInfo.getAvatarUrl(), iv_personico, displayImageOptions);
 								
 								// 登陆环信
-								loginEMChat(userInfo.get_id().toString().replaceAll("-",""),"123");
+								loginEMChat(userInfo.getHxid(), userInfo.getHxpassword());
 							}
 							//通过EvenBus发送登录成功事件
 							Message message=new Message();

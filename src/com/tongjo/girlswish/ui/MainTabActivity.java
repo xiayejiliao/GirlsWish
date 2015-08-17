@@ -20,6 +20,9 @@ import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
+import com.easemob.EMNotifierEvent;
+import com.easemob.chat.EMChatManager;
+import com.tongjo.emchat.GWHXSDKHelper;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
@@ -229,6 +232,22 @@ public class MainTabActivity extends BaseFragmentActivity {
 		}
 	}
 
+	/** 设置底部小红点的显示 */
+	public void setAlertView(int tab, boolean visibility) {
+		switch (tab) {
+		case 0:
+			alertView1.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
+			break;
+		case 1:
+			alertView2.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
+			break;
+		case 2:
+			alertView3.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
+			break;
+		default:
+			break;
+		}
+	}
 	/**
 	 * 设置切换时tab图片的颜色变化
 	 * 
@@ -478,6 +497,5 @@ public class MainTabActivity extends BaseFragmentActivity {
 			}
 			return bool;
 		}
-
 	}
 }

@@ -25,6 +25,11 @@ public class TJUserInfo implements Serializable{
 	private String avatarUrl;
 	@DatabaseField(foreign=true,foreignAutoRefresh=true)
 	private TJSchool school;
+	@DatabaseField
+	private String hxid;
+	@DatabaseField
+	private String hxpassword;
+	
 	public TJUserInfo() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -77,10 +82,21 @@ public class TJUserInfo implements Serializable{
 	public void setSchool(TJSchool school) {
 		this.school = school;
 	}
+	public String getHxid() {
+		return hxid;
+	}
+	public void setHxid(String hxid) {
+		this.hxid = hxid;
+	}
+	public String getHxpassword() {
+		return hxpassword;
+	}
+	public void setHxpassword(String hxpassword) {
+		this.hxpassword = hxpassword;
+	}
 	@Override
 	public String toString() {
 		return "TJUserInfo [_id=" + _id + ", email=" + email + ", tel=" + tel + ", realname=" + realname + ", gender=" + gender + ", nickname=" + nickname + ", avatarUrl=" + avatarUrl + ", school="
 				+ school + "]";
 	}
-	
 }

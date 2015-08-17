@@ -249,7 +249,7 @@ public class MeGirlWishFragment extends BaseFragment {
 			viewHolder.tv_school.setText(tjWish.getCreatorUser().getSchool().getName());
 			String current = TimeUtils.getCurrentTimeInString();
 			viewHolder.tv_time.setText(TimeUtils.minuteCompare(current, tjWish.getPickedTime()) + "min");
-			viewHolder.view_color.setBackgroundColor(Color.parseColor("#" + tjWish.getBackgroundColor()));
+			//viewHolder.view_color.setBackgroundColor(Color.parseColor("#" + tjWish.getBackgroundColor()));
 			imageLoader.displayImage(tjWish.getCreatorUser().getAvatarUrl(), viewHolder.iv_icon, displayImageOptions, animateFirstDisplayListener);
 			return convertView;
 		}

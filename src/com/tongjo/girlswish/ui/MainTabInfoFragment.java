@@ -3,11 +3,19 @@ package com.tongjo.girlswish.ui;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.http.Header;
 
+import com.easemob.EMEventListener;
+import com.easemob.EMNotifierEvent;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMMessage;
+import com.easemob.chat.TextMessageBody;
+import com.easemob.chat.EMMessage.ChatType;
+import com.easemob.util.EMLog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -25,10 +33,14 @@ import com.tongjo.bean.TJMessageList;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.db.OrmLiteHelper;
+import com.tongjo.emchat.GWHXSDKHelper;
+import com.tongjo.emchat.HXSDKHelper;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.ui.MainTabInfoAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabInfoAdapter.MItemLongPressListener;
+import com.tongjo.girlswish.ui.SystemMsgActivity.MsgDialogFragment;
 import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.CollectionUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlwish.data.DataContainer;
 
@@ -51,16 +63,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainTabInfoFragment extends BaseFragment {
-	private final static int MEG_WHAT_TOATS=10010;
+public class MainTabInfoFragment extends BaseFragment implements EMEventListener {
+	private final static int MEG_WHAT_TOATS = 10010;
 	private static String TAG = "MainTabInfoFragment";
-	//private SlideListView mListView;
+	// private SlideListView mListView;
 	private MainTabInfoAdapter mListAdapter = null;
-	//private RefreshableView mRefreshableView;
+	// private RefreshableView mRefreshableView;
 	private PullToRefreshListView mListView = null;
 	private ViewGroup mEmptyView = null;
 	private WishDialogFragment menuDialog = null;
-	
+
 	boolean mIsRefreshing;
 
 	@Override
@@ -71,12 +83,13 @@ public class MainTabInfoFragment extends BaseFragment {
 	}
 
 	private void initView(View view) {
-		mEmptyView = (ViewGroup)view.findViewById(R.id.info_empty_view);
+		mEmptyView = (ViewGroup) view.findViewById(R.id.info_empty_view);
 		mListView = (PullToRefreshListView) view.findViewById(R.id.info_listview);
-		//mRefreshableView = (RefreshableView) view.findViewById(R.id.info_refreshable_view);
+		// mRefreshableView = (RefreshableView)
+		// view.findViewById(R.id.info_refreshable_view);
 		mListAdapter = new MainTabInfoAdapter(getActivity(), DataContainer.MessageList);
-		//MockData();
 		selectData();
+		mListView.setEmptyView(mEmptyView);
 		mListView.setAdapter(mListAdapter);
 		updateUi();
 
@@ -85,18 +98,23 @@ public class MainTabInfoFragment extends BaseFragment {
 			@Override
 			public void MItemClick(View v, int position) {
 				TJMessage message = DataContainer.MessageList.get(position);
-				if(message != null){
-					if(message.getType() != 0){
+				if (message != null) {
+					if (message.getType() != 0) {
 						Intent intent = new Intent();
-						switch(message.getType()){
-						case -1 : 
-							intent.putExtra("toUser", getUserByUserId(message.getUserId()));
+						switch (message.getType()) {
+						// 聊天消息跳转到聊天界面
+						case AppConstant.MSG_TYPE_CHAT:
+							intent.putExtra("toUserHxid", message.getHxid());
 							intent.setClass(MainTabInfoFragment.this.getActivity(), ChatActivity.class);
 							break;
-						case 0 : 
-							intent.setClass(MainTabInfoFragment.this.getActivity(), SystemMsgActivity.class); break;
+						// 系统消息跳转到系统消息界面
+						case AppConstant.MSG_TYPE_SYSTEM:
+							intent.setClass(MainTabInfoFragment.this.getActivity(), SystemMsgActivity.class);
+							break;
 						}
-						intent.putExtra("wish", message.getWish());
+						message.setRead(true);
+						updateMessage(message);
+						updateUi();
 						startActivity(intent);
 					}
 				}
@@ -115,23 +133,20 @@ public class MainTabInfoFragment extends BaseFragment {
 			}
 
 		});
-		
+
 		mListView.setMode(Mode.BOTH);
 		mListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-				String label = DateUtils.formatDateTime(getActivity(),
-						System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
-								| DateUtils.FORMAT_SHOW_DATE
-								| DateUtils.FORMAT_ABBREV_ALL);
+				String label = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
 				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 
-					mIsRefreshing = true;
-					if (menuDialog != null && menuDialog.isVisible()) {
-						menuDialog.dismiss();
-					}
-					getMessageData();
-					mIsRefreshing = false;
+				mIsRefreshing = true;
+				if (menuDialog != null && menuDialog.isVisible()) {
+					menuDialog.dismiss();
+				}
+				getMessageData();
+				mIsRefreshing = false;
 			}
 		});
 		// 注册上下文菜单
@@ -148,24 +163,14 @@ public class MainTabInfoFragment extends BaseFragment {
 		return super.onContextItemSelected(item);
 	}
 
-	private void MockData() {
-
-		for (int i = 0; i < 5; i++) {
-			TJMessage message = new TJMessage();
-			message.setCreatedTime("12-8");
-			message.setContent("青岛爆炸满月：大量鱼虾死亡");
-			DataContainer.MessageList.add(message);
-		}
-		mListAdapter.setList(DataContainer.MessageList);
-	}
-
 	private void selectData() {
 		try {
+			DataContainer.MessageList.clear();
 			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this.getActivity()).getTJMessageDao();
 			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
 			Where<TJMessage, UUID> where = builder.where();
-			// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息,-1:聊天记录，0表示系统消息
-			where.in("type", Arrays.asList(-1,0));
+			// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息
+			where.in("type", Arrays.asList(AppConstant.MSG_TYPE_CHAT, AppConstant.MSG_TYPE_SYSTEM));
 			builder.setWhere(where);
 			builder.orderBy("createdTime", false);
 			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
@@ -191,46 +196,64 @@ public class MainTabInfoFragment extends BaseFragment {
 
 	}
 
-	public void addMessage(List<TJMessage> messageList) {
-		Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this.getActivity()).getTJMessageDao();
-		for (TJMessage message : messageList) {
-			try {
-				mTJMessageDao.createIfNotExists(message);
-			} catch (SQLException e) {
-				Log.e(TAG, e.getStackTrace().toString());
-			}
-		}
-	}
-	
-	private TJUserInfo getUserByUserId(String userId){
+	public void updateMessage(TJMessage message) {
 		try {
-			Dao<TJUserInfo, UUID> mTJUserDao = new OrmLiteHelper(this.getActivity()).getTJUserInfoDao();
-			QueryBuilder<TJUserInfo, UUID> builder = mTJUserDao.queryBuilder();
-			Where<TJUserInfo, UUID> where = builder.where();
-			where.eq("_id", userId);
-			builder.setWhere(where);
-			PreparedQuery<TJUserInfo> preparedQuery = builder.prepare();
-			List<TJUserInfo> queryUserInfoList = mTJUserDao.query(preparedQuery);
-			if(queryUserInfoList.size() > 0){
-				return queryUserInfoList.get(0);
-			}else{
-				// TODO从服务器获取
-			}
+			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this.getActivity()).getTJMessageDao();
+			mTJMessageDao.update(message);
 		} catch (SQLException e) {
 			Log.e(TAG, e.getStackTrace().toString());
 		}
-		return null;
 	}
 
-	public void updateUi(){
-		if(DataContainer.WishList.size() <1){
-			mEmptyView.setVisibility(View.VISIBLE);
-		}else{
-			mEmptyView.setVisibility(View.GONE);
+	public void addMessage(List<TJMessage> messageList) {
+		if (CollectionUtils.isEmpty(messageList)) {
+			return;
+		}
+		try {
+			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this.getActivity()).getTJMessageDao();
+			for (TJMessage message : messageList) {
+				message.setRead(false);
+				mTJMessageDao.createIfNotExists(message);
+			}
+			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
+			Where<TJMessage, UUID> where = builder.where();
+			where.in("type", Arrays.asList(AppConstant.MSG_TYPE_SYSTEM));
+			builder.setWhere(where);
+			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
+			List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
+			TJMessage message;
+			if (querMessageList.size() <= 0) {
+				message = new TJMessage();
+				message.set_id(UUID.fromString(AppConstant.MSG_SYSTEM_UUID));
+				message.setTitle("系统消息");
+				mTJMessageDao.createIfNotExists(message);
+			} else {
+				message = querMessageList.get(0);
+			}
+			message.setContent(messageList.get(messageList.size() - 1).getContent());
+			message.setCreatedTime(messageList.get(messageList.size() - 1).getCreatedTime());
+			message.setRead(false);
+			message.setType(AppConstant.MSG_TYPE_SYSTEM);
+			mTJMessageDao.update(message);
+		} catch (SQLException e) {
+			Log.d(TAG, e.getStackTrace().toString());
+		}
+
+	}
+
+	public void updateUi() {
+		if(mListAdapter != null){
 			mListAdapter.notifyDataSetChanged();
 		}
+		boolean hasUnReadMsg = false;
+		for (TJMessage msg : DataContainer.MessageList) {
+			if (!msg.isRead()) {
+				hasUnReadMsg = true;
+			}
+		}
+		((MainTabActivity) this.getActivity()).setAlertView(0, hasUnReadMsg);
 	}
-	
+
 	/**
 	 * 获取消息列表
 	 */
@@ -244,7 +267,7 @@ public class MainTabInfoFragment extends BaseFragment {
 				Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
 				mListView.onRefreshComplete();
 				if (arg2 == null) {
-					handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:").sendToTarget();
+					handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:").sendToTarget();
 					return;
 				}
 				if (arg0 == 200) {
@@ -252,49 +275,115 @@ public class MainTabInfoFragment extends BaseFragment {
 					}.getType();
 					TJResponse<TJMessageList> response = new Gson().fromJson(arg2, type);
 					if (response == null || response.getResult() == null || response.getData() == null) {
-						handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:").sendToTarget();
+						handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:").sendToTarget();
 						return;
 					}
 					if (response.getResult().getCode() == 0) {
 						if (response.getData().getNotices() != null) {
 							Log.d(TAG, response.getData().getNotices().toString());
-							//加入数据库
+							// 加入数据库
 							addMessage((List<TJMessage>) response.getData().getNotices());
-							//加入内存List
-							DataContainer.MessageList.addAll((List<TJMessage>) response.getData().getNotices());
-							updateUi();
+							refreshUI();
 						}
 					} else {
-						handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:" + response.getResult().getMessage()).sendToTarget();
+						handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:" + response.getResult().getMessage()).sendToTarget();
 					}
 				} else {
-					handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败:"  + arg0).sendToTarget();
+					handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:" + arg0).sendToTarget();
 				}
 			}
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 				mListView.onRefreshComplete();
-				handler.obtainMessage(MEG_WHAT_TOATS,"消息列表获取失败" + arg0).sendToTarget();
+				handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败" + arg0).sendToTarget();
 			}
 		});
 	}
-	private Handler handler=new Handler(){
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		selectData();
+		updateUi();
+		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
+		if (sdkHelper == null) {
+			System.out.println("test null");
+		}
+		sdkHelper.pushActivity(this.getActivity());
+		// register the event listener when enter the foreground
+		EMChatManager.getInstance().registerEventListener(
+				this,
+				new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage, EMNotifierEvent.Event.EventOfflineMessage, EMNotifierEvent.Event.EventDeliveryAck,
+						EMNotifierEvent.Event.EventReadAck });
+	}
+
+	@Override
+	public void onStop() {
+		// unregister this event listener when this activity enters the
+		// background
+		EMChatManager.getInstance().unregisterEventListener(this);
+
+		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
+
+		// 把此activity 从foreground activity 列表里移除
+		sdkHelper.popActivity(this.getActivity());
+
+		super.onStop();
+	}
+
+	/**
+	 * 事件监听
+	 * 
+	 * see {@link EMNotifierEvent}
+	 */
+	@Override
+	public void onEvent(EMNotifierEvent event) {
+		Log.d(TAG, event.getData().toString());
+		switch (event.getEvent()) {
+		case EventNewMessage: {
+			HXSDKHelper.getInstance().getNotifier().onNewMsg((EMMessage) event.getData());
+			refreshUI();
+			break;
+		}
+		case EventOfflineMessage: {
+			List<EMMessage> messages = (List<EMMessage>) event.getData();
+			HXSDKHelper.getInstance().getNotifier().onNewMesg(messages);
+			refreshUI();
+			break;
+		}
+		default:
+			break;
+		}
+	}
+
+	/* 有新消息到来刷新页面 */
+	private void refreshUI() {
+		selectData();
+		this.getActivity().runOnUiThread(new Runnable() {
+			public void run() {
+				updateUi();
+			}
+		});
+	}
+
+	private Handler handler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case MEG_WHAT_TOATS:
-				ToastUtils.show(getContext(), (String)msg.obj);
+				ToastUtils.show(getContext(), (String) msg.obj);
 				break;
 
 			default:
 				break;
 			}
 		}
-		
+
 	};
+
 	public class WishDialogFragment extends DialogFragment {
 		private Integer mPosition;
 		private TextView mDeleteTextView;
@@ -319,5 +408,4 @@ public class MainTabInfoFragment extends BaseFragment {
 			return view;
 		}
 	}
-
 }

@@ -23,6 +23,13 @@ public class TJMessage {
 	private String userId;
 	@DatabaseField
 	private String createdTime;
+	/*0:未读；1:已读*/
+	@DatabaseField
+	private boolean isRead;
+	@DatabaseField
+	private String hxid;
+	@DatabaseField
+	private String avatarUrl;
 	public TJMessage() {
 		super();
 	}
@@ -74,6 +81,24 @@ public class TJMessage {
 	}
 	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
+	}
+	public boolean isRead() {
+		return isRead;
+	}
+	public void setRead(boolean isRead) {
+		this.isRead = isRead;
+	}
+	public String getHxid() {
+		return hxid;
+	}
+	public void setHxid(String hxid) {
+		this.hxid = hxid;
+	}
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
 	}
 	@Override
 	public String toString() {
