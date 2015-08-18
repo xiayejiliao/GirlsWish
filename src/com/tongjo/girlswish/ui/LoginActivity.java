@@ -197,7 +197,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 								// iv_personico, displayImageOptions);
 
 								// 登陆环信
-								loginEMChat(userInfo.get_id().toString().replaceAll("-", ""), "123");
+								loginEMChat(userInfo.getHxid(), userInfo.getHxpassword());
 								startActivity(new Intent(getApplicationContext(), MainActivity.class));
 								finish();
 							}

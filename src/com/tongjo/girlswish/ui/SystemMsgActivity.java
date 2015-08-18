@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.apache.http.Header;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +24,10 @@ import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.easemob.EMEventListener;
+import com.easemob.EMNotifierEvent;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -39,15 +44,19 @@ import com.tongjo.bean.TJMessage;
 import com.tongjo.bean.TJMessageList;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.db.OrmLiteHelper;
+import com.tongjo.emchat.GWHXSDKHelper;
+import com.tongjo.emchat.HXSDKHelper;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.ui.SystemMsgAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.SystemMsgAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.CollectionUtils;
+import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlwish.data.DataContainer;
 
-public class SystemMsgActivity extends BaseFragmentActivity {
+public class SystemMsgActivity extends BaseFragmentActivity implements EMEventListener {
 	private final static int MEG_WHAT_TOATS = 10010;
 	private static String TAG = "MainTabInfoFragment";
 	// private SlideListView mListView;
@@ -72,12 +81,10 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 		mListView = (PullToRefreshListView) this.findViewById(R.id.info_listview);
 		// mRefreshableView = (RefreshableView)
 		// view.findViewById(R.id.info_refreshable_view);
-		mListAdapter = new SystemMsgAdapter(this.getApplicationContext(),
-				DataContainer.SystemMsgList);
-		// MockData();
-		selectData();
+		mListAdapter = new SystemMsgAdapter(this.getApplicationContext(), DataContainer.SystemMsgList);
+		mListView.setEmptyView(mEmptyView);
 		mListView.setAdapter(mListAdapter);
-		updateUi();
+		selectData();
 
 		mListAdapter.setMItemClickListener(new MItemClickListener() {
 
@@ -85,36 +92,36 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 			public void MItemClick(View v, int position) {
 				TJMessage message = DataContainer.SystemMsgList.get(position);
 				if (message != null) {
-					if (message.getType() != 0) {
+					if (message.getType() >= 0) {
 						Intent intent = new Intent();
 						switch (message.getType()) {
-						case 1:
-							intent.setClass(SystemMsgActivity.this,
-									GirlUnderwayWishActivity.class);
+						// 系统消息
+						case AppConstant.MSG_TYPE_NOTICE:
+							if (!StringUtils.isEmpty(message.getNoticeUrl())) {
+								Uri uri = Uri.parse(message.getNoticeUrl());
+								intent = new Intent(Intent.ACTION_VIEW, uri);
+								intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+								startActivity(intent);
+							}
 							break;
-						case 2:
-							intent.setClass(SystemMsgActivity.this,
-									GirlFinishWishActivity.class);
+						// 心愿被摘
+						case AppConstant.MSG_TYPE_WISH_PICKED:
+							intent.setClass(SystemMsgActivity.this, GirlUnderwayWishActivity.class);
+							intent.putExtra("wish", message.getWish());
+							startActivity(intent);
 							break;
-						case 3:
-							intent.setClass(SystemMsgActivity.this,
-									GirlUnpickedWishActivity.class);
-							break;
-						case 4:
-							intent.setClass(SystemMsgActivity.this,
-									BoyUncompleteWishActivity.class);
-							break;
-						case 5:
-							intent.setClass(SystemMsgActivity.this,
-									BoyCompleteWishActivity.class);
-							break;
-						case 6:
-							intent.setClass(SystemMsgActivity.this,
-									BoyUncompleteWishActivity.class);
+						// 心愿完成
+						case AppConstant.MSG_TYPE_WISH_FINISH:
+							intent.setClass(SystemMsgActivity.this, GirlFinishWishActivity.class);
+							intent.putExtra("wish", message.getWish());
+							startActivity(intent);
 							break;
 						}
-						intent.putExtra("wish", message.getWish());
-						startActivity(intent);
+						message.setRead(true);
+						updateMessage(message);
+						if (mListAdapter != null) {
+							mListAdapter.notifyDataSetChanged();
+						}
 					}
 				}
 			}
@@ -136,10 +143,7 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 		mListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-				String label = DateUtils.formatDateTime(SystemMsgActivity.this,
-						System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
-								| DateUtils.FORMAT_SHOW_DATE
-								| DateUtils.FORMAT_ABBREV_ALL);
+				String label = DateUtils.formatDateTime(SystemMsgActivity.this, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
 				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 
 				mIsRefreshing = true;
@@ -150,34 +154,31 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 				mIsRefreshing = false;
 			}
 		});
-	}
 
-	private void MockData() {
+		// 暂无消息点击加载
+		mEmptyView.setOnClickListener(new OnClickListener() {
 
-		for (int i = 0; i < 5; i++) {
-			TJMessage message = new TJMessage();
-			message.setCreatedTime("12-8");
-			message.setContent("青岛爆炸满月：大量鱼虾死亡");
-			DataContainer.SystemMsgList.add(message);
-		}
-		mListAdapter.setList(DataContainer.SystemMsgList);
+			@Override
+			public void onClick(View arg0) {
+				getMessageData();
+			}
+		});
 	}
 
 	private void selectData() {
 		try {
-			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this)
-					.getTJMessageDao();
-			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao
-					.queryBuilder();
+			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this).getTJMessageDao();
+			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
 			Where<TJMessage, UUID> where = builder.where();
 			// 详细的系统消息
-			where.in("type", Arrays.asList(1,2,3,4,5,6));
+			where.in("type", Arrays.asList(AppConstant.MSG_TYPE_NOTICE, AppConstant.MSG_TYPE_WISH_PICKED, AppConstant.MSG_TYPE_WISH_PICKED));
 			builder.setWhere(where);
 			builder.orderBy("createdTime", false);
 			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
-			DataContainer.SystemMsgList
-					.addAll(mTJMessageDao.query(preparedQuery));
-			mListAdapter.notifyDataSetChanged();
+			DataContainer.SystemMsgList.addAll(mTJMessageDao.query(preparedQuery));
+			if (mListAdapter != null) {
+				mListAdapter.notifyDataSetChanged();
+			}
 		} catch (SQLException e) {
 			Log.e(TAG, e.getStackTrace().toString());
 		}
@@ -187,8 +188,7 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 
 		if (itemId >= 0 && itemId < DataContainer.SystemMsgList.size()) {
 			try {
-				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this)
-						.getTJMessageDao();
+				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this).getTJMessageDao();
 				mTJMessageDao.delete(DataContainer.SystemMsgList.get(itemId));
 				DataContainer.SystemMsgList.remove(itemId);
 				mListAdapter.notifyDataSetChanged();
@@ -199,24 +199,47 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 
 	}
 
-	public void addMessage(List<TJMessage> SystemMsgList) {
-		Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this)
-				.getTJMessageDao();
-		for (TJMessage message : SystemMsgList) {
-			try {
-				mTJMessageDao.createIfNotExists(message);
-			} catch (SQLException e) {
-				Log.e(TAG, e.getStackTrace().toString());
-			}
+	public void updateMessage(TJMessage message) {
+		try {
+			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this).getTJMessageDao();
+			mTJMessageDao.update(message);
+		} catch (SQLException e) {
+			Log.e(TAG, e.getStackTrace().toString());
 		}
 	}
 
-	public void updateUi() {
-		if (DataContainer.WishList.size() < 1) {
-			mEmptyView.setVisibility(View.VISIBLE);
-		} else {
-			mEmptyView.setVisibility(View.GONE);
-			mListAdapter.notifyDataSetChanged();
+	public void addMessage(List<TJMessage> systemMsgList) {
+		if (CollectionUtils.isEmpty(systemMsgList)) {
+			return;
+		}
+		try {
+			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this).getTJMessageDao();
+			for (TJMessage message : systemMsgList) {
+				mTJMessageDao.createIfNotExists(message);
+			}
+			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
+			Where<TJMessage, UUID> where = builder.where();
+			where.in("type", Arrays.asList(AppConstant.MSG_TYPE_SYSTEM));
+			builder.setWhere(where);
+			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
+			List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
+			TJMessage message;
+			if (querMessageList.size() <= 0) {
+				message = new TJMessage();
+				message.set_id(UUID.fromString(AppConstant.MSG_SYSTEM_UUID));
+				message.setTitle("系统消息");
+				mTJMessageDao.createIfNotExists(message);
+			} else {
+				message = querMessageList.get(0);
+			}
+			message.setContent(systemMsgList.get(systemMsgList.size() - 1).getContent());
+			message.setCreatedTime(systemMsgList.get(systemMsgList.size() - 1).getCreatedTime());
+			message.setRead(false);
+			message.setType(AppConstant.MSG_TYPE_SYSTEM);
+			Log.e(TAG, message.toString());
+			mTJMessageDao.update(message);
+		} catch (SQLException e) {
+			Log.e(TAG, e.getStackTrace().toString());
 		}
 	}
 
@@ -226,66 +249,104 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 	public void getMessageData() {
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("page", "0");
-		((BaseApplication)this.getApplication()).getAsyncHttpClient()
-		.get(AppConstant.URL_BASE + AppConstant.URL_MESSAGE,
-				requestParams, new TextHttpResponseHandler("UTF-8") {
+		((BaseApplication) this.getApplication()).getAsyncHttpClient().get(AppConstant.URL_BASE + AppConstant.URL_MESSAGE, requestParams, new TextHttpResponseHandler("UTF-8") {
 
-					@Override
-					public void onSuccess(int arg0, Header[] arg1, String arg2) {
-						Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
-						mListView.onRefreshComplete();
-						if (arg2 == null) {
-							handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:")
-									.sendToTarget();
-							return;
-						}
-						if (arg0 == 200) {
-							Type type = new TypeToken<TJResponse<TJMessageList>>() {
-							}.getType();
-							TJResponse<TJMessageList> response = new Gson()
-									.fromJson(arg2, type);
-							if (response == null
-									|| response.getResult() == null
-									|| response.getData() == null) {
-								handler.obtainMessage(MEG_WHAT_TOATS,
-										"消息列表获取失败:").sendToTarget();
-								return;
-							}
-							if (response.getResult().getCode() == 0) {
-								if (response.getData().getNotices() != null) {
-									Log.d(TAG, response.getData().getNotices()
-											.toString());
-									// 加入数据库
-									addMessage((List<TJMessage>) response
-											.getData().getNotices());
-									// 加入内存List
-									DataContainer.SystemMsgList
-											.addAll((List<TJMessage>) response
-													.getData().getNotices());
-									updateUi();
-								}
-							} else {
-								handler.obtainMessage(
-										MEG_WHAT_TOATS,
-										"消息列表获取失败:"
-												+ response.getResult()
-														.getMessage())
-										.sendToTarget();
-							}
-						} else {
-							handler.obtainMessage(MEG_WHAT_TOATS,
-									"消息列表获取失败:" + arg0).sendToTarget();
-						}
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String arg2) {
+				Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
+				mListView.onRefreshComplete();
+				if (arg2 == null) {
+					handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:").sendToTarget();
+					return;
+				}
+				if (arg0 == 200) {
+					Type type = new TypeToken<TJResponse<TJMessageList>>() {
+					}.getType();
+					TJResponse<TJMessageList> response = new Gson().fromJson(arg2, type);
+					if (response == null || response.getResult() == null || response.getData() == null) {
+						handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:").sendToTarget();
+						return;
 					}
+					if (response.getResult().getCode() == 0) {
+						if (response.getData().getNotices() != null) {
+							Log.d(TAG, response.getData().getNotices().toString());
+							// 加入数据库
+							addMessage((List<TJMessage>) response.getData().getNotices());
+							refreshUI();
+						}
+					} else {
+						handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:" + response.getResult().getMessage()).sendToTarget();
+					}
+				} else {
+					handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:" + arg0).sendToTarget();
+				}
+			}
 
-					@Override
-					public void onFailure(int arg0, Header[] arg1, String arg2,
-							Throwable arg3) {
-						mListView.onRefreshComplete();
-						handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败" + arg0)
-								.sendToTarget();
-					}
-				});
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				mListView.onRefreshComplete();
+				handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败" + arg0).sendToTarget();
+			}
+		});
+	}
+
+	/**
+	 * 事件监听
+	 * 
+	 * see {@link EMNotifierEvent}
+	 */
+	@Override
+	public void onEvent(EMNotifierEvent event) {
+		switch (event.getEvent()) {
+		case EventNewMessage: {
+			HXSDKHelper.getInstance().getNotifier().onNewMsg((EMMessage) event.getData());
+			refreshUI();
+			break;
+		}
+		case EventOfflineMessage: {
+			List<EMMessage> messages = (List<EMMessage>) event.getData();
+			HXSDKHelper.getInstance().getNotifier().onNewMesg(messages);
+			refreshUI();
+			break;
+		}
+		default:
+			break;
+		}
+	}
+
+	/* 有新消息到来刷新页面 */
+	private void refreshUI() {
+		selectData();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		selectData();
+		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
+		if (sdkHelper == null) {
+			System.out.println("test null");
+		}
+		sdkHelper.pushActivity(this);
+		// register the event listener when enter the foreground
+		EMChatManager.getInstance().registerEventListener(
+				this,
+				new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage, EMNotifierEvent.Event.EventOfflineMessage, EMNotifierEvent.Event.EventDeliveryAck,
+						EMNotifierEvent.Event.EventReadAck });
+	}
+
+	@Override
+	public void onStop() {
+		// unregister this event listener when this activity enters the
+		// background
+		EMChatManager.getInstance().unregisterEventListener(this);
+
+		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
+
+		// 把此activity 从foreground activity 列表里移除
+		sdkHelper.popActivity(this);
+
+		super.onStop();
 	}
 
 	private Handler handler = new Handler() {
@@ -313,15 +374,11 @@ public class SystemMsgActivity extends BaseFragmentActivity {
 			this.mPosition = positon;
 		}
 
-
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-			View view = inflater
-					.inflate(R.layout.fragment_info_menu, container);
-			mDeleteTextView = (TextView) view
-					.findViewById(R.id.infomenu_delete);
+			View view = inflater.inflate(R.layout.fragment_info_menu, container);
+			mDeleteTextView = (TextView) view.findViewById(R.id.infomenu_delete);
 			mDeleteTextView.setOnClickListener(new OnClickListener() {
 
 				@Override

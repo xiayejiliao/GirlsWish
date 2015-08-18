@@ -17,8 +17,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +43,7 @@ import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -81,10 +85,19 @@ import com.easemob.exceptions.EaseMobException;
 import com.easemob.util.EMLog;
 import com.easemob.util.PathUtil;
 import com.easemob.util.VoiceRecorder;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
+import com.tongjo.bean.TJMessage;
 import com.tongjo.bean.TJUserInfo;
+import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.emchat.GWHXSDKHelper;
 import com.tongjo.emchat.HXSDKHelper;
+import com.tongjo.emchat.UserUtils;
+import com.tongjo.emchat.UserUtils.UserGetLisener;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SmileUtils;
 import com.tongjo.girlswish.widget.ExpandGridView;
 import com.tongjo.girlswish.widget.PasteEditText;
@@ -151,7 +164,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private InputMethodManager manager;
 	private List<String> reslist;
 	private Drawable[] micImages;
-	private int chatType;
 	private EMConversation conversation;
 	public static ChatActivity activityInstance = null;
 	private MessageAdapter adapter;
@@ -173,7 +185,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	
 	// 给谁发送消息
 	private TJUserInfo toChatUser;
-	private String toChatUsername;
+	//  环信id
+	private String toChatUserHxid;
 
 	private Handler micImageHandler = new Handler() {
 		@Override
@@ -287,12 +300,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		                                 if (listView.getFirstVisiblePosition() == 0 && !isloading && haveMoreData) {
 		                                         List<EMMessage> messages;
 		                                         try {
-	                                                 if (chatType == CHATTYPE_SINGLE){
-                                                         messages = conversation.loadMoreMsgFromDB(adapter.getItem(0).getMsgId(), pagesize);
-	                                                 }
-	                                                 else{
-                                                         messages = conversation.loadMoreGroupMsgFromDB(adapter.getItem(0).getMsgId(), pagesize);
-	                                                 }
+		                                        	 messages = conversation.loadMoreMsgFromDB(adapter.getItem(0).getMsgId(), pagesize);
 		                                         } catch (Exception e1) {
 	                                                 swipeRefreshLayout.setRefreshing(false);
 	                                                 return;
@@ -330,22 +338,46 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(
 				PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
 		
-		toChatUser = (TJUserInfo) getIntent().getSerializableExtra("chatToUser");
-		toChatUsername = toChatUser.getNickname();
-		
-		//设置标题栏
-		this.setCenterText(toChatUsername);
+		toChatUserHxid = getIntent().getStringExtra("toUserHxid");
+		UserUtils.getUserByHxid(this, toChatUserHxid, new UserGetLisener() {
+			
+			@Override
+			public void onGetUser(final TJUserInfo userInfo) {
+				try {
+					Dao<TJUserInfo, UUID> mTJUerInfoDao = new OrmLiteHelper(ChatActivity.this.getApplicationContext()).getTJUserInfoDao();
+					mTJUerInfoDao.createIfNotExists(userInfo);
+					toChatUser = userInfo;
+					runOnUiThread(new Runnable() {
+						public void run() {
+							ChatActivity.this.setCenterText(userInfo.getRealname());
+						}
+					});
+					Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(ChatActivity.this.getApplicationContext()).getTJMessageDao();
+					QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
+					Where<TJMessage, UUID> where = builder.where();
+					// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息
+					where.in("type", Arrays.asList(AppConstant.MSG_TYPE_CHAT));
+					where.eq("hxid", toChatUserHxid);
+					builder.setWhere(where);
+					builder.orderBy("createdTime", false);
+					PreparedQuery<TJMessage> preparedQuery = builder.prepare();
+					List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
+					if (querMessageList.size() > 0 && !querMessageList.get(0).getTitle().equals(userInfo.getRealname())) {
+						querMessageList.get(0).setTitle(userInfo.getRealname());
+						mTJMessageDao.update(querMessageList.get(0));
+					}
+				} catch (SQLException e) {
+					Log.e(TAG, e.getStackTrace().toString());
+				}
+				
+			}
+		} );
+	    this.setCenterText(toChatUserHxid);
 	}
 
 	protected void onConversationInit(){
-	    if(chatType == CHATTYPE_SINGLE){
-	        conversation = EMChatManager.getInstance().getConversationByType(toChatUsername,EMConversationType.Chat);
-	    }else if(chatType == CHATTYPE_GROUP){
-	        conversation = EMChatManager.getInstance().getConversationByType(toChatUsername,EMConversationType.GroupChat);
-	    }else if(chatType == CHATTYPE_CHATROOM){
-	        conversation = EMChatManager.getInstance().getConversationByType(toChatUsername,EMConversationType.ChatRoom);
-	    }
-	     
+		// 单人聊天
+	    conversation = EMChatManager.getInstance().getConversationByType(toChatUserHxid,EMConversationType.Chat);
         // 把此会话的未读数置为0
         conversation.markAllMessagesAsRead();
 
@@ -358,16 +390,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             if (msgs != null && msgs.size() > 0) {
                 msgId = msgs.get(0).getMsgId();
             }
-            if (chatType == CHATTYPE_SINGLE) {
-                conversation.loadMoreMsgFromDB(msgId, pagesize);
-            } else {
-                conversation.loadMoreGroupMsgFromDB(msgId, pagesize);
-            }
+            conversation.loadMoreMsgFromDB(msgId, pagesize);
         }
 	}
 	
 	protected void onListViewCreation(){
-        adapter = new MessageAdapter(ChatActivity.this, toChatUsername, chatType);
+        adapter = new MessageAdapter(ChatActivity.this, toChatUserHxid, CHATTYPE_SINGLE);
         // 显示消息
         listView.setAdapter(adapter);
         
@@ -426,7 +454,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		if (resultCode == RESULT_OK) { // 清空消息
 			if (requestCode == REQUEST_CODE_EMPTY_HISTORY) {
 				// 清空会话
-				EMChatManager.getInstance().clearConversation(toChatUsername);
+				EMChatManager.getInstance().clearConversation(toChatUserHxid);
 				adapter.refresh();
 			} else if (requestCode == REQUEST_CODE_CAMERA) { // 发送照片
 				if (cameraFile != null && cameraFile.exists())
@@ -586,7 +614,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             }
 
             //如果是当前会话的消息，刷新聊天页面
-            if(username.equals(getToChatUsername())){
+            if(username.equals(getToChatUserHxid())){
                 refreshUIWithNewMessage();
                 //声音和震动提示有新消息
                 HXSDKHelper.getInstance().getNotifier().viberateAndPlayTone(message);
@@ -710,17 +738,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 		if (content.length() > 0) {
 			EMMessage message = EMMessage.createSendMessage(EMMessage.Type.TXT);
-			// 如果是群聊，设置chattype,默认是单聊
-			if (chatType == CHATTYPE_GROUP){
-			    message.setChatType(ChatType.GroupChat);
-			}else if(chatType == CHATTYPE_CHATROOM){
-			    message.setChatType(ChatType.ChatRoom);
-			}
 			TextMessageBody txtBody = new TextMessageBody(content);
 			// 设置消息body
 			message.addBody(txtBody);
 			// 设置要发给谁,用户username或者群聊groupid
-			message.setReceipt(toChatUsername);
+			message.setReceipt(toChatUserHxid);
 			// 把messgage加到conversation中
 			conversation.addMessage(message);
 			// 通知adapter有消息变动，adapter会根据加入的这条message显示消息和调用sdk的发送方法
@@ -746,13 +768,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		}
 		try {
 			final EMMessage message = EMMessage.createSendMessage(EMMessage.Type.VOICE);
-			// 如果是群聊，设置chattype,默认是单聊
-			if (chatType == CHATTYPE_GROUP){
-				message.setChatType(ChatType.GroupChat);
-				}else if(chatType == CHATTYPE_CHATROOM){
-				    message.setChatType(ChatType.ChatRoom);
-				}
-			message.setReceipt(toChatUsername);
+			message.setReceipt(toChatUserHxid);
 			int len = Integer.parseInt(length);
 			VoiceMessageBody body = new VoiceMessageBody(new File(filePath), len);
 			message.addBody(body);
@@ -772,16 +788,9 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * @param filePath
 	 */
 	private void sendPicture(final String filePath) {
-		String to = toChatUsername;
+		String to = toChatUserHxid;
 		// create and add image message in view
 		final EMMessage message = EMMessage.createSendMessage(EMMessage.Type.IMAGE);
-		// 如果是群聊，设置chattype,默认是单聊
-		if (chatType == CHATTYPE_GROUP){
-			message.setChatType(ChatType.GroupChat);
-		}else if(chatType == CHATTYPE_CHATROOM){
-		    message.setChatType(ChatType.ChatRoom);
-		}
-
 		message.setReceipt(to);
 		ImageMessageBody body = new ImageMessageBody(new File(filePath));
 		// 默认超过100k的图片会压缩后发给对方，可以设置成发送原图
@@ -805,13 +814,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		}
 		try {
 			EMMessage message = EMMessage.createSendMessage(EMMessage.Type.VIDEO);
-			// 如果是群聊，设置chattype,默认是单聊
-			if (chatType == CHATTYPE_GROUP){
-				message.setChatType(ChatType.GroupChat);
-			}else if(chatType == CHATTYPE_CHATROOM){
-			    message.setChatType(ChatType.ChatRoom);
-			}
-			String to = toChatUsername;
+			String to = toChatUserHxid;
 			message.setReceipt(to);
 			VideoMessageBody body = new VideoMessageBody(videoFile, thumbPath, length, videoFile.length());
 			message.addBody(body);
@@ -872,15 +875,9 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 */
 	private void sendLocationMsg(double latitude, double longitude, String imagePath, String locationAddress) {
 		EMMessage message = EMMessage.createSendMessage(EMMessage.Type.LOCATION);
-		// 如果是群聊，设置chattype,默认是单聊
-		if (chatType == CHATTYPE_GROUP){
-			message.setChatType(ChatType.GroupChat);
-		}else if(chatType == CHATTYPE_CHATROOM){
-		    message.setChatType(ChatType.ChatRoom);
-		}
 		LocationMessageBody locBody = new LocationMessageBody(locationAddress, latitude, longitude);
 		message.addBody(locBody);
-		message.setReceipt(toChatUsername);
+		message.setReceipt(toChatUserHxid);
 		conversation.addMessage(message);
 		listView.setAdapter(adapter);
 		adapter.refreshSelectLast();
@@ -925,14 +922,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 		// 创建一个文件消息
 		EMMessage message = EMMessage.createSendMessage(EMMessage.Type.FILE);
-		// 如果是群聊，设置chattype,默认是单聊
-		if (chatType == CHATTYPE_GROUP){
-			message.setChatType(ChatType.GroupChat);
-		}else if(chatType == CHATTYPE_CHATROOM){
-		    message.setChatType(ChatType.ChatRoom);
-		}
-
-		message.setReceipt(toChatUsername);
+		message.setReceipt(toChatUserHxid);
 		// add message body
 		NormalFileMessageBody body = new NormalFileMessageBody(new File(filePath));
 		message.addBody(body);
@@ -1201,9 +1191,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 */
 	public void back(View view) {
 		EMChatManager.getInstance().unregisterEventListener(this);
-		if(chatType == CHATTYPE_CHATROOM){
-			EMChatManager.getInstance().leaveChatRoom(toChatUsername);
-		}
 		finish();
 	}
 
@@ -1218,9 +1205,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			iv_emoticons_checked.setVisibility(View.INVISIBLE);
 		} else {
 			super.onBackPressed();
-			if(chatType == CHATTYPE_CHATROOM){
-				EMChatManager.getInstance().leaveChatRoom(toChatUsername);
-			}
 		}
 	}
 
@@ -1234,42 +1218,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			switch (scrollState) {
 			case OnScrollListener.SCROLL_STATE_IDLE:
-				/*if (view.getFirstVisiblePosition() == 0 && !isloading && haveMoreData && conversation.getAllMessages().size() != 0) {
-					isloading = true;
-					loadmorePB.setVisibility(View.VISIBLE);
-					// sdk初始化加载的聊天记录为20条，到顶时去db里获取更多					
-					List<EMMessage> messages;
-					EMMessage firstMsg = conversation.getAllMessages().get(0);
-					try {
-						// 获取更多messges，调用此方法的时候从db获取的messages
-						// sdk会自动存入到此conversation中
-						if (chatType == CHATTYPE_SINGLE)
-							messages = conversation.loadMoreMsgFromDB(firstMsg.getMsgId(), pagesize);
-						else
-							messages = conversation.loadMoreGroupMsgFromDB(firstMsg.getMsgId(), pagesize);
-					} catch (Exception e1) {
-						loadmorePB.setVisibility(View.GONE);
-						return;
-					}
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-					}
-					if (messages.size() != 0) {
-						// 刷新ui
-						if (messages.size() > 0) {
-							adapter.refreshSeekTo(messages.size() - 1);
-						}
-						
-						if (messages.size() != pagesize)
-							haveMoreData = false;
-					} else {
-						haveMoreData = false;
-					}
-					loadmorePB.setVisibility(View.GONE);
-					isloading = false;
-
-				}*/
 				break;
 			}
 		}
@@ -1284,8 +1232,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	@Override
 	protected void onNewIntent(Intent intent) {
 		// 点击notification bar进入聊天页面，保证只有一个聊天页面
-		String username = intent.getStringExtra("userId");
-		if (toChatUsername.equals(username))
+		String userHxid = intent.getStringExtra("toUserHxid");
+		if (toChatUserHxid.equals(userHxid))
 			super.onNewIntent(intent);
 		else {
 			finish();
@@ -1294,12 +1242,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 	}
 
-	public String getToChatUsername() {
-		return toChatUsername;
+	public String getToChatUserHxid() {
+		return toChatUserHxid;
 	}
 
 	public ListView getListView() {
 		return listView;
 	}
-
 }

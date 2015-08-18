@@ -3,13 +3,23 @@ package com.tongjo.girlswish.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.tongjo.bean.TJMessage;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MyGestureListener;
+import com.tongjo.girlswish.ui.MainTabWishAdapter.ViewHolder;
+import com.tongjo.girlswish.utils.ImageUtils;
+import com.tongjo.girlswish.utils.StringUtils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,9 +36,10 @@ import android.widget.TextView;
  * 
  */
 public class MainTabInfoAdapter extends BaseAdapter {
+	private static String TAG = "MainTabInfoAdapter";
 	private Context mContext;
 	private List<TJMessage> mList = new ArrayList<TJMessage>();
-	
+
 	private MItemClickListener ICListener;
 	private MItemLongPressListener LPListener;
 	private GestureDetector gestureDetector;
@@ -96,36 +107,53 @@ public class MainTabInfoAdapter extends BaseAdapter {
 			convertView = mInflater.inflate(R.layout.listitem_info, null);
 
 			holder.iconImageView = (ImageView) convertView.findViewById(R.id.info_list_icon);
-			holder.titleTextVIew = (TextView) convertView
-					.findViewById(R.id.info_list_title);
-			holder.msgTextView = (TextView) convertView
-					.findViewById(R.id.info_list_msg);
-			holder.timeTextView = (TextView) convertView
-					.findViewById(R.id.info_list_time);
+			holder.titleTextVIew = (TextView) convertView.findViewById(R.id.info_list_title);
+			holder.msgTextView = (TextView) convertView.findViewById(R.id.info_list_msg);
+			holder.timeTextView = (TextView) convertView.findViewById(R.id.info_list_time);
+			holder.msgAlterTextView = (TextView) convertView.findViewById(R.id.info_list_msg_alert);
 			convertView.setTag(holder);
 
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		TJMessage message = mList.get(arg0);
-		//holder.iconImageView.setImageResource(R.drawable.sound);
+		// holder.iconImageView.setImageResource(R.drawable.sound);
 		holder.titleTextVIew.setText(message.getTitle());
 		holder.msgTextView.setText(message.getContent());
 		holder.timeTextView.setText(message.getCreatedTime());
-		/*if (arg0 % 4 == 0) {
-			convertView.setBackgroundColor(mContext.getResources().getColor(
-					R.color.addwish_blueColor));
-		} else if (arg0 % 4 == 1) {
-			convertView.setBackgroundColor(mContext.getResources().getColor(
-					R.color.addwish_redColor));
-		} else if (arg0 % 4 == 2) {
-			convertView.setBackgroundColor(mContext.getResources().getColor(
-					R.color.addwish_greenColor));
+		if (message.isRead()) {
+			holder.msgAlterTextView.setVisibility(View.INVISIBLE);
 		} else {
-			convertView.setBackgroundColor(mContext.getResources().getColor(
-					R.color.addwish_yellowColor));
-		}*/
-		
+			holder.msgAlterTextView.setVisibility(View.VISIBLE);
+		}
+		/*
+		 * if (arg0 % 4 == 0) {
+		 * convertView.setBackgroundColor(mContext.getResources().getColor(
+		 * R.color.addwish_blueColor)); } else if (arg0 % 4 == 1) {
+		 * convertView.setBackgroundColor(mContext.getResources().getColor(
+		 * R.color.addwish_redColor)); } else if (arg0 % 4 == 2) {
+		 * convertView.setBackgroundColor(mContext.getResources().getColor(
+		 * R.color.addwish_greenColor)); } else {
+		 * convertView.setBackgroundColor(mContext.getResources().getColor(
+		 * R.color.addwish_yellowColor)); }
+		 */
+		final ViewHolder finalholder = holder;
+		if (!StringUtils.isEmpty(message.getAvatarUrl())) {
+			ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
+			ImageLoader.getInstance().init(configuration);
+
+			ImageLoader.getInstance().loadImage(message.getAvatarUrl(), new ImageSize(R.dimen.info_list_img_width, R.dimen.info_list_img_height), new SimpleImageLoadingListener() {
+				public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+					if (loadedImage != null) {
+						finalholder.iconImageView.setImageBitmap(ImageUtils.getRoundCornerDrawable(loadedImage, 360));
+					}
+				};
+
+				public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+					Log.d(TAG, "头像加载失败");
+				};
+			});
+		}
 		convertView.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				curPosition = arg0;
@@ -137,7 +165,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 				return false;
 			}
 		});
-		
+
 		return convertView;
 	}
 
@@ -146,7 +174,9 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		public TextView titleTextVIew;
 		public TextView msgTextView;
 		public TextView timeTextView;
+		public TextView msgAlterTextView;
 	}
+
 	/** Item点击对应的事件 */
 	public void setMItemClickListener(MItemClickListener listener) {
 		ICListener = listener;
@@ -187,8 +217,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 
 		// 手势移动操作，移动时触发
 		@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY) {
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			System.out.println("onScroll");
 			return true;
 		}
@@ -201,8 +230,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 
 		// 手势移动操作，UP时才会触发
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			System.out.println("onFling");
 			return false;
 		}

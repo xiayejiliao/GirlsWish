@@ -25,17 +25,15 @@
     <LinearLayout
 	    android:id="@+id/info_empty_view" 
 	    android:layout_width="match_parent"
-        android:layout_height="@dimen/info_empty_view_height"
-        android:layout_marginTop="@dimen/margin_50"
-        android:layout_marginBottom="@dimen/margin_10"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center|top"
+        android:gravity="center"
         android:visibility="gone"
 	    >
 	    <TextView 
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="暂无消息"
+	        android:text="暂无消息,下拉刷新"
 	        android:textSize="@dimen/text_size_24"
 	        android:textColor="@color/black"
 	        />
@@ -52,8 +50,8 @@
         android:dividerHeight="2dp"
         android:fadingEdge="none"
         android:fastScrollEnabled="false"
-        android:footerDividersEnabled="false"
-        android:headerDividersEnabled="false"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
         android:smoothScrollbar="true"
          >
     </com.handmark.pulltorefresh.library.PullToRefreshListView>
