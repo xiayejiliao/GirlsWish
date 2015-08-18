@@ -1,12 +1,13 @@
 package com.tongjo.bean;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName="school")
-public class TJSchool {
+public class TJSchool implements Serializable{
 	@DatabaseField(id=true,index=true)
 	private UUID _id;
 	@DatabaseField

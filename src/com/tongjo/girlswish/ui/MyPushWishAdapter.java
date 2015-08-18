@@ -24,20 +24,21 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.tongjo.bean.TJWish;
 import com.tongjo.girlswish.R;
+
 /**
  * 
-* @Description: 使用 recyclerview
-* @author 16ren 
-* @date 2015年8月18日 下午3:49:24 
-*
+ * @Description: 使用 recyclerview
+ * @author 16ren
+ * @date 2015年8月18日 下午3:49:24
+ *
  */
-class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolder> {
-	private Logger logger = LoggerFactory.getLogger(MyPickWishAdapter.class);
+class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolder> {
+	private Logger logger = LoggerFactory.getLogger(MyPushWishAdapter.class);
 	private Context Mcontext;
 	private List<TJWish> wish;
 	private DisplayImageOptions displayImageOptions;
 
-	public MyPickWishAdapter(Context mcontext, List<TJWish> list) {
+	public MyPushWishAdapter(Context mcontext, List<TJWish> list) {
 		super();
 		Mcontext = mcontext;
 		this.wish = list;
@@ -64,28 +65,32 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 	public void onBindViewHolder(final ViewHolder arg0, int arg1) {
 		// TODO Auto-generated method stub
 		final TJWish tjWish = wish.get(arg1);
-		arg0.tvNick.setText(tjWish.getCreatorUser().getNickname());
-		arg0.tvSchool.setText(tjWish.getCreatorUser().getSchool().getName());
+		if (tjWish.getPickerUser() == null) {
+			arg0.tvNick.setText("未被摘取");
+			return;
+		}
+		arg0.tvNick.setText(tjWish.getPickerUser().getNickname());
+		arg0.tvSchool.setText(tjWish.getPickerUser().getSchool().getName());
 		arg0.tvcontent.setText(tjWish.getContent());
 		ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), arg0.ivicon, displayImageOptions);
 		arg0.rLayout.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(arg0.tvcontent.isShown()){
+				if (arg0.tvcontent.isShown()) {
 					arg0.tvcontent.setVisibility(View.GONE);
-				}else {
+				} else {
 					arg0.tvcontent.setVisibility(View.VISIBLE);
 				}
 			}
 		});
 		arg0.ivtalk.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO 启动聊天窗口
-				Intent intent=new Intent(Mcontext, ChatActivity.class);
+				Intent intent = new Intent(Mcontext, ChatActivity.class);
 				intent.putExtra("chatToUser", tjWish.getCreatorUser());
 				Mcontext.startActivity(intent);
 			}

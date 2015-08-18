@@ -142,7 +142,9 @@ public class MainActivity extends AppCompatActivity {
 		tv_school.setText(SpUtils.get(getApplicationContext(), AppConstant.USER_SCHOOLNAME, "学校").toString());
 		Integer sex = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_SEX, 1);
 		String iconurl = SpUtils.get(getApplicationContext(), AppConstant.USER_ICONURL, "").toString();
-		Picasso.with(this).load(iconurl).into(iv_icon);
+		if (iconurl != null&&!iconurl.equals("")) {
+			Picasso.with(this).load(iconurl).into(iv_icon);
+		}
 	}
 
 	@Override
@@ -158,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
 		return super.onCreateOptionsMenu(menu);
 	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub

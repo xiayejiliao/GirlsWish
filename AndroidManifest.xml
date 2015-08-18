@@ -174,20 +174,10 @@
         <activity
             android:name=".ui.MyPickWishActivity"
             android:label="@string/title_activity_my_pick_wish" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
-            android:name=".ui..MyPushWishActivity"
+            android:name=".ui.MyPushWishActivity"
             android:label="@string/title_activity_my_push_wish" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

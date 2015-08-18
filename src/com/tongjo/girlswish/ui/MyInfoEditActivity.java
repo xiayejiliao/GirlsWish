@@ -231,7 +231,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLCOORDINATES, userSchool.getCoordinates());
 						}
 					}
-					Intent intent = new Intent(MyInfoEditActivity.this, UploadAvatarActivity.class);
+					Intent intent = new Intent(MyInfoEditActivity.this, LoginActivity.class);
 					startActivity(intent);
 					MyInfoEditActivity.this.finish();
 

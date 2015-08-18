@@ -198,8 +198,7 @@ public class MainTabWishFragment extends BaseFragment {
 	public void getWishData() {
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("page", "0");
-		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISH,
-				requestParams, new TextHttpResponseHandler("UTF-8") {
+		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISH, new TextHttpResponseHandler("UTF-8") {
 
 					@Override
 					public void onSuccess(int arg0, Header[] arg1, String arg2) {
