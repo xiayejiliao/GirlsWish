@@ -55,10 +55,10 @@ public class MyPushWishActivity extends BaseActivity {
 	private final int WISHUPDATE = 5234;
 	// 使用butterknife
 	// eclipse 配置请看http://jakewharton.github.io/butterknife/ide-eclipse.html
-	@Bind(R.id.swipe_mypickwish)
-	SwipeRefreshLayout mSwipeRefreshLayout;
-	@Bind(R.id.rv_mypickwish)
-	RecyclerView mRecyclerView;
+
+	private SwipeRefreshLayout mSwipeRefreshLayout;
+
+	private RecyclerView mRecyclerView;
 
 	private RecyclerView.LayoutManager mLayoutManager;
 
@@ -75,10 +75,12 @@ public class MyPushWishActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_pick_wish);
-		ButterKnife.bind(this);
-
+		
+		mSwipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_mypickwish);
+		mRecyclerView=(RecyclerView)findViewById(R.id.rv_mypickwish);
+		
 		mActionBar = getSupportActionBar();
-		mActionBar.setTitle("摘取的心愿");
+		mActionBar.setTitle("许下的心愿");
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 
 		mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
@@ -173,7 +175,7 @@ public class MyPushWishActivity extends BaseActivity {
 					tjSchool.setName("同济");
 					tjSchool.setCoordinates("sfdsf");
 					TJUserInfo tjUserInfo = new TJUserInfo();
-					tjUserInfo.setAvatarUrl("http://ico.ooopic.com/ajax/iconpng/?id=109229.png");
+					tjUserInfo.setAvatarUrl("http://ww2.sinaimg.cn/large/7295a660gw1e2kyveifmbj.jpg");
 					tjUserInfo.set_id(UUID.fromString(myid));
 					tjUserInfo.setGender(1);
 					tjUserInfo.setNickname("张三");

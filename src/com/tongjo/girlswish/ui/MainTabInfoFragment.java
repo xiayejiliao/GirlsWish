@@ -248,10 +248,11 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 		boolean hasUnReadMsg = false;
 		for (TJMessage msg : DataContainer.MessageList) {
 			if (!msg.isRead()) {
+				
 				hasUnReadMsg = true;
 			}
 		}
-		((MainTabActivity) this.getActivity()).setAlertView(0, hasUnReadMsg);
+		//((MainTabActivity) this.getActivity()).setAlertView(0, hasUnReadMsg);
 	}
 
 	/**

@@ -10,6 +10,8 @@ import u.aly.v;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -66,20 +68,11 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 		final TJWish tjWish = wish.get(arg1);
 		arg0.tvNick.setText(tjWish.getCreatorUser().getNickname());
 		arg0.tvSchool.setText(tjWish.getCreatorUser().getSchool().getName());
-		arg0.tvcontent.setText(tjWish.getContent());
 		ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), arg0.ivicon, displayImageOptions);
-		arg0.rLayout.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if(arg0.tvcontent.isShown()){
-					arg0.tvcontent.setVisibility(View.GONE);
-				}else {
-					arg0.tvcontent.setVisibility(View.VISIBLE);
-				}
-			}
-		});
+		String temp="     ";
+		SpannableString content = new SpannableString(temp+tjWish.getContent());
+		content.setSpan(new UnderlineSpan(),temp.length(), content.length(), 0);
+		arg0.tvcontent.setText(content);
 		arg0.ivtalk.setOnClickListener(new OnClickListener() {
 			
 			@Override

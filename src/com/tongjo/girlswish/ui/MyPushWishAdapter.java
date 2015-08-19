@@ -10,9 +10,12 @@ import u.aly.v;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,6 +27,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.tongjo.bean.TJWish;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.widget.LinkTextView;
 
 /**
  * 
@@ -71,20 +75,13 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 		}
 		arg0.tvNick.setText(tjWish.getPickerUser().getNickname());
 		arg0.tvSchool.setText(tjWish.getPickerUser().getSchool().getName());
-		arg0.tvcontent.setText(tjWish.getContent());
-		ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), arg0.ivicon, displayImageOptions);
-		arg0.rLayout.setOnClickListener(new OnClickListener() {
+		
+		String temp="     ";
+		SpannableString content = new SpannableString(temp+tjWish.getContent());
+		content.setSpan(new UnderlineSpan(),temp.length(), content.length(), 0);
+		arg0.tvcontent.setText(content);
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if (arg0.tvcontent.isShown()) {
-					arg0.tvcontent.setVisibility(View.GONE);
-				} else {
-					arg0.tvcontent.setVisibility(View.VISIBLE);
-				}
-			}
-		});
+		ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), arg0.ivicon, displayImageOptions);
 		arg0.ivtalk.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -101,6 +98,14 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 	public ViewHolder onCreateViewHolder(ViewGroup arg0, int arg1) {
 		View v = LayoutInflater.from(arg0.getContext()).inflate(R.layout.listitem_mywish, arg0, false);
 		ViewHolder viewHolder = new ViewHolder(v);
+		v.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
 		return viewHolder;
 	}
 
