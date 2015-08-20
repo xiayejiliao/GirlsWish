@@ -138,7 +138,7 @@ public class RegisterActivity extends AppCompatActivity {
 				RequestParams requestParams1 = new RequestParams();
 				requestParams1.put("tel", sendphone);
 				requestParams1.put("password", password);
-				requestParams1.put("authcode", "1234");
+				requestParams1.put("authcode", captcha);
 				progressdialog = ProgressDialog.show(RegisterActivity.this, "提示", "注册中", false, false);
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_REGISTER, requestParams1, httpregister);
 				break;
@@ -159,44 +159,30 @@ public class RegisterActivity extends AppCompatActivity {
 				}.getType();
 				TJResponse<Object> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
-					random = String.valueOf(RandomUtils.getRandom(1000, 9999));
-					new SMSHelper().send(random, sendphone,SMSTYPE.register, new SendResult() {
+					new MyTimer().begin(25, new TimerProgress() {
 
 						@Override
-						public void onResult(int state, String serial, String mesg, int invalid, int valid) {
+						public void onStart() {
 							// TODO Auto-generated method stub
-							if (state == 0) {
-								ToastUtils.show(getApplicationContext(), "获取成功,等待接收");
-								new MyTimer().begin(25, new TimerProgress() {
+							bt_getcaptcha.setTextColor(Color.BLUE);
+							bt_getcaptcha.setEnabled(false);
+							et_phone.setEnabled(false);
+						}
 
-									@Override
-									public void onStart() {
-										// TODO Auto-generated method stub
-										bt_getcaptcha.setTextColor(Color.BLUE);
-										bt_getcaptcha.setEnabled(false);
-										et_phone.setEnabled(false);
-									}
+						@Override
+						public void onProgress(int toals, int remaining) {
+							// TODO Auto-generated method stub
+							bt_getcaptcha.setText(remaining + "s");
+						}
 
-									@Override
-									public void onProgress(int toals, int remaining) {
-										// TODO Auto-generated method stub
-										bt_getcaptcha.setText(remaining + "s");
-									}
-
-									@Override
-									public void onFinish() {
-										// TODO Auto-generated method stub
-										// bt_getcaptcha.setTextColor(Color.parseColor("#333333"));
-										bt_getcaptcha.setTextColor(Color.BLACK);
-										bt_getcaptcha.setEnabled(true);
-										et_phone.setEnabled(true);
-										bt_getcaptcha.setText("获取验证码");
-									}
-								});
-							} else {
-								ToastUtils.show(getApplicationContext(), "获取失败," + mesg);
-
-							}
+						@Override
+						public void onFinish() {
+							// TODO Auto-generated method stub
+							// bt_getcaptcha.setTextColor(Color.parseColor("#333333"));
+							bt_getcaptcha.setTextColor(Color.BLACK);
+							bt_getcaptcha.setEnabled(true);
+							et_phone.setEnabled(true);
+							bt_getcaptcha.setText("获取验证码");
 						}
 					});
 				} else {

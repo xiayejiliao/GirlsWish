@@ -72,8 +72,6 @@ public class ResetPassActivity extends AppCompatActivity {
 	private ActionBar mActionBar;
 	private AsyncHttpClient asyncHttpClient;
 
-	private String random;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -105,6 +103,7 @@ public class ResetPassActivity extends AppCompatActivity {
 				}
 				if (!isMobileNO(sendphone)) {
 					ToastUtils.show(getApplicationContext(), "手机号格式不正确");
+					return;
 				}
 				RequestParams requestParams = new RequestParams();
 				requestParams.put("tel", sendphone);
@@ -117,10 +116,6 @@ public class ResetPassActivity extends AppCompatActivity {
 					ToastUtils.show(getApplicationContext(), "验证码为空");
 					return;
 				}
-				if (!captcha.equals(random)) {
-					ToastUtils.show(getApplicationContext(), "验证码不正确");
-					return;
-				}
 				if (StringUtils.isEmpty(nespassword)) {
 					ToastUtils.show(getApplicationContext(), "密码为空");
 					return;
@@ -131,7 +126,7 @@ public class ResetPassActivity extends AppCompatActivity {
 				}
 				RequestParams requestParams1 = new RequestParams();
 				requestParams1.put("password", nespassword);
-				requestParams1.put("authcode", "1234");
+				requestParams1.put("authcode", captcha);
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_RESETPASSWORD, requestParams1, httpresetpass);
 				break;
 			default:
@@ -150,44 +145,31 @@ public class ResetPassActivity extends AppCompatActivity {
 				}.getType();
 				TJResponse<Object> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
-					random = String.valueOf(RandomUtils.getRandom(1000, 9999));
-					new SMSHelper().send(random, sendphone,SMSTYPE.password, new SendResult() {
+					ToastUtils.show(getApplicationContext(), "获取成功");
+					new MyTimer().begin(25, new TimerProgress() {
 
 						@Override
-						public void onResult(int state, String serial, String mesg, int invalid, int valid) {
+						public void onStart() {
 							// TODO Auto-generated method stub
-							if (state == 0) {
-								ToastUtils.show(getApplicationContext(), "获取成功,等待接收");
-								new MyTimer().begin(25, new TimerProgress() {
+							bt_getcaptcha.setTextColor(Color.BLUE);
+							bt_getcaptcha.setEnabled(false);
+							et_phone.setEnabled(false);
+						}
 
-									@Override
-									public void onStart() {
-										// TODO Auto-generated method stub
-										bt_getcaptcha.setEnabled(false);
-										bt_getcaptcha.setTextColor(Color.BLUE);
-										et_phone.setEnabled(false);
-										bt_getcaptcha.setText("25s");
+						@Override
+						public void onProgress(int toals, int remaining) {
+							// TODO Auto-generated method stub
+							bt_getcaptcha.setText(remaining + "s");
+						}
 
-									}
-
-									@Override
-									public void onProgress(int toals, int remaining) {
-										// TODO Auto-generated method stub
-										bt_getcaptcha.setText(remaining + "s");
-									}
-
-									@Override
-									public void onFinish() {
-										// TODO Auto-generated method stub
-										bt_getcaptcha.setEnabled(true);
-										bt_getcaptcha.setTextColor(Color.BLACK);
-										bt_getcaptcha.setText("重新获取");
-										et_phone.setEnabled(true);
-									}
-								});
-							} else {
-								ToastUtils.show(getApplicationContext(), "获取失败," + mesg);
-							}
+						@Override
+						public void onFinish() {
+							// TODO Auto-generated method stub
+							// bt_getcaptcha.setTextColor(Color.parseColor("#333333"));
+							bt_getcaptcha.setTextColor(Color.BLACK);
+							bt_getcaptcha.setEnabled(true);
+							et_phone.setEnabled(true);
+							bt_getcaptcha.setText("获取验证码");
 						}
 					});
 				} else {
@@ -215,14 +197,8 @@ public class ResetPassActivity extends AppCompatActivity {
 				TJResponse<Object> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
 					ToastUtils.show(getApplicationContext(), "修改成功");
-					int isremenberpassword = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_ISREMEMBERPASSWORD, 0);
-					int isremenberphone = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_ISREMEMBERPHONE, 0);
-					if (isremenberpassword == 1) {
-						SpUtils.put(getApplicationContext(), AppConstant.USER_PASSWORD, nespassword);
-					}
-					if (isremenberphone == 1) {
-						SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, sendphone);
-					}
+					ResetPassActivity.this.finish();
+					
 				} else {
 					ToastUtils.show(getApplicationContext(), "修改失败：" + response.getResult().getMessage());
 				}
