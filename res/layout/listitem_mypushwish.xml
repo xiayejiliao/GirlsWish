@@ -21,13 +21,13 @@
             android:orientation="vertical" >
 
             <RelativeLayout
-                android:id="@+id/rl_mypickwish_item"
+                android:id="@+id/rl_mypushwish_item"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginLeft="16dp" >
 
                 <ImageView
-                    android:id="@+id/iv_mypickwish_icon"
+                    android:id="@+id/iv_mypushwish_icon"
                     android:layout_width="62dp"
                     android:layout_height="62dp"
                     android:layout_centerVertical="true"
@@ -35,6 +35,7 @@
                     android:src="@drawable/ic_broken_image_black_24dp" />
 
                 <LinearLayout
+                    android:id="@+id/ll_mypushwish_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -42,14 +43,14 @@
                     android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/tv_mypickwish_nick"
+                        android:id="@+id/tv_mypushwish_nick"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:text="@string/nickname" />
 
                     <TextView
-                        android:id="@+id/tv_mypickwish_school"
+                        android:id="@+id/tv_mypushwish_school"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -57,15 +58,38 @@
                         android:text="@string/school" />
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/iv_mypickwish_talk"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="20dp"
-                    android:src="@drawable/ic_message_black_24dp" />
+                <TextView
+                    android:id="@+id/tv_mypushwish_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:singleLine="true"
+                    android:visibility="gone"
+                    android:text="info" />
+
+                <RelativeLayout
+                    android:layout_width="90dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true" >
+
+                    <TextView
+                        android:id="@+id/tv_mypushwish_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:singleLine="true"
+                        android:text="time" />
+
+                    <ImageView
+                        android:id="@+id/iv_mypushwish_talk"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_message_black_24dp" />
+
+                </RelativeLayout>
             </RelativeLayout>
 
             <View
@@ -74,15 +98,15 @@
                 android:background="@color/black" />
 
             <TextView
-                android:id="@+id/tv_mypickwish_content"
+                android:id="@+id/tv_mypushwish_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:singleLine="false"
-                android:text="@string/test" 
-                android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
                 android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"/>
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="30dp"
+                android:singleLine="false"
+                android:text="@string/test" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

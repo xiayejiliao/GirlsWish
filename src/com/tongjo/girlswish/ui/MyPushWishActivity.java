@@ -47,6 +47,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -70,14 +71,17 @@ public class MyPushWishActivity extends BaseActivity {
 	private TextView tv;
 
 	private ActionBar mActionBar;
+	
+	private TextView tv_info;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_my_pick_wish);
+		setContentView(R.layout.activity_my_push_wish);
 		
-		mSwipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_mypickwish);
-		mRecyclerView=(RecyclerView)findViewById(R.id.rv_mypickwish);
+		mSwipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_mypushwish);
+		mRecyclerView=(RecyclerView)findViewById(R.id.rv_mypushwish);
+		tv_info=(TextView)findViewById(R.id.tv_mypushwish_info);
 		
 		mActionBar = getSupportActionBar();
 		mActionBar.setTitle("许下的心愿");
@@ -144,6 +148,7 @@ public class MyPushWishActivity extends BaseActivity {
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			if (msg.what == WISHUPDATE) {
+				tv_info.setVisibility(View.GONE);
 				List<TJWish> list = (List<TJWish>) msg.obj;
 				mRecyclerView.setAdapter(new MyPushWishAdapter(MyPushWishActivity.this, list));
 			}
@@ -171,7 +176,7 @@ public class MyPushWishActivity extends BaseActivity {
 				if (wishs.getResult().getCode() == 0) {
 					List<TJWish> list = wishs.getData().getWishList();
 					
-					TJSchool tjSchool = new TJSchool();
+				/*	TJSchool tjSchool = new TJSchool();
 					tjSchool.setName("同济");
 					tjSchool.setCoordinates("sfdsf");
 					TJUserInfo tjUserInfo = new TJUserInfo();
@@ -187,11 +192,16 @@ public class MyPushWishActivity extends BaseActivity {
 						tjWish.setPickerUser(tjUserInfo);
 						tjWish.setCreatorUser(tjUserInfo);
 						list.add(tjWish);
-					}
+					}*/
 					if (list == null) {
+						tv_info.setVisibility(View.VISIBLE);
+						tv_info.setText("没有发表心愿");
 						return;
 					}
 					if (list.size() == 0) {
+
+						tv_info.setVisibility(View.VISIBLE);
+						tv_info.setText("没有发表心愿");
 						return;
 					}
 					handler.obtainMessage(WISHUPDATE, list).sendToTarget();

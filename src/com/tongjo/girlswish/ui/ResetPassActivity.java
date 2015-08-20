@@ -26,6 +26,7 @@ import com.tongjo.girlswish.utils.MyTimer;
 import com.tongjo.girlswish.utils.MyTimer.TimerProgress;
 import com.tongjo.girlswish.utils.RandomUtils;
 import com.tongjo.girlswish.utils.SMSHelper;
+import com.tongjo.girlswish.utils.SMSHelper.SMSTYPE;
 import com.tongjo.girlswish.utils.SMSHelper.SendResult;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
@@ -67,15 +68,17 @@ public class ResetPassActivity extends AppCompatActivity {
 	private String captcha = "1234";
 	private String sendphone;
 	private String nespassword;
-	
+
 	private ActionBar mActionBar;
 	private AsyncHttpClient asyncHttpClient;
+
+	private String random;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_resetpass);
-		mActionBar=getSupportActionBar();
+		mActionBar = getSupportActionBar();
 		mActionBar.setTitle("密码重置");
 		bt_getcaptcha = (TextView) findViewById(R.id.bt_resetpass_getcaptcha);
 		bt_sure = (Button) findViewById(R.id.bt_resetpass_sure);
@@ -100,11 +103,7 @@ public class ResetPassActivity extends AppCompatActivity {
 					ToastUtils.show(getApplicationContext(), "号码为空");
 					return;
 				}
-				if (sendphone.length() != 11) {
-					ToastUtils.show(getApplicationContext(), "手机号长度不正确");
-					return;
-				}
-				if(isMobileNO(sendphone)){
+				if (!isMobileNO(sendphone)) {
 					ToastUtils.show(getApplicationContext(), "手机号格式不正确");
 				}
 				RequestParams requestParams = new RequestParams();
@@ -118,6 +117,10 @@ public class ResetPassActivity extends AppCompatActivity {
 					ToastUtils.show(getApplicationContext(), "验证码为空");
 					return;
 				}
+				if (!captcha.equals(random)) {
+					ToastUtils.show(getApplicationContext(), "验证码不正确");
+					return;
+				}
 				if (StringUtils.isEmpty(nespassword)) {
 					ToastUtils.show(getApplicationContext(), "密码为空");
 					return;
@@ -128,7 +131,7 @@ public class ResetPassActivity extends AppCompatActivity {
 				}
 				RequestParams requestParams1 = new RequestParams();
 				requestParams1.put("password", nespassword);
-				requestParams1.put("authcode", captcha);
+				requestParams1.put("authcode", "1234");
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_RESETPASSWORD, requestParams1, httpresetpass);
 				break;
 			default:
@@ -147,7 +150,8 @@ public class ResetPassActivity extends AppCompatActivity {
 				}.getType();
 				TJResponse<Object> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
-					new SMSHelper().send("1234", sendphone, new SendResult() {
+					random = String.valueOf(RandomUtils.getRandom(1000, 9999));
+					new SMSHelper().send(random, sendphone,SMSTYPE.password, new SendResult() {
 
 						@Override
 						public void onResult(int state, String serial, String mesg, int invalid, int valid) {
@@ -162,7 +166,8 @@ public class ResetPassActivity extends AppCompatActivity {
 										bt_getcaptcha.setEnabled(false);
 										bt_getcaptcha.setTextColor(Color.BLUE);
 										et_phone.setEnabled(false);
-										
+										bt_getcaptcha.setText("25s");
+
 									}
 
 									@Override
@@ -176,7 +181,7 @@ public class ResetPassActivity extends AppCompatActivity {
 										// TODO Auto-generated method stub
 										bt_getcaptcha.setEnabled(true);
 										bt_getcaptcha.setTextColor(Color.BLACK);
-										bt_getcaptcha.setText("获取验证码");
+										bt_getcaptcha.setText("重新获取");
 										et_phone.setEnabled(true);
 									}
 								});
@@ -234,8 +239,7 @@ public class ResetPassActivity extends AppCompatActivity {
 	};
 
 	public static boolean isMobileNO(String mobiles) {
-		if(StringUtils.isEmpty(mobiles))
-		{
+		if (StringUtils.isEmpty(mobiles)) {
 			return false;
 		}
 		Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");

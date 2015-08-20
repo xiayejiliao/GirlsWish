@@ -1,13 +1,17 @@
 package com.tongjo.girlswish.ui;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import u.aly.v;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -15,23 +19,35 @@ import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJWish;
+import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.TimeUtils;
+import com.tongjo.girlswish.utils.ToastUtils;
+
 /**
  * 
-* @Description: 使用 recyclerview
-* @author 16ren 
-* @date 2015年8月18日 下午3:49:24 
-*
+ * @Description: 使用 recyclerview
+ * @author 16ren
+ * @date 2015年8月18日 下午3:49:24
+ *
  */
 class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolder> {
 	private Logger logger = LoggerFactory.getLogger(MyPickWishAdapter.class);
@@ -63,33 +79,97 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 	}
 
 	@Override
-	public void onBindViewHolder(final ViewHolder arg0, int arg1) {
+	public void onBindViewHolder(final ViewHolder holder, int arg1) {
 		// TODO Auto-generated method stub
 		final TJWish tjWish = wish.get(arg1);
-		arg0.tvNick.setText(tjWish.getCreatorUser().getNickname());
-		arg0.tvSchool.setText(tjWish.getCreatorUser().getSchool().getName());
-		ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), arg0.ivicon, displayImageOptions);
-		String temp="     ";
-		SpannableString content = new SpannableString(temp+tjWish.getContent());
-		content.setSpan(new UnderlineSpan(),temp.length(), content.length(), 0);
-		arg0.tvcontent.setText(content);
-		arg0.ivtalk.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO 启动聊天窗口
-				Intent intent=new Intent(Mcontext, ChatActivity.class);
-				intent.putExtra("chatToUser", tjWish.getCreatorUser());
-				Mcontext.startActivity(intent);
-			}
-		});
+
+		if (tjWish.getCreatorUser() != null) {
+			holder.tvNick.setText(tjWish.getCreatorUser().getNickname());
+			holder.tvSchool.setText(tjWish.getCreatorUser().getSchool().getName());
+			ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), holder.ivicon, displayImageOptions);
+			holder.ivtalk.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO 启动聊天窗口
+					Intent intent = new Intent(Mcontext, ChatActivity.class);
+					intent.putExtra("chatToUser", tjWish.getCreatorUser());
+					Mcontext.startActivity(intent);
+				}
+			});
+		}
+
+		if (tjWish.getPickerUser() != null) {
+			holder.tvtime.setText(TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, tjWish.getPickedTime()));
+		}
+		String temp = "     ";
+		SpannableString content = new SpannableString(temp + tjWish.getContent());
+		content.setSpan(new UnderlineSpan(), temp.length(), content.length(), 0);
+		holder.tvcontent.setText(content);
+
 	}
 
 	@Override
-	public ViewHolder onCreateViewHolder(ViewGroup arg0, int arg1) {
-		View v = LayoutInflater.from(arg0.getContext()).inflate(R.layout.listitem_mywish, arg0, false);
+	public ViewHolder onCreateViewHolder(ViewGroup arg0, final int postion) {
+		View v = LayoutInflater.from(arg0.getContext()).inflate(R.layout.listitem_mypickwish, arg0, false);
 		ViewHolder viewHolder = new ViewHolder(v);
+
+		v.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				// TODO Auto-generated method stub
+				new AlertDialog.Builder(Mcontext).setTitle("删除").setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// continue with delete
+						AsyncHttpClient asyncHttpClient = ((BaseApplication) Mcontext.getApplicationContext()).getAsyncHttpClient();
+						RequestParams params = new RequestParams();
+						params.put("_id", wish.get(postion).get_id().toString());
+						asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_WISHDEL, params, new TextHttpResponseHandler("UTF-8") {
+
+							@Override
+							public void onSuccess(int arg0, Header[] arg1, String arg2) {
+								if (arg0 == 200) {
+									Type type = new TypeToken<TJResponse<Object>>() {
+									}.getType();
+									TJResponse<Object> response = new Gson().fromJson(arg2, type);
+									if (response.getResult().getCode() == 0) {
+										ToastUtils.show(Mcontext, "删除成功" + arg2);
+										removeAt(postion);
+									} else {
+										ToastUtils.show(Mcontext, "删除失败" + response.getResult().getMessage());
+									}
+								} else {
+									ToastUtils.show(Mcontext, arg0);
+								}
+
+							}
+
+							@Override
+							public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+								// TODO Auto-generated method stub
+								ToastUtils.show(Mcontext, arg0 + arg3.toString());
+							}
+						});
+
+					}
+				}).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// do nothing
+						dialog.dismiss();
+					}
+				}).setIcon(android.R.drawable.ic_dialog_alert).show();
+				return false;
+			}
+		});
+
 		return viewHolder;
+	}
+
+	public void removeAt(int position) {
+		wish.remove(position);
+		notifyItemRemoved(position);
+		notifyItemRangeChanged(position, wish.size());
 	}
 
 	public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -100,6 +180,7 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 		public TextView tvNick;
 		public TextView tvSchool;
 		public TextView tvcontent;
+		public TextView tvtime;
 		public RelativeLayout rLayout;
 
 		// We also create a constructor that accepts the entire item row
@@ -111,6 +192,7 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 			tvNick = (TextView) itemView.findViewById(R.id.tv_mypickwish_nick);
 			tvSchool = (TextView) itemView.findViewById(R.id.tv_mypickwish_school);
 			tvcontent = (TextView) itemView.findViewById(R.id.tv_mypickwish_content);
+			tvtime = (TextView) itemView.findViewById(R.id.tv_mypickwish_time);
 			rLayout = (RelativeLayout) itemView.findViewById(R.id.rl_mypickwish_item);
 		}
 	}

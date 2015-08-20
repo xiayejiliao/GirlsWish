@@ -1,13 +1,17 @@
 package com.tongjo.girlswish.ui;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import u.aly.v;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -18,15 +22,27 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.tongjo.bean.TJResponse;
+import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
+import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.TimeUtils;
+import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.LinkTextView;
 
 /**
@@ -53,7 +69,6 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
 				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
 				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
-
 	}
 
 	@Override
@@ -66,47 +81,106 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 	}
 
 	@Override
-	public void onBindViewHolder(final ViewHolder arg0, int arg1) {
+	public void onBindViewHolder(final ViewHolder holder, int arg1) {
 		// TODO Auto-generated method stub
 		final TJWish tjWish = wish.get(arg1);
 		if (tjWish.getPickerUser() == null) {
-			arg0.tvNick.setText("未被摘取");
-			return;
+			holder.tvinfo.setVisibility(View.VISIBLE);
+			holder.layout.setVisibility(View.GONE);
+			holder.ivtalk.setVisibility(View.GONE);
+			holder.tvtime.setVisibility(View.GONE);
+			holder.tvinfo.setText("心愿等待被摘取");
+
+		} else {
+			holder.tvinfo.setVisibility(View.GONE);
+			holder.layout.setVisibility(View.VISIBLE);
+			holder.ivtalk.setVisibility(View.VISIBLE);
+			holder.tvtime.setVisibility(View.VISIBLE);
+
+			String t= TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT,tjWish.getPickedTime());
+
+			holder.tvtime.setText(t);
+			holder.tvNick.setText(tjWish.getPickerUser().getNickname());
+			holder.tvSchool.setText(tjWish.getPickerUser().getSchool().getName());
+			ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), holder.ivicon, displayImageOptions);
+			holder.ivtalk.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO 启动聊天窗口
+					Intent intent = new Intent(Mcontext, ChatActivity.class);
+					intent.putExtra("chatToUser", tjWish.getCreatorUser());
+					Mcontext.startActivity(intent);
+				}
+			});
 		}
-		arg0.tvNick.setText(tjWish.getPickerUser().getNickname());
-		arg0.tvSchool.setText(tjWish.getPickerUser().getSchool().getName());
-		
-		String temp="     ";
-		SpannableString content = new SpannableString(temp+tjWish.getContent());
-		content.setSpan(new UnderlineSpan(),temp.length(), content.length(), 0);
-		arg0.tvcontent.setText(content);
 
-		ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), arg0.ivicon, displayImageOptions);
-		arg0.ivtalk.setOnClickListener(new OnClickListener() {
+		String temp = "     ";
+		SpannableString content = new SpannableString(temp + tjWish.getContent());
+		content.setSpan(new UnderlineSpan(), temp.length(), content.length(), 0);
+		holder.tvcontent.setText(content);
 
-			@Override
-			public void onClick(View v) {
-				// TODO 启动聊天窗口
-				Intent intent = new Intent(Mcontext, ChatActivity.class);
-				intent.putExtra("chatToUser", tjWish.getCreatorUser());
-				Mcontext.startActivity(intent);
-			}
-		});
 	}
 
 	@Override
-	public ViewHolder onCreateViewHolder(ViewGroup arg0, int arg1) {
-		View v = LayoutInflater.from(arg0.getContext()).inflate(R.layout.listitem_mywish, arg0, false);
+	public ViewHolder onCreateViewHolder(ViewGroup arg0, final int postion) {
+		View v = LayoutInflater.from(arg0.getContext()).inflate(R.layout.listitem_mypushwish, arg0, false);
 		ViewHolder viewHolder = new ViewHolder(v);
 		v.setOnLongClickListener(new OnLongClickListener() {
-			
+
 			@Override
 			public boolean onLongClick(View v) {
 				// TODO Auto-generated method stub
+				new AlertDialog.Builder(Mcontext).setTitle("删除").setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// continue with delete
+						AsyncHttpClient asyncHttpClient = ((BaseApplication) Mcontext.getApplicationContext()).getAsyncHttpClient();
+						RequestParams params = new RequestParams();
+						params.put("_id", wish.get(postion).get_id().toString());
+						asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_WISHDEL, params, new TextHttpResponseHandler("UTF-8") {
+
+							@Override
+							public void onSuccess(int arg0, Header[] arg1, String arg2) {
+								if (arg0 == 200) {
+									Type type = new TypeToken<TJResponse<Object>>() {
+									}.getType();
+									TJResponse<Object> response = new Gson().fromJson(arg2, type);
+									if (response.getResult().getCode() == 0) {
+										ToastUtils.show(Mcontext, "删除成功" + arg2);
+										removeAt(postion);
+									}else {
+										ToastUtils.show(Mcontext, "删除失败" + response.getResult().getMessage());
+									}
+								} else {
+									ToastUtils.show(Mcontext, arg0);
+								}
+
+							}
+
+							@Override
+							public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+								// TODO Auto-generated method stub
+								ToastUtils.show(Mcontext, arg0 + arg3.toString());
+							}
+						});
+
+					}
+				}).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// do nothing
+						dialog.dismiss();
+					}
+				}).setIcon(android.R.drawable.ic_dialog_alert).show();
 				return false;
 			}
 		});
 		return viewHolder;
+	}
+
+	public void removeAt(int position) {
+		wish.remove(position);
+		notifyItemRemoved(position);
+		notifyItemRangeChanged(position, wish.size());
 	}
 
 	public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -117,18 +191,24 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 		public TextView tvNick;
 		public TextView tvSchool;
 		public TextView tvcontent;
+		public TextView tvtime;
+		public TextView tvinfo;
 		public RelativeLayout rLayout;
+		public LinearLayout layout;
 
 		// We also create a constructor that accepts the entire item row
 		// and does the view lookups to find each subview
 		public ViewHolder(View itemView) {
 			super(itemView);
-			ivtalk = (ImageView) itemView.findViewById(R.id.iv_mypickwish_talk);
-			ivicon = (ImageView) itemView.findViewById(R.id.iv_mypickwish_icon);
-			tvNick = (TextView) itemView.findViewById(R.id.tv_mypickwish_nick);
-			tvSchool = (TextView) itemView.findViewById(R.id.tv_mypickwish_school);
-			tvcontent = (TextView) itemView.findViewById(R.id.tv_mypickwish_content);
-			rLayout = (RelativeLayout) itemView.findViewById(R.id.rl_mypickwish_item);
+			ivtalk = (ImageView) itemView.findViewById(R.id.iv_mypushwish_talk);
+			ivicon = (ImageView) itemView.findViewById(R.id.iv_mypushwish_icon);
+			tvNick = (TextView) itemView.findViewById(R.id.tv_mypushwish_nick);
+			tvSchool = (TextView) itemView.findViewById(R.id.tv_mypushwish_school);
+			tvcontent = (TextView) itemView.findViewById(R.id.tv_mypushwish_content);
+			tvtime = (TextView) itemView.findViewById(R.id.tv_mypushwish_time);
+			tvinfo = (TextView) itemView.findViewById(R.id.tv_mypushwish_info);
+			rLayout = (RelativeLayout) itemView.findViewById(R.id.rl_mypushwish_item);
+			layout = (LinearLayout) itemView.findViewById(R.id.ll_mypushwish_name);
 		}
 	}
 

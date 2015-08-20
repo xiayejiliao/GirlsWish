@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tongjo.girlswish"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        app:cardBackgroundColor="@color/wish_background" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/rl_mypickwish_item"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginLeft="16dp" >
+
+                <ImageView
+                    android:id="@+id/iv_mypickwish_icon"
+                    android:layout_width="62dp"
+                    android:layout_height="62dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/ic_broken_image_black_24dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="72dp"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_mypickwish_nick"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/nickname" />
+
+                    <TextView
+                        android:id="@+id/tv_mypickwish_school"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/school" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="90dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true" >
+
+                    <TextView
+                        android:id="@+id/tv_mypickwish_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:singleLine="true"
+                        android:text="time" />
+
+                    <ImageView
+                        android:id="@+id/iv_mypickwish_talk"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_message_black_24dp" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:background="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_mypickwish_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="30dp"
+                android:singleLine="false"
+                android:text="@string/test" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

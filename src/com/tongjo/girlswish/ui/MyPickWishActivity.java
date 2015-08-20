@@ -47,6 +47,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -70,6 +71,7 @@ public class MyPickWishActivity extends BaseActivity {
 
 	private ActionBar mActionBar;
 
+	private TextView tv_info;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,6 +79,7 @@ public class MyPickWishActivity extends BaseActivity {
 		
 		mSwipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_mypickwish);
 		mRecyclerView=(RecyclerView)findViewById(R.id.rv_mypickwish);
+		tv_info=(TextView)findViewById(R.id.tv_mypickwish_info);
 		mActionBar = getSupportActionBar();
 		mActionBar.setTitle("摘取的心愿");
 		mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -143,6 +146,7 @@ public class MyPickWishActivity extends BaseActivity {
 			super.handleMessage(msg);
 			if (msg.what == WISHUPDATE) {
 				List<TJWish> list = (List<TJWish>) msg.obj;
+				tv_info.setVisibility(View.GONE);
 				mRecyclerView.setAdapter(new MyPickWishAdapter(MyPickWishActivity.this, list));
 			}
 		}
@@ -169,7 +173,7 @@ public class MyPickWishActivity extends BaseActivity {
 				if (wishs.getResult().getCode() == 0) {
 					List<TJWish> list = wishs.getData().getWishList();
 
-					TJSchool tjSchool = new TJSchool();
+					/*TJSchool tjSchool = new TJSchool();
 					tjSchool.setName("同济");
 					tjSchool.setCoordinates("sfdsf");
 					TJUserInfo tjUserInfo = new TJUserInfo();
@@ -185,11 +189,16 @@ public class MyPickWishActivity extends BaseActivity {
 						tjWish.setPickerUser(tjUserInfo);
 						tjWish.setCreatorUser(tjUserInfo);
 						list.add(tjWish);
-					}
+					}*/
 					if (list == null) {
+						tv_info.setVisibility(View.VISIBLE);
+						tv_info.setText("没有摘取消息");
 						return;
+						
 					}
 					if (list.size() == 0) {
+						tv_info.setVisibility(View.VISIBLE);
+						tv_info.setText("没有摘取消息");
 						return;
 					}
 					handler.obtainMessage(WISHUPDATE, list).sendToTarget();

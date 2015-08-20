@@ -26,6 +26,13 @@ public class SMSHelper extends Thread {
 	private Handler handler;
 	private String verify;
 	private String phone;
+	private SMSTYPE type;
+	
+	
+	
+	public enum SMSTYPE {
+		register,password;
+	}
 
 	public SMSHelper() {
 		super();
@@ -50,7 +57,7 @@ public class SMSHelper extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		try {
-			String result = sendmesg(verify, phone);
+			String result = sendmesg(verify, phone,type);
 			handler.obtainMessage(WHAT, result).sendToTarget();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -61,16 +68,23 @@ public class SMSHelper extends Thread {
 		super.run();
 	}
 
-	public void send(String verify, String phone, SendResult sendResult) {
+	public void send(String verify, String phone,SMSTYPE type, SendResult sendResult) {
 		this.verify = verify;
 		this.phone = phone;
 		this.sendResult = sendResult;
+		this.type=type;
 		this.start();
 	};
 
-	private String sendmesg(String verify, String phone) throws Exception {
-		String content = "您的验证码是:" + verify;
-		String sign = "竹舟科技";
+	private String sendmesg(String verify, String phone,SMSTYPE type) throws Exception {
+		String content = null ;
+		if(type==SMSTYPE.password){
+			content= "欢迎您注册wishes,你的验证码是:" + verify;
+		}else if (type==SMSTYPE.register) {
+			content= "感谢您使用wishes,您找回密码的验证码是 :" + verify;
+		}
+		
+		String sign = "wishes";
 		
 		// 创建StringBuffer对象用来操作字符串
 		StringBuffer sb = new StringBuffer("http://sms.1xinxi.cn/asmx/smsservice.aspx?");
@@ -78,7 +92,7 @@ public class SMSHelper extends Thread {
 		// 向StringBuffer追加用户名
 		sb.append("name=18905195926");
 		// 向StringBuffer追加密码（登陆网页版，在管理中心--基本资料--接口密码，是28位的）
-		sb.append("&pwd=1AB4497354CF02C92929E714FBDB");
+		sb.append("&pwd=48C5F45AAE76D83585CE22991E9C");
 
 		// 向StringBuffer追加手机号码
 		sb.append("&mobile=" + phone);

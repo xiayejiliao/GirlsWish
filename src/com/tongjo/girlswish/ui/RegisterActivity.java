@@ -14,11 +14,13 @@ import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.MyTimer;
+import com.tongjo.girlswish.utils.RandomUtils;
 import com.tongjo.girlswish.utils.SMSHelper;
 import com.tongjo.girlswish.utils.SexUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.utils.MyTimer.TimerProgress;
+import com.tongjo.girlswish.utils.SMSHelper.SMSTYPE;
 import com.tongjo.girlswish.utils.SMSHelper.SendResult;
 import com.tongjo.girlswish.widget.LinkTextView;
 
@@ -56,15 +58,16 @@ public class RegisterActivity extends AppCompatActivity {
 	private Button bt_sure;
 	private String sendphone;
 	private AsyncHttpClient asyncHttpClient;
-	private ProgressDialog progressdialog ;
-	
+	private ProgressDialog progressdialog;
 	private ActionBar mActionBar;
+
+	private String random;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
-		mActionBar=getSupportActionBar();
+		mActionBar = getSupportActionBar();
 		mActionBar.setTitle("登录");
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		et_phone = (EditText) findViewById(R.id.et_register_phone);
@@ -76,8 +79,6 @@ public class RegisterActivity extends AppCompatActivity {
 		bt_sure.setOnClickListener(onClickListener);
 
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
-
-		
 
 	}
 
@@ -126,11 +127,19 @@ public class RegisterActivity extends AppCompatActivity {
 					ToastUtils.show(getApplicationContext(), "密码太弱");
 					return;
 				}
+				if (StringUtils.isEmpty(captcha)) {
+					ToastUtils.show(getApplicationContext(), "验证码空");
+					return;
+				}
+				if (!captcha.equals(random)) {
+					ToastUtils.show(getApplicationContext(), "验证码不正确");
+					return;
+				}
 				RequestParams requestParams1 = new RequestParams();
 				requestParams1.put("tel", sendphone);
 				requestParams1.put("password", password);
-				requestParams1.put("authcode", captcha);
-				progressdialog= ProgressDialog.show(RegisterActivity.this, "提示", "注册中",false,false);
+				requestParams1.put("authcode", "1234");
+				progressdialog = ProgressDialog.show(RegisterActivity.this, "提示", "注册中", false, false);
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_REGISTER, requestParams1, httpregister);
 				break;
 			default:
@@ -144,20 +153,21 @@ public class RegisterActivity extends AppCompatActivity {
 		@Override
 		public void onSuccess(int arg0, Header[] arg1, String arg2) {
 			// TODO Auto-generated method stub
-		
+
 			if (arg0 == 200) {
 				Type type = new TypeToken<TJResponse<Object>>() {
 				}.getType();
 				TJResponse<Object> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
-					new SMSHelper().send("1234", sendphone, new SendResult() {
+					random = String.valueOf(RandomUtils.getRandom(1000, 9999));
+					new SMSHelper().send(random, sendphone,SMSTYPE.register, new SendResult() {
 
 						@Override
 						public void onResult(int state, String serial, String mesg, int invalid, int valid) {
 							// TODO Auto-generated method stub
 							if (state == 0) {
 								ToastUtils.show(getApplicationContext(), "获取成功,等待接收");
-								new MyTimer().begin(60, new TimerProgress() {
+								new MyTimer().begin(25, new TimerProgress() {
 
 									@Override
 									public void onStart() {
@@ -176,7 +186,7 @@ public class RegisterActivity extends AppCompatActivity {
 									@Override
 									public void onFinish() {
 										// TODO Auto-generated method stub
-										//bt_getcaptcha.setTextColor(Color.parseColor("#333333"));
+										// bt_getcaptcha.setTextColor(Color.parseColor("#333333"));
 										bt_getcaptcha.setTextColor(Color.BLACK);
 										bt_getcaptcha.setEnabled(true);
 										et_phone.setEnabled(true);
@@ -185,7 +195,7 @@ public class RegisterActivity extends AppCompatActivity {
 								});
 							} else {
 								ToastUtils.show(getApplicationContext(), "获取失败," + mesg);
-						
+
 							}
 						}
 					});
@@ -197,7 +207,7 @@ public class RegisterActivity extends AppCompatActivity {
 				ToastUtils.show(getApplicationContext(), "获取失败:" + arg0);
 
 			}
-	
+
 		}
 
 		@Override

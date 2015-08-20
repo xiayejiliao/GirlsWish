@@ -1,13 +1,28 @@
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipe_mypickwish"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.tongjo.girlswish.MyPickWishActivity" >
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_mypickwish"
+    <TextView
+        android:id="@+id/tv_mypickwish_info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:gravity="center"
+        android:text="消息"
+        android:visibility="gone" />
 
-</android.support.v4.widget.SwipeRefreshLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_mypickwish"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_mypickwish"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>
