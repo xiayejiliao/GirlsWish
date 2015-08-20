@@ -51,26 +51,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+/**
+ * 
+* @Description: 点击侧滑栏的摘取心愿activity
+* @author 16ren 
+* @date 2015年8月20日 下午5:21:45 
+*
+ */
 public class MyPickWishActivity extends BaseActivity {
 
 	private final int WISHUPDATE = 5234;
-	// 使用butterknife
-	// eclipse 配置请看http://jakewharton.github.io/butterknife/ide-eclipse.html
 
+	//下拉刷新控件,v4包里的
 	private SwipeRefreshLayout mSwipeRefreshLayout;
+	//列表代替listview v7包里面的
 	private RecyclerView mRecyclerView;
 
+	//cecyclerview 界面显示控制
 	private RecyclerView.LayoutManager mLayoutManager;
 
+	//slf4j debug
 	private final Logger log = LoggerFactory.getLogger(MyPickWishActivity.class);
 
-	private int mysex;
+	//我的uuid，获取我的摘取心愿参数
 	private String myid;
 
-	private TextView tv;
 
 	private ActionBar mActionBar;
 
+	//在recyclerview上面,显示一些信息，心愿列表为空时显示没有心愿
 	private TextView tv_info;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +95,7 @@ public class MyPickWishActivity extends BaseActivity {
 
 		mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
 		mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+		//下拉刷新，重新获取摘取列表
 		mSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 			
 			@Override
@@ -98,11 +108,11 @@ public class MyPickWishActivity extends BaseActivity {
 		mRecyclerView.setLayoutManager(mLayoutManager);
 
 		myid = (String) SpUtils.get(getApplicationContext(), AppConstant.USER_ID, "");
-		mysex = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_SEX, 1);
 		
 		updatepickwish();
 	}
 
+	//请求摘取的心愿列表
 	private void updatepickwish() {
 
 		RequestParams requestParams = new RequestParams();
@@ -114,6 +124,7 @@ public class MyPickWishActivity extends BaseActivity {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		//友盟页面统计
 		MobclickAgent.onResume(this);
 	}
 
@@ -124,6 +135,7 @@ public class MyPickWishActivity extends BaseActivity {
 		MobclickAgent.onPause(this);
 	}
 
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
@@ -138,6 +150,7 @@ public class MyPickWishActivity extends BaseActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	//更新摘取的心愿列表
 	private Handler handler = new Handler() {
 
 		@Override
@@ -152,15 +165,9 @@ public class MyPickWishActivity extends BaseActivity {
 		}
 
 	};
-	private OnRefreshListener mOnRefreshListener = new OnRefreshListener() {
 
-		@Override
-		public void onRefresh() {
-			// TODO Auto-generated method stub
 
-		}
-	};
-
+	//请求摘取的心愿列表响应
 	private TextHttpResponseHandler wishListResponse = new TextHttpResponseHandler("UTF-8") {
 
 		@Override

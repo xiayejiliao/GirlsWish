@@ -114,6 +114,7 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 		View v = LayoutInflater.from(arg0.getContext()).inflate(R.layout.listitem_mypickwish, arg0, false);
 		ViewHolder viewHolder = new ViewHolder(v);
 
+		//item 长按弹出删除对话框
 		v.setOnLongClickListener(new OnLongClickListener() {
 
 			@Override
@@ -166,6 +167,7 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 		return viewHolder;
 	}
 
+	//移除item
 	public void removeAt(int position) {
 		wish.remove(position);
 		notifyItemRemoved(position);

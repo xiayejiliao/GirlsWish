@@ -46,17 +46,34 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+/**
+ * 
+* @Description: 主界面包括策划导航，和标签导航
+* @author 16ren 
+* @date 2015年8月20日 下午5:38:10 
+*
+ */
 public class MainActivity extends AppCompatActivity {
+	//策划框架  v4包里面的
 	private DrawerLayout mDrawer;
+	//自定义actionbar
 	private Toolbar toolbar;
 	private ActionBar actionBar;
+	//策划界面
 	private NavigationView navigationView;
+	//同步侧滑栏和actionbar
 	private ActionBarDrawerToggle actionBarDrawerToggle;
+	//主界面心愿墙列表和消息列表
 	private ViewPager mViewPager;
+	//mViewPager导航标签
 	private TabLayout mTabLayout;
+	//策划栏的头部分 
 	private LinearLayout drawerheader;
+	//侧滑栏 头部 我的头像
 	private CircleImageView iv_icon;
+	//侧滑栏 头部 我的昵称
 	private TextView tv_nick;
+	//侧滑栏 头部 我的学校
 	private TextView tv_school;
 
 	/**
@@ -81,12 +98,12 @@ public class MainActivity extends AppCompatActivity {
 		tv_school = (TextView) findViewById(R.id.tv_drawer_schoolname);
 
 		navigationView = (NavigationView) findViewById(R.id.naviagionview);
+		//侧滑栏 条目点击
 		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 			@Override
 			public boolean onNavigationItemSelected(MenuItem menuItem) {
 				switch (menuItem.getItemId()) {
 				case R.id.nav_pushwish:
-					System.out.println("++++++");
 					startActivity(new Intent(MainActivity.this, MyPushWishActivity.class));
 					break;
 				case R.id.nav_pickwish:
@@ -103,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		drawerheader = (LinearLayout) findViewById(R.id.drawer_header);
+		//侧滑栏 头部点击 
 		drawerheader.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -190,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
 		actionBarDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
+	//主页 心愿墙和消息 pageradapter
 	public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 		final int PAGE_COUNT = 2;
 		private String tabTitles[] = new String[] { "心愿墙", "消息", };
