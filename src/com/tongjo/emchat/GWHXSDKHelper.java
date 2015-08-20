@@ -252,7 +252,13 @@ public class GWHXSDKHelper extends HXSDKHelper{
             @Override
             public String getTitle(EMMessage message) {
               //修改标题,这里使用默认
-                return null;
+            	String title = "您有一条系统消息,快去看看";
+				int msg_type = message.getIntAttribute("type",
+						AppConstant.MSG_TYPE_SYSTEM);
+				if (msg_type == AppConstant.MSG_TYPE_CHAT) {
+					title = "您的好友给你发来一条消息";
+				}
+                return title;
             }
             
             @Override
