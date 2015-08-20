@@ -28,7 +28,6 @@
         android:id="@+id/listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/margin_50"
         android:cacheColorHint="#00000000"
         android:divider="#19000000"
         android:dividerHeight="0dp"
@@ -38,17 +37,5 @@
         android:headerDividersEnabled="false"
         android:smoothScrollbar="true" >
     </com.handmark.pulltorefresh.library.PullToRefreshListView>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:src="@drawable/ic_add_white_24dp"
-        android:layout_margin="@dimen/margin_20"
-        app:backgroundTint="@color/wish_floatingactionbutton"
-        app:elevation="@dimen/margin_6"
-        app:fabSize="normal"
-        app:rippleColor="#33728dff"/>
 
 </android.support.design.widget.CoordinatorLayout>

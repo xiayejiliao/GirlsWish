@@ -129,8 +129,6 @@ public class MainTabWishAdapter extends BaseAdapter {
 			holder.content = (TextView) convertView.findViewById(R.id.wish_content);
 			/* holder.content.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); */
 
-			holder.content.setText(Html.fromHtml("<u>\t\t我在测试下划线我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线</u>"));
-
 			holder.nickname = (TextView) convertView.findViewById(R.id.wish_username);
 			holder.publicTime = (TextView) convertView.findViewById(R.id.public_time);
 			convertView.setTag(holder);
@@ -150,6 +148,10 @@ public class MainTabWishAdapter extends BaseAdapter {
 			}
 			if (wish.getCreatedTime() != null) {
 				holder.publicTime.setText(wish.getCreatedTime());
+			}
+			
+			if(wish.getContent() != null){
+				holder.content.setText("\t\t\t\t"+wish.getContent());
 			}
 			/*
 			 * if (wish.getCreatorUser() != null &&
