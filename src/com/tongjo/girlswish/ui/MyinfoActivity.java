@@ -1,9 +1,13 @@
 package com.tongjo.girlswish.ui;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.lang.reflect.Type;
 
 import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import u.aly.bu;
 
@@ -24,6 +28,7 @@ import com.tongjo.girlswish.event.UserSchoolnameChange;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.SpUtils;
+import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.CircleImageView;
 
@@ -47,6 +52,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -102,9 +108,10 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 
 		tv_phone.setText(SpUtils.get(getApplicationContext(), AppConstant.USER_PHONE, "电话").toString());
 		String iconurl = SpUtils.get(getApplicationContext(), AppConstant.USER_ICONURL, "").toString();
-		Picasso.with(this).load(iconurl).into(iv_icon);
-		
-		
+		if (!StringUtils.isEmpty(iconurl)) {
+			Picasso.with(this).load(iconurl).into(iv_icon);
+		}
+
 	}
 
 	@Override
@@ -166,8 +173,11 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				bm = Bitmap.createScaledBitmap(bm, iv_icon.getWidth(), iv_icon.getHeight(), true);
 				bm = ImageUtils.getRoundedCornerBitmap(bm);
 				iv_icon.setImageBitmap(bm);
+
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
 				RequestParams params = new RequestParams();
-				params.put("image", bm);
+				params.put("image", new ByteArrayInputStream(out.toByteArray()));
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
 
 			} else if (requestCode == SELECT_FILE) {
@@ -185,7 +195,9 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				bm = ImageUtils.getRoundedCornerBitmap(bm);
 				iv_icon.setImageBitmap(bm);
 				RequestParams params = new RequestParams();
-				params.put("image", bm);
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
+				params.put("image", new ByteArrayInputStream(out.toByteArray()));
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
 			}
 
@@ -199,7 +211,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 			@Override
 			public void onClick(DialogInterface dialog, int item) {
 				if (items[item].equals("照相机")) {
-					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 					File f = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "temp.jpg");
 					intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 					startActivityForResult(intent, REQUEST_CAMERA);
@@ -279,19 +291,23 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 
 		@Override
 		public void onSuccess(int arg0, Header[] arg1, String arg2) {
+			System.out.println(arg2);
 			if (arg0 == 200) {
-				Type type = new TypeToken<TJResponse<String>>() {
+				Type type = new TypeToken<TJResponse<AvatarUrl>>() {
 				}.getType();
-				TJResponse<String> response = new Gson().fromJson(arg2, type);
+				TJResponse<AvatarUrl> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
 					ToastUtils.show(MyinfoActivity.this, "修改头像成功");
-					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, response.getData().toString());
-					EventBus.getDefault().post(new UserIconChange(response.getData().toString()));
+					AvatarUrl avatarUrl = response.getData();
+					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, avatarUrl.getAvatarUrl());
+					EventBus.getDefault().post(new UserIconChange(avatarUrl.getAvatarUrl()));
+
 				} else {
 					ToastUtils.show(MyinfoActivity.this, "修改头像失败" + response.getResult().getMessage());
 				}
 			} else {
 				ToastUtils.show(MyinfoActivity.this, "(" + arg0 + ")");
+				System.out.println("(" + arg0 + ")");
 			}
 		}
 
@@ -299,7 +315,23 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 			// TODO Auto-generated method stub
 			ToastUtils.show(MyinfoActivity.this, "(" + arg0 + ")" + arg3.toString());
+			System.out.println("(" + arg0 + ")" + arg3.toString());
 		}
 	};
 
+	class AvatarUrl {
+		private String avatarUrl;
+
+		public String getAvatarUrl() {
+			return avatarUrl;
+		}
+
+		public void setAvatarUrl(String avatarUrl) {
+			this.avatarUrl = avatarUrl;
+		}
+
+		public AvatarUrl() {
+			super();
+		}
+	}
 }
