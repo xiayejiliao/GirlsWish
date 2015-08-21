@@ -31,12 +31,14 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:background="@drawable/bg_login"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:orientation="vertical" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/black" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -56,6 +58,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
+                        android:layout_marginLeft="12dp"
                         android:layout_toRightOf="@id/tv_login_phone"
                         android:background="@null"
                         android:digits="0123456789"
@@ -88,13 +91,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
+                        android:layout_marginLeft="12dp"
                         android:layout_toRightOf="@+id/tv_login_pass"
                         android:background="@null"
                         android:hint="@string/login_passworddescription"
                         android:inputType="textPassword"
                         android:textColor="@color/black" />
-
                 </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/black" />
             </LinearLayout>
 
             <Button
@@ -117,23 +125,21 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp" >
 
-                <com.tongjo.girlswish.widget.LinkTextView	
+                <TextView
                     android:id="@+id/ltv_login_register"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerHorizontal="true"
-                    app:clickcolor="@color/lblue"
-                    app:linktext="新用户注册" />
+                    android:text="新用户注册" />
 
-                <com.tongjo.girlswish.widget.LinkTextView
+                <TextView
                     android:id="@+id/ltv_login_forget"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    app:clickcolor="@color/lblue"
-                    app:linktext="忘记密码" />
+                    android:text="忘记密码" />
             </RelativeLayout>
         </LinearLayout>
 

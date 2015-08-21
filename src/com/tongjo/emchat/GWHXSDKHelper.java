@@ -49,6 +49,7 @@ import com.tongjo.bean.TJUserInfo;
 import com.tongjo.emchat.HXNotifier.HXNotificationInfoProvider;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.ui.ChatActivity;
+import com.tongjo.girlswish.ui.MainActivity;
 import com.tongjo.girlswish.ui.MainTabActivity;
 import com.tongjo.girlswish.utils.AppConstant;
 
@@ -286,7 +287,7 @@ public class GWHXSDKHelper extends HXSDKHelper{
             @Override
             public Intent getLaunchIntent(EMMessage message) {
 				// 设置点击通知栏跳转事件
-				Intent intent = new Intent(appContext, MainTabActivity.class);
+				Intent intent = new Intent(appContext, MainActivity.class);
 				int msg_type = message.getIntAttribute("type",
 						AppConstant.MSG_TYPE_SYSTEM);
 				if (msg_type == AppConstant.MSG_TYPE_CHAT) {
@@ -302,7 +303,7 @@ public class GWHXSDKHelper extends HXSDKHelper{
     
     @Override
     protected void onConnectionConflict(){
-        Intent intent = new Intent(appContext, MainTabActivity.class);
+        Intent intent = new Intent(appContext, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("conflict", true);
         appContext.startActivity(intent);
@@ -310,7 +311,7 @@ public class GWHXSDKHelper extends HXSDKHelper{
     
     @Override
     protected void onCurrentAccountRemoved(){
-    	Intent intent = new Intent(appContext, MainTabActivity.class);
+    	Intent intent = new Intent(appContext, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appContext.startActivity(intent);
     }

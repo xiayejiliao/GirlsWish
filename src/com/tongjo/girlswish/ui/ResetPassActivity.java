@@ -44,6 +44,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -77,7 +78,8 @@ public class ResetPassActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_resetpass);
 		mActionBar = getSupportActionBar();
-		mActionBar.setTitle("密码重置");
+		mActionBar.setTitle("忘记密码");
+		mActionBar.setDisplayHomeAsUpEnabled(true);
 		bt_getcaptcha = (TextView) findViewById(R.id.bt_resetpass_getcaptcha);
 		bt_sure = (Button) findViewById(R.id.bt_resetpass_sure);
 		et_phone = (EditText) findViewById(R.id.et_resetpass_phone);
@@ -89,6 +91,14 @@ public class ResetPassActivity extends AppCompatActivity {
 
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		if(item.getItemId()==android.R.id.home){
+			finish();
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	private OnClickListener onClickListener = new OnClickListener() {
 
 		@Override
@@ -108,6 +118,32 @@ public class ResetPassActivity extends AppCompatActivity {
 				RequestParams requestParams = new RequestParams();
 				requestParams.put("tel", sendphone);
 				asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_GETCAPTCHA, requestParams, httpgetcaptch);
+				new MyTimer().begin(25, new TimerProgress() {
+
+					@Override
+					public void onStart() {
+						// TODO Auto-generated method stub
+						bt_getcaptcha.setTextColor(Color.BLUE);
+						bt_getcaptcha.setEnabled(false);
+						et_phone.setEnabled(false);
+					}
+
+					@Override
+					public void onProgress(int toals, int remaining) {
+						// TODO Auto-generated method stub
+						bt_getcaptcha.setText(remaining + " s");
+					}
+
+					@Override
+					public void onFinish() {
+						// TODO Auto-generated method stub
+						// bt_getcaptcha.setTextColor(Color.parseColor("#333333"));
+						bt_getcaptcha.setTextColor(Color.BLACK);
+						bt_getcaptcha.setEnabled(true);
+						et_phone.setEnabled(true);
+						bt_getcaptcha.setText("获取验证码");
+					}
+				});
 				break;
 			case R.id.bt_resetpass_sure:
 				captcha = et_captcha.getText().toString();
@@ -145,38 +181,13 @@ public class ResetPassActivity extends AppCompatActivity {
 				}.getType();
 				TJResponse<Object> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
-					ToastUtils.show(getApplicationContext(), "获取成功");
-					new MyTimer().begin(25, new TimerProgress() {
-
-						@Override
-						public void onStart() {
-							// TODO Auto-generated method stub
-							bt_getcaptcha.setTextColor(Color.BLUE);
-							bt_getcaptcha.setEnabled(false);
-							et_phone.setEnabled(false);
-						}
-
-						@Override
-						public void onProgress(int toals, int remaining) {
-							// TODO Auto-generated method stub
-							bt_getcaptcha.setText(remaining + "s");
-						}
-
-						@Override
-						public void onFinish() {
-							// TODO Auto-generated method stub
-							// bt_getcaptcha.setTextColor(Color.parseColor("#333333"));
-							bt_getcaptcha.setTextColor(Color.BLACK);
-							bt_getcaptcha.setEnabled(true);
-							et_phone.setEnabled(true);
-							bt_getcaptcha.setText("获取验证码");
-						}
-					});
+					//ToastUtils.show(getApplicationContext(), "获取成功");
+					
 				} else {
-					ToastUtils.show(getApplicationContext(), "获取失败:" + response.getResult().getMessage());
+					//ToastUtils.show(getApplicationContext(), "获取失败:" + response.getResult().getMessage());
 				}
 			} else {
-				ToastUtils.show(getApplicationContext(), "获取失败:" + arg0);
+				//ToastUtils.show(getApplicationContext(), "获取失败:" + arg0);
 			}
 		}
 

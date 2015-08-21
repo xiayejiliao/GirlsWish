@@ -98,7 +98,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 		mViewPager.setCurrentItem(0);
 		setSelectTextColor(0);
 		setSelectImage(0);
-		getRightBtnImageView().setOnClickListener(new OnClickListener() {
+	/*	getRightBtnImageView().setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -107,7 +107,7 @@ public class MainTabActivity extends BaseFragmentActivity {
 					System.out.println("设置");
 				}
 			}
-		});
+		});*/
 	}
 
 	public void InitTitleBar() {

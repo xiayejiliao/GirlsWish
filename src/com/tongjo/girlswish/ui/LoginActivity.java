@@ -65,6 +65,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
@@ -81,6 +82,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity implements OnClickListener {
@@ -89,8 +91,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private EditText et_phone;
 	private EditText et_pass;
 	private ImageView iv_personico;
-	private LinkTextView ltv_forgetpass;
-	private LinkTextView ltv_register;
+	private TextView tv_forgetpass;
+	private TextView tv_register;
 	private DisplayImageOptions displayImageOptions;
 	private AsyncHttpClient asyncHttpClient;
 
@@ -101,14 +103,14 @@ public class LoginActivity extends Activity implements OnClickListener {
 		bt_login = (Button) findViewById(R.id.bt_login_sure);
 		et_phone = (EditText) findViewById(R.id.et_login_name);
 		et_pass = (EditText) findViewById(R.id.et_login_pass);
-		ltv_forgetpass = (LinkTextView) findViewById(R.id.ltv_login_forget);
-		ltv_register = (LinkTextView) findViewById(R.id.ltv_login_register);
+		tv_forgetpass = (TextView) findViewById(R.id.ltv_login_forget);
+		tv_register = (TextView) findViewById(R.id.ltv_login_register);
 		iv_personico = (ImageView) findViewById(R.id.iv_login_personico);
 
 		bt_login.setOnClickListener(this);
 		iv_personico.setOnClickListener(this);
-		ltv_forgetpass.setOnClickListener(this);
-		ltv_register.setOnClickListener(this);
+		tv_forgetpass.setOnClickListener(this);
+		tv_register.setOnClickListener(this);
 
 		et_phone.setText((String) SpUtils.get(getApplicationContext(), AppConstant.USER_PHONE, ""));
 
@@ -225,12 +227,15 @@ public class LoginActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.ltv_login_forget:
 			Intent intent1 = new Intent(LoginActivity.this, ResetPassActivity.class);
-
+			
 			startActivity(intent1);
+			tv_forgetpass.setTextColor(getResources().getColor(R.color.lblue));
+
 			break;
 		case R.id.ltv_login_register:
 			Intent intent2 = new Intent(LoginActivity.this, RegisterActivity.class);
 			startActivity(intent2);
+			tv_register.setTextColor(getResources().getColor(R.color.lblue));
 			break;
 		default:
 			break;
