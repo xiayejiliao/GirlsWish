@@ -85,7 +85,9 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 
 		if (tjWish.getCreatorUser() != null) {
 			holder.tvNick.setText(tjWish.getCreatorUser().getNickname());
-			holder.tvSchool.setText(tjWish.getCreatorUser().getSchool().getName());
+			if (tjWish.getCreatorUser().getSchool() != null) {
+				holder.tvSchool.setText(tjWish.getCreatorUser().getSchool().getName());
+			}
 			ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), holder.ivicon, displayImageOptions);
 			holder.ivtalk.setOnClickListener(new OnClickListener() {
 
@@ -114,7 +116,7 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 		View v = LayoutInflater.from(arg0.getContext()).inflate(R.layout.listitem_mypickwish, arg0, false);
 		ViewHolder viewHolder = new ViewHolder(v);
 
-		//item 长按弹出删除对话框
+		// item 长按弹出删除对话框
 		v.setOnLongClickListener(new OnLongClickListener() {
 
 			@Override
@@ -167,7 +169,7 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 		return viewHolder;
 	}
 
-	//移除item
+	// 移除item
 	public void removeAt(int position) {
 		wish.remove(position);
 		notifyItemRemoved(position);
