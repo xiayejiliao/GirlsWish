@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 		mDrawer.setDrawerListener(actionBarDrawerToggle);
 
 		// 设置主页viewpager
-		ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+		final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 		viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager()));
 
 		// 设置主页viewpage 导航标签
@@ -156,8 +156,10 @@ public class MainActivity extends AppCompatActivity {
 
 			@Override
 			public void onTabSelected(Tab arg0) {
+				viewPager.setCurrentItem(arg0.getPosition());
 				// TODO Auto-generated method stub
 				if (arg0.getPosition() == 0) {
+					
 					if (mFloatBtn.getVisibility() != View.VISIBLE) {
 						
 						mFloatBtn.setVisibility(View.VISIBLE);

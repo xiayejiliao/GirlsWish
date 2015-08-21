@@ -107,10 +107,10 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 		if (tjWish.getPickerUser() != null) {
 			holder.tvtime.setText(TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, tjWish.getPickedTime()));
 		}
-		String temp = "     ";
+	/*	String temp = "     ";
 		SpannableString content = new SpannableString(temp + tjWish.getContent());
-		content.setSpan(new UnderlineSpan(), temp.length(), content.length(), 0);
-		holder.tvcontent.setText(content);
+		content.setSpan(new UnderlineSpan(), temp.length(), content.length(), 0);*/
+		holder.tvcontent.setText("      "+tjWish.getContent());
 
 	}
 

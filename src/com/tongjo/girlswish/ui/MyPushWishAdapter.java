@@ -93,12 +93,14 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 			holder.ivtalk.setVisibility(View.GONE);
 			holder.tvtime.setVisibility(View.GONE);
 			holder.tvinfo.setText("心愿等待被摘取");
+			holder.tvtitle.setVisibility(View.GONE);
 
 		} else {
 			holder.tvinfo.setVisibility(View.GONE);
 			holder.layout.setVisibility(View.VISIBLE);
 			holder.ivtalk.setVisibility(View.VISIBLE);
 			holder.tvtime.setVisibility(View.VISIBLE);
+			holder.tvtitle.setVisibility(View.VISIBLE);
 
 			String t = TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, tjWish.getPickedTime());
 
@@ -118,10 +120,10 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 			});
 		}
 
-		String temp = "     ";
+	/*	String temp = "     ";
 		SpannableString content = new SpannableString(temp + tjWish.getContent());
-		content.setSpan(new UnderlineSpan(), temp.length(), content.length(), 0);
-		holder.tvcontent.setText(content);
+		content.setSpan(new UnderlineSpan(), temp.length(), content.length(), 0);*/
+		holder.tvcontent.setText("      "+tjWish.getContent());
 
 	}
 
@@ -149,8 +151,9 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 		public TextView tvcontent;
 		public TextView tvtime;
 		public TextView tvinfo;
+		public TextView tvtitle;
 		public RelativeLayout rLayout;
-		public LinearLayout layout;
+		public RelativeLayout layout;
 
 		// We also create a constructor that accepts the entire item row
 		// and does the view lookups to find each subview
@@ -164,7 +167,8 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 			tvtime = (TextView) itemView.findViewById(R.id.tv_mypushwish_time);
 			tvinfo = (TextView) itemView.findViewById(R.id.tv_mypushwish_info);
 			rLayout = (RelativeLayout) itemView.findViewById(R.id.rl_mypushwish_item);
-			layout = (LinearLayout) itemView.findViewById(R.id.ll_mypushwish_name);
+			layout = (RelativeLayout) itemView.findViewById(R.id.ll_mypushwish_name);
+			tvtitle = (TextView) itemView.findViewById(R.id.tv_mypushwish_title);
 			itemView.setOnLongClickListener(new OnLongClickListener() {
 
 				@Override
