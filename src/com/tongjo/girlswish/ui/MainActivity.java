@@ -12,6 +12,7 @@ import com.tongjo.girlswish.widget.CircleImageView;
 
 import de.greenrobot.event.EventBus;
 import android.app.Activity;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.design.widget.TabLayout;
@@ -76,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
 	//侧滑栏 头部 我的学校
 	private TextView tv_school;
 
+	//添加心愿按钮
+	private FloatingActionButton mFloatBtn = null;
+	
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -145,6 +149,17 @@ public class MainActivity extends AppCompatActivity {
 		EventBus.getDefault().register(this);
 
 		initDrawerheader();
+		
+		mFloatBtn = (FloatingActionButton)findViewById(R.id.floatbtn);
+		mFloatBtn.setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this, AddWishActivity.class);
+				startActivity(intent);
+			}
+			
+		});
 
 	}
 

@@ -59,8 +59,6 @@ public class MainTabWishFragment extends BaseFragment {
 	private WishDialogFragment dialog = null;
 	private ViewGroup mEmptyView = null;
 
-	private FloatingActionButton mFloatBtn = null;
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -76,16 +74,6 @@ public class MainTabWishFragment extends BaseFragment {
 	}
 
 	public void InitView(View view) {
-		mFloatBtn = (FloatingActionButton)view.findViewById(R.id.floatbtn);
-		mFloatBtn.setOnClickListener(new View.OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(getActivity(), AddWishActivity.class);
-				startActivity(intent);
-			}
-			
-		});
 		mListView = (PullToRefreshListView) view.findViewById(R.id.listview);
 		mEmptyView = (ViewGroup) view.findViewById(R.id.empty_view);
 		mAdapter = new MainTabWishAdapter(getActivity(), DataContainer.WishList);

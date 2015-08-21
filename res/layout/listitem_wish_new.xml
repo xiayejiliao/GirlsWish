@@ -81,10 +81,11 @@
                         android:text="6分钟前" />
                 </LinearLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_40"
+                    android:layout_marginBottom="@dimen/margin_40"
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/margin_10"
                     android:paddingLeft="@dimen/margin_10"
@@ -94,10 +95,42 @@
                         android:id="@+id/wish_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="@dimen/margin_8"
+                        android:layout_alignParentTop="true"
+                        android:lineSpacingExtra="@dimen/margin_12"
+                        android:textSize="@dimen/margin_18"
                         android:maxLines="3"
-                        android:text="\t\t我在测试下划线我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线" />
-                </LinearLayout>
+                        android:minLines="3"
+                        android:text="\t\t\t\t我在测试下划线我在测试下划线，我在测试下划线，
+                        我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线" />
+                    
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:orientation="vertical" >
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#979797"
+                            android:layout_marginLeft="@dimen/margin_24"
+                            android:layout_marginTop="@dimen/margin_24" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#979797"
+                            android:layout_marginTop="@dimen/margin_32" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#979797"
+                            android:layout_marginTop="@dimen/margin_32" />
+                    </LinearLayout>
+                </RelativeLayout>
+                
+                
             </LinearLayout>
 
             <!-- 上面的绳子 -->
