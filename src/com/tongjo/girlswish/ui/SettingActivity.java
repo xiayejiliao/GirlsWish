@@ -18,6 +18,7 @@ import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.ButtonWithArrow;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.fb.FeedbackAgent;
 
 import de.greenrobot.event.EventBus;
 import android.R.anim;
@@ -94,7 +95,8 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
 			startActivity(new Intent(SettingActivity.this, AboutActivity.class));
 			break;
 		case R.id.bt_setting_suggest:
-			startActivity(new Intent(SettingActivity.this, SuggestActivity.class));
+			FeedbackAgent agent = new FeedbackAgent(SettingActivity.this);
+			agent.startFeedbackActivity();
 			break;
 		case R.id.bt_setting_exit:
 			mAsyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_LOGOUT, logouTextHttpResponseHandler);

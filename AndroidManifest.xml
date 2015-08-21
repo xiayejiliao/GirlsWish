@@ -179,6 +179,8 @@
             android:name=".ui.MyPushWishActivity"
             android:label="@string/title_activity_my_push_wish" >
         </activity>
+        <activity android:name="com.umeng.fb.ConversationActivity" >
+        </activity>
     </application>
 
 </manifest>

@@ -78,7 +78,7 @@ public class ResetPassActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_resetpass);
 		mActionBar = getSupportActionBar();
-		mActionBar.setTitle("忘记密码");
+		mActionBar.setTitle("返回");
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		bt_getcaptcha = (TextView) findViewById(R.id.bt_resetpass_getcaptcha);
 		bt_sure = (Button) findViewById(R.id.bt_resetpass_sure);
