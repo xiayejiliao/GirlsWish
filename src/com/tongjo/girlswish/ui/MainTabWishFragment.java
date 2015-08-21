@@ -33,10 +33,14 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.squareup.picasso.Picasso;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJWish;
 import com.tongjo.bean.TJWishList;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.event.UserLogout;
+import com.tongjo.girlswish.event.WishDelete;
+import com.tongjo.girlswish.event.WishPush;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.utils.AppConstant;
@@ -45,6 +49,8 @@ import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.DeleteConfirmDialog;
 import com.tongjo.girlswish.widget.DeleteConfirmDialog.DialogClickListener;
 import com.tongjo.girlwish.data.DataContainer;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * 心愿墙对应的fragment Copyright 2015
@@ -60,6 +66,18 @@ public class MainTabWishFragment extends BaseFragment {
 	private ViewGroup mEmptyView = null;
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		EventBus.getDefault().register(this);
+		super.onCreate(savedInstanceState);
+	}
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		EventBus.getDefault().unregister(this);
+		super.onDestroy();
+	}
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
@@ -73,6 +91,13 @@ public class MainTabWishFragment extends BaseFragment {
 		return rootView;
 	}
 
+
+	public void onEventMainThread(WishDelete event) {
+		getWishData();
+	}
+	public void onEventMainThread(WishPush event) {
+		getWishData();
+	}
 	public void InitView(View view) {
 		mListView = (PullToRefreshListView) view.findViewById(R.id.listview);
 		mEmptyView = (ViewGroup) view.findViewById(R.id.empty_view);

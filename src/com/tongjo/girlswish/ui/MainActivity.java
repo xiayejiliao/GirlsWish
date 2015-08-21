@@ -12,6 +12,7 @@ import com.tongjo.girlswish.widget.CircleImageView;
 
 import de.greenrobot.event.EventBus;
 import android.app.Activity;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
@@ -49,37 +50,37 @@ import android.widget.TextView;
 
 /**
  * 
-* @Description: 主界面包括策划导航，和标签导航
-* @author 16ren 
-* @date 2015年8月20日 下午5:38:10 
-*
+ * @Description: 主界面包括策划导航，和标签导航
+ * @author 16ren
+ * @date 2015年8月20日 下午5:38:10
+ *
  */
 public class MainActivity extends AppCompatActivity {
-	//策划框架  v4包里面的
+	// 策划框架 v4包里面的
 	private DrawerLayout mDrawer;
-	//自定义actionbar
+	// 自定义actionbar
 	private Toolbar toolbar;
 	private ActionBar actionBar;
-	//策划界面
+	// 策划界面
 	private NavigationView navigationView;
-	//同步侧滑栏和actionbar
+	// 同步侧滑栏和actionbar
 	private ActionBarDrawerToggle actionBarDrawerToggle;
-	//主界面心愿墙列表和消息列表
+	// 主界面心愿墙列表和消息列表
 	private ViewPager mViewPager;
-	//mViewPager导航标签
+	// mViewPager导航标签
 	private TabLayout mTabLayout;
-	//策划栏的头部分 
+	// 策划栏的头部分
 	private LinearLayout drawerheader;
-	//侧滑栏 头部 我的头像
+	// 侧滑栏 头部 我的头像
 	private CircleImageView iv_icon;
-	//侧滑栏 头部 我的昵称
+	// 侧滑栏 头部 我的昵称
 	private TextView tv_nick;
-	//侧滑栏 头部 我的学校
+	// 侧滑栏 头部 我的学校
 	private TextView tv_school;
 
-	//添加心愿按钮
+	// 添加心愿按钮
 	private FloatingActionButton mFloatBtn = null;
-	
+
 	/**
 	 * Used to store the last screen title. For use in
 	 * {@link #restoreActionBar()}.
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 		tv_school = (TextView) findViewById(R.id.tv_drawer_schoolname);
 
 		navigationView = (NavigationView) findViewById(R.id.naviagionview);
-		//侧滑栏 条目点击
+		// 侧滑栏 条目点击
 		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 			@Override
 			public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		drawerheader = (LinearLayout) findViewById(R.id.drawer_header);
-		//侧滑栏 头部点击 
+		// 侧滑栏 头部点击
 		drawerheader.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -145,20 +146,51 @@ public class MainActivity extends AppCompatActivity {
 		// 设置主页viewpage 导航标签
 		TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 		tabLayout.setupWithViewPager(viewPager);
+		tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
+
+			@Override
+			public void onTabUnselected(Tab arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onTabSelected(Tab arg0) {
+				// TODO Auto-generated method stub
+				if (arg0.getPosition() == 0) {
+					if (mFloatBtn.getVisibility() != View.VISIBLE) {
+						
+						mFloatBtn.setVisibility(View.VISIBLE);
+					}
+				} else {
+					if (mFloatBtn.getVisibility() != View.GONE) {
+					
+						mFloatBtn.setVisibility(View.GONE);
+					}
+				}
+
+			}
+
+			@Override
+			public void onTabReselected(Tab arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 		// 注册evenbus的事件订阅
 		EventBus.getDefault().register(this);
 
 		initDrawerheader();
-		
-		mFloatBtn = (FloatingActionButton)findViewById(R.id.floatbtn);
-		mFloatBtn.setOnClickListener(new View.OnClickListener(){
+
+		mFloatBtn = (FloatingActionButton) findViewById(R.id.floatbtn);
+		mFloatBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(MainActivity.this, AddWishActivity.class);
 				startActivity(intent);
 			}
-			
+
 		});
 
 	}
@@ -175,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
 		tv_school.setText(SpUtils.get(getApplicationContext(), AppConstant.USER_SCHOOLNAME, "学校").toString());
 		Integer sex = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_SEX, 1);
 		String iconurl = SpUtils.get(getApplicationContext(), AppConstant.USER_ICONURL, "").toString();
-		if (iconurl != null&&!iconurl.equals("")) {
+		if (iconurl != null && !iconurl.equals("")) {
 			Picasso.with(this).load(iconurl).into(iv_icon);
 		}
 	}
@@ -223,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
 		actionBarDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-	//主页 心愿墙和消息 pageradapter
+	// 主页 心愿墙和消息 pageradapter
 	public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 		final int PAGE_COUNT = 2;
 		private String tabTitles[] = new String[] { "心愿墙", "消息", };

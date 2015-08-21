@@ -215,7 +215,7 @@ public class TimeUtils {
 			e.printStackTrace();
 			return "";
 		}
-		long temp=t2-t1;
+		long temp=t1-t2;
 		if(temp>0&&temp<60*60*1000){
 			return temp/60/1000+"分";
 		}
@@ -228,7 +228,7 @@ public class TimeUtils {
 		if(temp>7*24*60*60*1000){
 			return "大于7天分";
 		}
-		return "";
+		return "--";
 	}
 
 }
