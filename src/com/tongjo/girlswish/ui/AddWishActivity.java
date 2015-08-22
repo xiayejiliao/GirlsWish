@@ -1,10 +1,15 @@
 package com.tongjo.girlswish.ui;
 
+import java.lang.reflect.Type;
+
 import org.apache.http.Header;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,8 +17,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.tongjo.bean.TJResponse;
+import com.tongjo.bean.TJWishList;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.event.WishPush;
 import com.tongjo.girlswish.utils.AppConstant;
@@ -77,6 +86,32 @@ public class AddWishActivity extends BaseActivity {
 		imm.showSoftInput(mEditText, InputMethodManager.SHOW_FORCED);
 		
 		
+		mEditText.addTextChangedListener(new TextWatcher(){
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				if(start -count+after > 49){
+					ToastUtils.show(AddWishActivity.this, "字数不能超过50个");
+				}
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			
+				
+			}
+			
+		});
+		
 	}
 
 	public void addWish(String content) {
@@ -94,10 +129,52 @@ public class AddWishActivity extends BaseActivity {
 						}
 						Log.d(TAG, arg2);
 						if (arg0 == 200) {
-							Toast.makeText(getApplicationContext(),
-									"发布心愿成功" + arg0, Toast.LENGTH_LONG).show();
-							EventBus.getDefault().post(new WishPush(null));
-							AddWishActivity.this.finish();
+							Type type = new TypeToken<TJResponse<Object>>() {
+							}.getType();
+							TJResponse<Object> response = null;
+							try {
+								response = new Gson().fromJson(arg2, type);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							if (response == null
+									|| response.getResult() == null) {
+								ToastUtils.show(AddWishActivity.this, "发布失败");
+								return;
+							}
+							
+							//0成功
+							if (response.getResult().getCode() == 0) {
+								Toast.makeText(getApplicationContext(),
+										"发布心愿成功" + arg0, Toast.LENGTH_LONG).show();
+								EventBus.getDefault().post(new WishPush(null));
+								AddWishActivity.this.finish();
+							} 
+							//1没有登录
+							else if (response.getResult().getCode() == 1) {
+								ToastUtils.show(AddWishActivity.this, "没有登录，需要登录"
+										+ arg0);
+							} 
+							//2次数超过限制
+							else if(response.getResult().getCode() == 2){
+								ToastUtils.show(AddWishActivity.this, "发布心愿失败:"
+										+ response.getResult().getMessage());
+							}
+							
+							//3信息不完善
+							else if(response.getResult().getCode() == 3){
+								ToastUtils.show(AddWishActivity.this, "发布心愿失败:"
+										+ response.getResult().getMessage());
+								
+								Intent intent = new Intent(AddWishActivity.this,MyinfoActivity.class);
+								startActivity(intent);
+								AddWishActivity.this.finish();
+							}else{
+								ToastUtils.show(AddWishActivity.this, "发布心愿失败:"
+										+ response.getResult().getMessage());
+							}
+							
 						}
 					}
 

@@ -8,6 +8,7 @@ import org.apache.http.Header;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -82,6 +83,14 @@ public class MainTabWishFragment extends BaseFragment {
 		super.onDestroy();
 	}
 
+	 @Override
+	    public void setUserVisibleHint(boolean isVisibleToUser) {
+	        super.setUserVisibleHint(isVisibleToUser);
+	        if (isVisibleToUser) {
+	        	/*getWishData(wishall);*/
+	        }
+	    }
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -207,6 +216,7 @@ public class MainTabWishFragment extends BaseFragment {
 	}
 
 	public void updateUi(boolean isEmpty) {
+		mAdapter.setList(DataContainer.WishList);
 		mAdapter.notifyDataSetChanged();
 	}
 
@@ -265,7 +275,7 @@ public class MainTabWishFragment extends BaseFragment {
 											.addAll((List<TJWish>) response
 													.getData().getWishes());
 									updateUi(false);
-									ToastUtils.show(getActivity(), "心愿列表获取成功");
+									/*ToastUtils.show(getActivity(), "心愿列表获取成功");*/
 								}
 							} else {
 								ToastUtils.show(getActivity(), "心愿列表获取失败:"
@@ -326,10 +336,25 @@ public class MainTabWishFragment extends BaseFragment {
 							if (response.getResult().getCode() == 0) {
 								ToastUtils.show(getActivity(), "摘取心愿成功" + arg0);
 								getWishData(wishall);
-							} else if (response.getResult().getCode() == 0) {
+							} else if (response.getResult().getCode() == 1) {
 								ToastUtils.show(getActivity(), "没有登录，需要登录"
 										+ arg0);
-							} else {
+							} 
+							//2次数超过限制
+							else if(response.getResult().getCode() == 2){
+								ToastUtils.show(getActivity(), "摘取心愿失败:"
+										+ response.getResult().getMessage());
+							}
+							
+							//3信息不完善
+							else if(response.getResult().getCode() == 3){
+								ToastUtils.show(getActivity(), "摘取心愿失败:"
+										+ response.getResult().getMessage());
+								
+								Intent intent = new Intent(getActivity(),MyinfoActivity.class);
+								startActivity(intent);
+								
+							}else{
 								ToastUtils.show(getActivity(), "摘取心愿失败:"
 										+ response.getResult().getMessage());
 							}
