@@ -1,11 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.girlswish.MainActivity" >
+    tools:context="com.tongjo.girlswish.MainActivity" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_all"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="全部心愿"/>
+    <item
+        android:id="@+id/action_men"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="女生心愿"/>
+    <item
+        android:id="@+id/action_women"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="男生心愿"/>
 
 </menu>

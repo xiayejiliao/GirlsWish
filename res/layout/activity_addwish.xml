@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res/com.tongjo.girlswish"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     android:orientation="vertical" >
 
@@ -57,10 +57,11 @@
                         android:background="@android:color/transparent"
                         android:textSize="@dimen/margin_18"
                         android:gravity="left|top"
+                        android:focusable="true"
                         android:maxLength="50"
                         android:maxLines="3"
                         android:minLines="3"
-                        android:text="\t\t\t\t我在测试下划线我在测试下划线，我在测试下划线，我在测试下划线" />
+                        android:text="" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -72,7 +73,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="#979797"
-                            android:layout_marginLeft="@dimen/margin_24"
                             android:layout_marginTop="@dimen/margin_24" />
 
                         <View
