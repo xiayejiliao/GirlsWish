@@ -3,3 +3,5 @@
 /.settings/
 /.apt_generated/
 .DS_Store
+.classpath
+.project 
