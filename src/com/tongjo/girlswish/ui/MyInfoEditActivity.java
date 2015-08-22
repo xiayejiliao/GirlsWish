@@ -76,8 +76,9 @@ import android.widget.PopupWindow;
  *
  */
 public class MyInfoEditActivity extends BaseActivity implements OnClickListener {
-	private int REQUEST_CAMERA = 3621;
-	private int SELECT_FILE = 6523;
+	private final int REQUEST_CAMERA = 3621;
+	private final int SELECT_FILE = 6523;
+	private final int SCHOOLCHOOSE = 6541;
 	private EditText et_name;
 	private EditText et_school;
 	private Button bt_next;
@@ -88,6 +89,8 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	private boolean isupdateicon = false;
 	private boolean ischoosesex = false;
 	private int sex;
+	
+	private String schoolid;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,18 +100,18 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		et_school = (EditText) findViewById(R.id.et_myinfo_school);
 		bt_next = (Button) findViewById(R.id.bt_myinfo_next);
 		iv_icon = (ImageView) findViewById(R.id.iv_myinfo_personico);
-		radioGroup=(RadioGroup)findViewById(R.id.rg_myinfo_sex);
+		radioGroup = (RadioGroup) findViewById(R.id.rg_myinfo_sex);
 		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
+
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				// TODO Auto-generated method stub
-				ischoosesex=true;
-				if(checkedId==R.id.rb_myinfo_men){
-					sex=1;
+				ischoosesex = true;
+				if (checkedId == R.id.rb_myinfo_men) {
+					sex = 1;
 				}
-				if(checkedId==R.id.rb_myinfo_women){
-					sex=0;
+				if (checkedId == R.id.rb_myinfo_women) {
+					sex = 0;
 				}
 			}
 		});
@@ -122,7 +125,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				// TODO Auto-generated method stub
 				if (hasFocus) {
 					Intent intent = new Intent(MyInfoEditActivity.this, RegisterSchollChooseActivity.class);
-					startActivityForResult(intent, AppConstant.STARTFORCODE_REGISTER_SCHOOL);
+					startActivityForResult(intent, SCHOOLCHOOSE);
 				}
 			}
 		});
@@ -135,7 +138,11 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		case R.id.bt_myinfo_next:
 			String name = et_name.getText().toString();
 			String school = et_school.getText().toString();
-			if(ischoosesex==false){
+			if(isupdateicon==false){
+				ToastUtils.show(getApplicationContext(), "请上传头像");
+				return;
+			}
+			if (ischoosesex == false) {
 				ToastUtils.show(getApplicationContext(), "选择性别");
 				return;
 			}
@@ -147,19 +154,18 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				ToastUtils.show(getApplicationContext(), "学校空");
 				return;
 			}
+			
 			RequestParams requestParams = new RequestParams();
 			requestParams.put("nickname", name);
-			requestParams.put("schoolId", school);
+			requestParams.put("schoolId", schoolid);
 			requestParams.put("gender", sex);
 			asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_PROFILE, requestParams, httpprofile);
+			progressDialog=new ProgressDialog(MyInfoEditActivity.this);
+			progressDialog.show();
 			break;
 		case R.id.et_myinfo_school:
-			/*
-			 * Intent intent = new Intent(MyInfoEditActivity.this,
-			 * RegisterSchollChooseActivity.class);
-			 * startActivityForResult(intent,
-			 * AppConstant.STARTFORCODE_REGISTER_SCHOOL);
-			 */
+			Intent intent = new Intent(MyInfoEditActivity.this, RegisterSchollChooseActivity.class);
+			startActivityForResult(intent, SCHOOLCHOOSE);
 			break;
 		case R.id.iv_myinfo_personico:
 			selectImage();
@@ -198,6 +204,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		System.out.println(resultCode);
+		System.out.println(requestCode);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == REQUEST_CAMERA) {
 				File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
@@ -237,9 +244,10 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				RequestParams params = new RequestParams();
 				params.put("image", new ByteArrayInputStream(out.toByteArray()));
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
-			} else if (requestCode == AppConstant.STARTFORCODE_REGISTER_SCHOOL) {
-				String school = data.getStringExtra("schoolname");
-				et_school.setText(school);
+			} else if (requestCode == SCHOOLCHOOSE) {
+				String schoolname = data.getStringExtra("schoolname");
+				schoolid = data.getStringExtra("schoolid");
+				et_school.setText(schoolname);
 			}
 		}
 	}
@@ -249,6 +257,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		@Override
 		public void onSuccess(int arg0, Header[] arg1, String arg2) {
 			// TODO Auto-generated method stub
+			progressDialog.dismiss();
 			if (arg0 == 200) {
 				Type type = new TypeToken<TJResponse<TJUserInfo>>() {
 				}.getType();
@@ -272,7 +281,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLCOORDINATES, userSchool.getCoordinates());
 						}
 					}
-					Intent intent = new Intent(MyInfoEditActivity.this, LoginActivity.class);
+					Intent intent = new Intent(MyInfoEditActivity.this, MainActivity.class);
 					startActivity(intent);
 					MyInfoEditActivity.this.finish();
 
@@ -287,6 +296,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 			// TODO Auto-generated method stub
+			progressDialog.dismiss();
 			ToastUtils.show(getApplicationContext(), "完善信息失败" + arg3.toString());
 		}
 	};
@@ -303,7 +313,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 					ToastUtils.show(MyInfoEditActivity.this, "修改头像成功");
 					AvatarUrl avatarUrl = response.getData();
 					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, avatarUrl.getAvatarUrl());
-					isupdateicon=true;
+					isupdateicon = true;
 					EventBus.getDefault().post(new UserIconChange(avatarUrl.getAvatarUrl()));
 
 				} else {

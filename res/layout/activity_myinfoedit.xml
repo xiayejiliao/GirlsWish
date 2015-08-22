@@ -110,6 +110,7 @@
                 android:singleLine="true"
                 android:background="@null"
                 android:hint="@string/register_schooldescription"
+                android:editable="false"
                 android:textColor="@color/black" />
         </LinearLayout>
 
