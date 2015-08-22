@@ -128,7 +128,6 @@ public class MainTabWishAdapter extends BaseAdapter {
 			holder.sex = (ImageView) convertView.findViewById(R.id.wish_sex);
 			holder.avatar = (ImageView) convertView.findViewById(R.id.wish_avatar);
 			holder.content = (TextView) convertView.findViewById(R.id.wish_content);
-			/* holder.content.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); */
 
 			holder.nickname = (TextView) convertView.findViewById(R.id.wish_username);
 			holder.publicTime = (TextView) convertView.findViewById(R.id.public_time);
@@ -154,6 +153,12 @@ public class MainTabWishAdapter extends BaseAdapter {
 			
 			if(wish.getContent() != null){
 				holder.content.setText("\t\t\t\t"+wish.getContent());
+			}
+			
+			if(wish.getCreatorUser() != null && wish.getCreatorUser().getGender() == 0){
+				holder.sex.setImageResource(R.drawable.men);
+			}else{
+				holder.sex.setImageResource(R.drawable.women);
 			}
 			/*
 			 * if (wish.getCreatorUser() != null &&
