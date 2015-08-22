@@ -83,12 +83,10 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	private EditText et_school;
 	private Button bt_next;
 	private ImageView iv_icon;
-	private RadioGroup radioGroup;
 	private ProgressDialog progressDialog;
-
+	private int sex;
 	private boolean isupdateicon = false;
 	private boolean ischoosesex = false;
-	private int sex;
 	
 	private String schoolid;
 
@@ -100,22 +98,8 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		et_school = (EditText) findViewById(R.id.et_myinfo_school);
 		bt_next = (Button) findViewById(R.id.bt_myinfo_next);
 		iv_icon = (ImageView) findViewById(R.id.iv_myinfo_personico);
-		radioGroup = (RadioGroup) findViewById(R.id.rg_myinfo_sex);
-		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				// TODO Auto-generated method stub
-				ischoosesex = true;
-				if (checkedId == R.id.rb_myinfo_men) {
-					sex = 1;
-				}
-				if (checkedId == R.id.rb_myinfo_women) {
-					sex = 0;
-				}
-			}
-		});
-
+		sex=getIntent().getIntExtra("sex", -1);
 		bt_next.setOnClickListener(this);
 		iv_icon.setOnClickListener(this);
 		et_school.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -158,7 +142,9 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 			RequestParams requestParams = new RequestParams();
 			requestParams.put("nickname", name);
 			requestParams.put("schoolId", schoolid);
-			requestParams.put("gender", sex);
+			if(sex!=-1){
+				requestParams.put("gender", sex);
+			}
 			asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_PROFILE, requestParams, httpprofile);
 			progressDialog=new ProgressDialog(MyInfoEditActivity.this);
 			progressDialog.show();
