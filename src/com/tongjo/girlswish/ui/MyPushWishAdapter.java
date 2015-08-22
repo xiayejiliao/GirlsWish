@@ -106,7 +106,9 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 
 			holder.tvtime.setText(t);
 			holder.tvNick.setText(tjWish.getPickerUser().getNickname());
-			holder.tvSchool.setText(tjWish.getPickerUser().getSchool().getName());
+			if (tjWish.getPickerUser().getSchool() != null) {
+				holder.tvSchool.setText(tjWish.getPickerUser().getSchool().getName());
+			}
 			ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), holder.ivicon, displayImageOptions);
 			holder.ivtalk.setOnClickListener(new OnClickListener() {
 
@@ -120,10 +122,12 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 			});
 		}
 
-	/*	String temp = "     ";
-		SpannableString content = new SpannableString(temp + tjWish.getContent());
-		content.setSpan(new UnderlineSpan(), temp.length(), content.length(), 0);*/
-		holder.tvcontent.setText("      "+tjWish.getContent());
+		/*
+		 * String temp = "     "; SpannableString content = new
+		 * SpannableString(temp + tjWish.getContent()); content.setSpan(new
+		 * UnderlineSpan(), temp.length(), content.length(), 0);
+		 */
+		holder.tvcontent.setText("      " + tjWish.getContent());
 
 	}
 

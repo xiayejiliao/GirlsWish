@@ -30,6 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                  android:layout_marginLeft="20dp"
+                 android:layout_marginRight="12dp"
                 android:gravity="center_vertical"
                 android:text="@string/register_sex"
                 android:textColor="@color/black" />
@@ -69,6 +70,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginRight="12dp"
                 android:gravity="center_vertical"
                 android:text="@string/register_nickname" />
 
@@ -76,6 +78,7 @@
                 android:id="@+id/et_myinfo_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:singleLine="true"
                 android:background="@null"
                 android:hint="@string/register_nicknamedescription" />
         </LinearLayout>
@@ -94,6 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                  android:layout_marginLeft="20dp"
+                 android:layout_marginRight="12dp"
                 android:gravity="center_vertical"
                 android:text="@string/register_school"
                 android:textColor="@color/black" />
@@ -102,6 +106,7 @@
                 android:id="@+id/et_myinfo_school"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:singleLine="true"
                 android:background="@null"
                 android:hint="@string/register_schooldescription"
                 android:textColor="@color/black" />
