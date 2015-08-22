@@ -93,7 +93,6 @@ public class MyPickWishActivity extends BaseActivity {
 		mActionBar.setTitle("摘取的心愿");
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 
-		/*mSwipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);*/
 		mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 		//下拉刷新，重新获取摘取列表
 		mSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {

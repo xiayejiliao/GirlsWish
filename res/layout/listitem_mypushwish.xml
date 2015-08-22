@@ -23,50 +23,76 @@
             <RelativeLayout
                 android:id="@+id/rl_mypushwish_item"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="120dp"
                 android:layout_marginLeft="16dp" >
 
-                <ImageView
-                    android:id="@+id/iv_mypushwish_icon"
-                    android:layout_width="62dp"
-                    android:layout_height="62dp"
-                    android:layout_centerVertical="true"
-                    android:scaleType="fitStart"
-                    android:src="@drawable/ic_broken_image_black_24dp" />
-
                 <LinearLayout
-                    android:id="@+id/ll_mypushwish_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="72dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/tv_mypushwish_nick"
+                        android:id="@+id/tv_mypushwish_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/nickname" />
+                        android:layout_above="@+id/ll_mypushwish_name"
+                        android:layout_alignRight="@+id/ll_mypushwish_name"
+                        android:layout_marginTop="5dp"
+                        android:text="摘心愿的人" />
 
-                    <TextView
-                        android:id="@+id/tv_mypushwish_school"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/school" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <RelativeLayout
+                            android:layout_width="176dp"
+                            android:layout_height="62dp"
+                            android:layout_centerVertical="true" >
+
+                            <ImageView
+                                android:id="@+id/iv_mypushwish_icon"
+                                android:layout_width="62dp"
+                                android:layout_height="62dp"
+                                android:layout_centerVertical="true"
+                                android:scaleType="fitStart"
+                                android:src="@drawable/ic_broken_image_black_24dp" />
+
+                            <RelativeLayout
+                                android:id="@+id/ll_mypushwish_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="72dp"
+                                android:orientation="vertical" >
+
+                                <TextView
+                                    android:id="@+id/tv_mypushwish_nick"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:singleLine="true"
+                                    android:text="@string/nickname" />
+
+                                <TextView
+                                    android:id="@+id/tv_mypushwish_school"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentBottom="true"
+                                    android:singleLine="true"
+                                    android:text="@string/school" />
+
+                                <TextView
+                                    android:id="@+id/tv_mypushwish_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:singleLine="true"
+                                    android:text="info"
+                                    android:visibility="visible" />
+                            </RelativeLayout>
+                        </RelativeLayout>
+                    </RelativeLayout>
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_mypushwish_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="72dp"
-                    android:singleLine="true"
-                    android:visibility="gone"
-                    android:text="info" />
 
                 <RelativeLayout
                     android:layout_width="90dp"
@@ -88,7 +114,6 @@
                         android:layout_height="40dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/ic_message_black_24dp" />
-
                 </RelativeLayout>
             </RelativeLayout>
 
@@ -97,16 +122,56 @@
                 android:layout_height="0.1dp"
                 android:background="@color/black" />
 
-            <TextView
-                android:id="@+id/tv_mypushwish_content"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="30dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="30dp"
-                android:singleLine="false"
-                android:text="@string/test" />
+                android:layout_height="match_parent" 
+                android:background="@color/wish_backgrounddown" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_mypushwish_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:lineSpacingExtra="@dimen/margin_12"
+                        android:maxLines="3"
+                        android:minLines="3"
+                        android:text="\t\t\t\t我在测试下划线我在测试下划线，我在测试下划线，
+                        我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线"
+                        android:textSize="@dimen/margin_18" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:orientation="vertical" >
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="@dimen/margin_24"
+                            android:layout_marginTop="@dimen/margin_24"
+                            android:background="#979797" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/margin_32"
+                            android:background="#979797" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="@dimen/margin_32"
+                            android:background="#979797" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

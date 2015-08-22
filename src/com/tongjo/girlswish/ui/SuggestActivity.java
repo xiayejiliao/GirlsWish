@@ -37,7 +37,6 @@ public class SuggestActivity extends AppCompatActivity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				ToastUtils.show(getApplicationContext(), "谢谢");
-				finish();
 			}
 		});
 	}

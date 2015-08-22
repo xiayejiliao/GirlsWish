@@ -32,6 +32,7 @@ import com.tongjo.bean.TJWish;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.StringUtils;
+import com.tongjo.girlswish.utils.TimeUtils;
 import com.tongjo.girlswish.widget.CircleImageView;
 
 /**
@@ -147,7 +148,8 @@ public class MainTabWishAdapter extends BaseAdapter {
 				holder.nickname.setText(wish.getCreatorUser().getNickname());
 			}
 			if (wish.getCreatedTime() != null) {
-				holder.publicTime.setText(wish.getCreatedTime());
+				System.out.println(wish.getCreatedTime());
+				holder.publicTime.setText(TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, wish.getCreatedTime()));
 			}
 			
 			if(wish.getContent() != null){

@@ -13,9 +13,12 @@ import android.widget.Toast;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.event.WishPush;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
+
+import de.greenrobot.event.EventBus;
 
 public class AddWishActivity extends BaseActivity {
 	private final String TAG = "AddWishActivity";
@@ -84,6 +87,7 @@ public class AddWishActivity extends BaseActivity {
 						if (arg0 == 200) {
 							Toast.makeText(getApplicationContext(), "发布心愿成功" + arg0,
 									Toast.LENGTH_LONG).show();
+							EventBus.getDefault().post(new WishPush(null));
 						}	
 					}
 
