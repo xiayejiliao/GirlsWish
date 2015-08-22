@@ -1,5 +1,7 @@
 package com.tongjo.girlswish.ui;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -20,6 +22,8 @@ import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJSchool;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.event.UserIconChange;
+import com.tongjo.girlswish.ui.MyinfoActivity.AvatarUrl;
 import com.tongjo.girlswish.ui.TakePicturePopup.ChoicedItem;
 import com.tongjo.girlswish.ui.TakePicturePopup.onChoiced;
 import com.tongjo.girlswish.utils.AppConstant;
@@ -59,6 +63,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
@@ -76,7 +82,12 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	private EditText et_school;
 	private Button bt_next;
 	private ImageView iv_icon;
+	private RadioGroup radioGroup;
 	private ProgressDialog progressDialog;
+
+	private boolean isupdateicon = false;
+	private boolean ischoosesex = false;
+	private int sex;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +97,21 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		et_school = (EditText) findViewById(R.id.et_myinfo_school);
 		bt_next = (Button) findViewById(R.id.bt_myinfo_next);
 		iv_icon = (ImageView) findViewById(R.id.iv_myinfo_personico);
+		radioGroup=(RadioGroup)findViewById(R.id.rg_myinfo_sex);
+		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				// TODO Auto-generated method stub
+				ischoosesex=true;
+				if(checkedId==R.id.rb_myinfo_men){
+					sex=1;
+				}
+				if(checkedId==R.id.rb_myinfo_women){
+					sex=0;
+				}
+			}
+		});
 
 		bt_next.setOnClickListener(this);
 		iv_icon.setOnClickListener(this);
@@ -109,6 +135,10 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		case R.id.bt_myinfo_next:
 			String name = et_name.getText().toString();
 			String school = et_school.getText().toString();
+			if(ischoosesex==false){
+				ToastUtils.show(getApplicationContext(), "选择性别");
+				return;
+			}
 			if (StringUtils.isEmpty(name)) {
 				ToastUtils.show(getApplicationContext(), "姓名空");
 				return;
@@ -120,6 +150,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 			RequestParams requestParams = new RequestParams();
 			requestParams.put("nickname", name);
 			requestParams.put("schoolId", school);
+			requestParams.put("gender", sex);
 			asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_PROFILE, requestParams, httpprofile);
 			break;
 		case R.id.et_myinfo_school:
@@ -181,6 +212,11 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				bm = Bitmap.createScaledBitmap(bm, iv_icon.getWidth(), iv_icon.getHeight(), true);
 				bm = ImageUtils.getRoundedCornerBitmap(bm);
 				iv_icon.setImageBitmap(bm);
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
+				RequestParams params = new RequestParams();
+				params.put("image", new ByteArrayInputStream(out.toByteArray()));
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
 
 			} else if (requestCode == SELECT_FILE) {
 				Uri selectedImage = data.getData();
@@ -196,6 +232,11 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				bm = ImageUtils.scaleImageTo(bm, iv_icon.getWidth(), iv_icon.getHeight());
 				bm = ImageUtils.getRoundedCornerBitmap(bm);
 				iv_icon.setImageBitmap(bm);
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
+				RequestParams params = new RequestParams();
+				params.put("image", new ByteArrayInputStream(out.toByteArray()));
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
 			} else if (requestCode == AppConstant.STARTFORCODE_REGISTER_SCHOOL) {
 				String school = data.getStringExtra("schoolname");
 				et_school.setText(school);
@@ -247,6 +288,38 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 			// TODO Auto-generated method stub
 			ToastUtils.show(getApplicationContext(), "完善信息失败" + arg3.toString());
+		}
+	};
+	private TextHttpResponseHandler updateavatar = new TextHttpResponseHandler("UTF-8") {
+
+		@Override
+		public void onSuccess(int arg0, Header[] arg1, String arg2) {
+			System.out.println(arg2);
+			if (arg0 == 200) {
+				Type type = new TypeToken<TJResponse<AvatarUrl>>() {
+				}.getType();
+				TJResponse<AvatarUrl> response = new Gson().fromJson(arg2, type);
+				if (response.getResult().getCode() == 0) {
+					ToastUtils.show(MyInfoEditActivity.this, "修改头像成功");
+					AvatarUrl avatarUrl = response.getData();
+					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, avatarUrl.getAvatarUrl());
+					isupdateicon=true;
+					EventBus.getDefault().post(new UserIconChange(avatarUrl.getAvatarUrl()));
+
+				} else {
+					ToastUtils.show(MyInfoEditActivity.this, "修改头像失败" + response.getResult().getMessage());
+				}
+			} else {
+				ToastUtils.show(MyInfoEditActivity.this, "(" + arg0 + ")");
+				System.out.println("(" + arg0 + ")");
+			}
+		}
+
+		@Override
+		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+			// TODO Auto-generated method stub
+			ToastUtils.show(MyInfoEditActivity.this, "(" + arg0 + ")" + arg3.toString());
+			System.out.println("(" + arg0 + ")" + arg3.toString());
 		}
 	};
 }

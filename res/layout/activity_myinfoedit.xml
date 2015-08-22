@@ -45,13 +45,14 @@
                     android:id="@+id/rb_myinfo_men"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:checked="true"
+                    android:checked="false"
                     android:text="@string/register_sex_man" />
 
                 <RadioButton
                     android:id="@+id/rb_myinfo_women"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:checked="false"
                     android:text="@string/register_sex_women" />
             </RadioGroup>
         </LinearLayout>
