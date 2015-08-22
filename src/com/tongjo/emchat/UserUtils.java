@@ -26,7 +26,8 @@ import com.tongjo.girlswish.utils.AppConstant;
 
 public class UserUtils {
 	private static String TAG = "UserUtils";
-	public static void getUserByHxid(Context appContext, String hxid, final UserGetLisener userGetLisener){
+
+	public static void getUserByHxid(final Context appContext, final String hxid, final UserGetLisener userGetLisener) {
 		try {
 			Dao<TJUserInfo, UUID> mTJUserDao = new OrmLiteHelper(appContext).getTJUserInfoDao();
 			QueryBuilder<TJUserInfo, UUID> builder = mTJUserDao.queryBuilder();
@@ -35,40 +36,46 @@ public class UserUtils {
 			builder.setWhere(where);
 			PreparedQuery<TJUserInfo> preparedQuery = builder.prepare();
 			List<TJUserInfo> queryUserInfoList = mTJUserDao.query(preparedQuery);
-			if(queryUserInfoList.size() > 0){
+			if (queryUserInfoList.size() > 0) {
 				userGetLisener.onGetUser(queryUserInfoList.get(0));
-			}else{
-				// 从服务器获取
-				RequestParams requestParams = new RequestParams();
-				requestParams.add("hxid", hxid);
-				((BaseApplication)appContext.getApplicationContext()).getSyncHttpClient().
-				get(AppConstant.URL_BASE + AppConstant.URL_USERGET, requestParams, new TextHttpResponseHandler("UTF-8") {
+			} else {
+				Thread backgroundThread = new Thread(new Runnable() {
 
 					@Override
-					public void onFailure(int arg0, Header[] arg1, String arg2,
-							Throwable arg3) {
-						Log.d(TAG, "Get userinfo by hxid failure");
+					public void run() {
+						// 从服务器获取
+						RequestParams requestParams = new RequestParams();
+						requestParams.add("hxid", hxid);
+						((BaseApplication) appContext.getApplicationContext()).getSyncHttpClient().get(AppConstant.URL_BASE + AppConstant.URL_USERGET, requestParams,
+								new TextHttpResponseHandler("UTF-8") {
+
+									@Override
+									public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+										Log.d(TAG, "Get userinfo by hxid failure");
+									}
+
+									@Override
+									public void onSuccess(int arg0, Header[] arg1, String arg2) {
+										Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
+										if (arg0 == 200) {
+											Type type = new TypeToken<TJResponse<TJUserInfo>>() {
+											}.getType();
+											TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
+											if (response.getResult().getCode() == 0) {
+												userGetLisener.onGetUser(response.getData());
+											}
+										}
+									}
+								});
 					}
-
-					@Override
-					public void onSuccess(int arg0, Header[] arg1, String arg2) {
-						Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
-						if (arg0 == 200) {
-							Type type = new TypeToken<TJResponse<TJUserInfo>>() {}.getType();
-							TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
-							if (response.getResult().getCode() == 0) {
-								userGetLisener.onGetUser(response.getData());
-							}
-						}
-					}}
-				);
+				});
 			}
 		} catch (SQLException e) {
 			Log.e(TAG, e.getStackTrace().toString());
 		}
 	}
-	
-	public interface UserGetLisener{
+
+	public interface UserGetLisener {
 		void onGetUser(TJUserInfo userInfo);
 	}
 }

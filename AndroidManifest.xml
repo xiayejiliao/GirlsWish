@@ -118,7 +118,9 @@
         </activity>
         <activity
             android:name=".ui.AddWishActivity"
-            android:theme="@style/MaterialAppTheme.NoActionBar" >
+            android:theme="@style/MaterialAppTheme.NoActionBar" 
+            android:windowSoftInputMode="adjustUnspecified|stateAlwaysVisible" 
+            android:configChanges="orientation|keyboardHidden">
         </activity>
         <activity android:name=".ui.UserBasicInfoActivity" >
         </activity>

@@ -100,7 +100,7 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 							if (!StringUtils.isEmpty(message.getNoticeUrl())) {
 								Uri uri = Uri.parse(message.getNoticeUrl());
 								intent = new Intent(Intent.ACTION_VIEW, uri);
-								intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+								//intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
 								startActivity(intent);
 							}
 							break;
@@ -167,6 +167,7 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 
 	private void selectData() {
 		try {
+			DataContainer.SystemMsgList.clear();
 			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this).getTJMessageDao();
 			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
 			Where<TJMessage, UUID> where = builder.where();

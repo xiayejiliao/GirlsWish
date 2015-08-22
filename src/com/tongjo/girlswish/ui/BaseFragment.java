@@ -52,7 +52,7 @@ public class BaseFragment extends Fragment {
 		asyncHttpClient = ((BaseApplication)getActivity().getApplication()).getAsyncHttpClient();
 		syncHttpClient = ((BaseApplication)getActivity().getApplication()).getSyncHttpClient();
 	}
-	protected Context getContext() {
+	public Context getContext() {
 		return context;
 	}
 

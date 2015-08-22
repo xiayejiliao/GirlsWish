@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- 溢出菜单样式 -->
+    <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:popupBackground">#ffffff</item>
+        <item name="android:dropDownVerticalOffset">28dip</item>
+        <item name="android:dropDownHorizontalOffset">0dip</item>
+    </style>
+
     <style name="MaterialAppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
 
         <!-- Main theme colors -->
@@ -16,12 +26,13 @@
         <item name="android:textSize">18sp</item>
         <!-- activity 切换动画 -->
         <item name="android:windowAnimationStyle">@style/activityanimation</item>
-        
+        <!-- 溢出菜单样式 -->
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
     <style name="MaterialAppTheme.NoActionBar" parent="@style/MaterialAppTheme">
-		<item name="windowActionBar">false</item>
-  		<item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
     <!-- viewpage 导航标签样式 -->
     <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
@@ -52,6 +63,5 @@
         <item name="android:activityCloseEnterAnimation">@anim/in_from_left</item>
         <item name="android:activityCloseExitAnimation">@anim/out_from_right</item>
     </style>
-
 
 </resources>
