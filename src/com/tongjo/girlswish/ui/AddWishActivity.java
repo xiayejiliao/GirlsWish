@@ -2,11 +2,13 @@ package com.tongjo.girlswish.ui;
 
 import org.apache.http.Header;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,7 +25,7 @@ import de.greenrobot.event.EventBus;
 public class AddWishActivity extends BaseActivity {
 	private final String TAG = "AddWishActivity";
 	private EditText mEditText = null;
-	
+
 	private Toolbar toolbar;
 
 	@Override
@@ -31,46 +33,53 @@ public class AddWishActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_addwish);
 
-		/*setRightBtn("完成");*/
+		/* setRightBtn("完成"); */
 		InitView();
 	}
 
 	public void InitView() {
-		
+
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		toolbar.setTitle("添加心愿");
 		toolbar.inflateMenu(R.menu.addwish);
-		
-		//设置导航按钮
+
+		// 设置导航按钮
 		toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-		    	AddWishActivity.this.finish();
-		    }
+			@Override
+			public void onClick(View v) {
+				AddWishActivity.this.finish();
+			}
 		});
-		//menu点击事件
+		// menu点击事件
 		toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-		    @Override
-		    public boolean onMenuItemClick(MenuItem item) {
-		        int id = item.getItemId();
-		        if (id == R.id.action_addwish) {
-		        	String content = mEditText.getText().toString().trim();
-					if(StringUtils.isEmpty(content)){
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				int id = item.getItemId();
+				if (id == R.id.action_addwish) {
+					String content = mEditText.getText().toString().trim();
+					if (StringUtils.isEmpty(content)) {
 						ToastUtils.show(getApplicationContext(), "内容不能为空");
 						return false;
 					}
-					
+
 					addWish(content);
-		        }
-		        return false;
-		    }
+				}
+				return false;
+			}
 		});
+
+		mEditText = (EditText) findViewById(R.id.wish_content);
+		mEditText.setFocusable(true);
+		mEditText.setFocusableInTouchMode(true);
+		mEditText.requestFocus();
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.showSoftInput(mEditText, InputMethodManager.SHOW_FORCED);
 		
-		mEditText = (EditText)findViewById(R.id.wish_content);
+		
 	}
 
-	public void addWish(String content){
+	public void addWish(String content) {
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("content", content);
 		requestParams.add("backgroundColor", "9CCF98");
@@ -85,17 +94,18 @@ public class AddWishActivity extends BaseActivity {
 						}
 						Log.d(TAG, arg2);
 						if (arg0 == 200) {
-							Toast.makeText(getApplicationContext(), "发布心愿成功" + arg0,
-									Toast.LENGTH_LONG).show();
+							Toast.makeText(getApplicationContext(),
+									"发布心愿成功" + arg0, Toast.LENGTH_LONG).show();
 							EventBus.getDefault().post(new WishPush(null));
-						}	
+							AddWishActivity.this.finish();
+						}
 					}
 
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2,
-							Throwable arg3) { 
-						Toast.makeText(getApplicationContext(), "发布心愿失败" + arg0,
-								Toast.LENGTH_LONG).show();
+							Throwable arg3) {
+						Toast.makeText(getApplicationContext(),
+								"发布心愿失败" + arg0, Toast.LENGTH_LONG).show();
 					}
 				});
 	}
