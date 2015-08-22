@@ -21,41 +21,6 @@
         android:layout_marginTop="30dp"
         android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                 android:layout_marginLeft="20dp"
-                 android:layout_marginRight="12dp"
-                android:gravity="center_vertical"
-                android:text="@string/register_sex"
-                android:textColor="@color/black" />
-
-            <RadioGroup
-                android:id="@+id/rg_myinfo_sex"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal" >
-
-                <RadioButton
-                    android:id="@+id/rb_myinfo_men"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:checked="true"
-                    android:text="@string/register_sex_man" />
-
-                <RadioButton
-                    android:id="@+id/rb_myinfo_women"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/register_sex_women" />
-            </RadioGroup>
-        </LinearLayout>
-
         <View
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
@@ -109,6 +74,7 @@
                 android:singleLine="true"
                 android:background="@null"
                 android:hint="@string/register_schooldescription"
+                android:editable="false"
                 android:textColor="@color/black" />
         </LinearLayout>
 

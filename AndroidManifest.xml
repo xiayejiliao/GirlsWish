@@ -118,9 +118,9 @@
         </activity>
         <activity
             android:name=".ui.AddWishActivity"
-            android:theme="@style/MaterialAppTheme.NoActionBar" 
-            android:windowSoftInputMode="adjustUnspecified|stateAlwaysVisible" 
-            android:configChanges="orientation|keyboardHidden">
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/MaterialAppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustUnspecified|stateAlwaysVisible" >
         </activity>
         <activity android:name=".ui.UserBasicInfoActivity" >
         </activity>
@@ -136,7 +136,7 @@
         </activity>
         <activity
             android:name=".ui.RegisterSchollChooseActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.RegisterSexChooseActivity"
@@ -162,7 +162,6 @@
         </activity>
         <activity
             android:name=".ui.MainActivity"
-            
             android:theme="@style/MaterialAppTheme.NoActionBar" >
         </activity>
         <activity

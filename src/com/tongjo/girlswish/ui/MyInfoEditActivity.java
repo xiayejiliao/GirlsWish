@@ -1,5 +1,7 @@
 package com.tongjo.girlswish.ui;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -20,6 +22,8 @@ import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJSchool;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.event.UserIconChange;
+import com.tongjo.girlswish.ui.MyinfoActivity.AvatarUrl;
 import com.tongjo.girlswish.ui.TakePicturePopup.ChoicedItem;
 import com.tongjo.girlswish.ui.TakePicturePopup.onChoiced;
 import com.tongjo.girlswish.utils.AppConstant;
@@ -59,6 +63,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
@@ -70,13 +76,19 @@ import android.widget.PopupWindow;
  *
  */
 public class MyInfoEditActivity extends BaseActivity implements OnClickListener {
-	private int REQUEST_CAMERA = 3621;
-	private int SELECT_FILE = 6523;
+	private final int REQUEST_CAMERA = 3621;
+	private final int SELECT_FILE = 6523;
+	private final int SCHOOLCHOOSE = 6541;
 	private EditText et_name;
 	private EditText et_school;
 	private Button bt_next;
 	private ImageView iv_icon;
 	private ProgressDialog progressDialog;
+	private int sex;
+	private boolean isupdateicon = false;
+	private boolean ischoosesex = false;
+	
+	private String schoolid;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +99,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		bt_next = (Button) findViewById(R.id.bt_myinfo_next);
 		iv_icon = (ImageView) findViewById(R.id.iv_myinfo_personico);
 
+		sex=getIntent().getIntExtra("sex", -1);
 		bt_next.setOnClickListener(this);
 		iv_icon.setOnClickListener(this);
 		et_school.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -96,7 +109,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				// TODO Auto-generated method stub
 				if (hasFocus) {
 					Intent intent = new Intent(MyInfoEditActivity.this, RegisterSchollChooseActivity.class);
-					startActivityForResult(intent, AppConstant.STARTFORCODE_REGISTER_SCHOOL);
+					startActivityForResult(intent, SCHOOLCHOOSE);
 				}
 			}
 		});
@@ -109,26 +122,36 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		case R.id.bt_myinfo_next:
 			String name = et_name.getText().toString();
 			String school = et_school.getText().toString();
-			if (StringUtils.isEmpty(name)) {
+		/*	if(isupdateicon==false){
+				ToastUtils.show(getApplicationContext(), "请上传头像");
+				return;
+			}*/
+			if (ischoosesex == false) {
+				ToastUtils.show(getApplicationContext(), "选择性别");
+				return;
+			}
+			/*if (StringUtils.isEmpty(name)) {
 				ToastUtils.show(getApplicationContext(), "姓名空");
 				return;
-			}
-			if (StringUtils.isEmpty(school)) {
+			}*/
+			/*if (StringUtils.isEmpty(school)) {
 				ToastUtils.show(getApplicationContext(), "学校空");
 				return;
-			}
+			}*/
+			
 			RequestParams requestParams = new RequestParams();
 			requestParams.put("nickname", name);
-			requestParams.put("schoolId", school);
+			requestParams.put("schoolId", schoolid);
+			if(sex!=-1){
+				requestParams.put("gender", sex);
+			}
 			asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_PROFILE, requestParams, httpprofile);
+			progressDialog=new ProgressDialog(MyInfoEditActivity.this);
+			progressDialog.show();
 			break;
 		case R.id.et_myinfo_school:
-			/*
-			 * Intent intent = new Intent(MyInfoEditActivity.this,
-			 * RegisterSchollChooseActivity.class);
-			 * startActivityForResult(intent,
-			 * AppConstant.STARTFORCODE_REGISTER_SCHOOL);
-			 */
+			Intent intent = new Intent(MyInfoEditActivity.this, RegisterSchollChooseActivity.class);
+			startActivityForResult(intent, SCHOOLCHOOSE);
 			break;
 		case R.id.iv_myinfo_personico:
 			selectImage();
@@ -167,6 +190,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		System.out.println(resultCode);
+		System.out.println(requestCode);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == REQUEST_CAMERA) {
 				File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
@@ -181,6 +205,11 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				bm = Bitmap.createScaledBitmap(bm, iv_icon.getWidth(), iv_icon.getHeight(), true);
 				bm = ImageUtils.getRoundedCornerBitmap(bm);
 				iv_icon.setImageBitmap(bm);
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
+				RequestParams params = new RequestParams();
+				params.put("image", new ByteArrayInputStream(out.toByteArray()));
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
 
 			} else if (requestCode == SELECT_FILE) {
 				Uri selectedImage = data.getData();
@@ -196,9 +225,15 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				bm = ImageUtils.scaleImageTo(bm, iv_icon.getWidth(), iv_icon.getHeight());
 				bm = ImageUtils.getRoundedCornerBitmap(bm);
 				iv_icon.setImageBitmap(bm);
-			} else if (requestCode == AppConstant.STARTFORCODE_REGISTER_SCHOOL) {
-				String school = data.getStringExtra("schoolname");
-				et_school.setText(school);
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
+				RequestParams params = new RequestParams();
+				params.put("image", new ByteArrayInputStream(out.toByteArray()));
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+			} else if (requestCode == SCHOOLCHOOSE) {
+				String schoolname = data.getStringExtra("schoolname");
+				schoolid = data.getStringExtra("schoolid");
+				et_school.setText(schoolname);
 			}
 		}
 	}
@@ -208,6 +243,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		@Override
 		public void onSuccess(int arg0, Header[] arg1, String arg2) {
 			// TODO Auto-generated method stub
+			progressDialog.dismiss();
 			if (arg0 == 200) {
 				Type type = new TypeToken<TJResponse<TJUserInfo>>() {
 				}.getType();
@@ -231,7 +267,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLCOORDINATES, userSchool.getCoordinates());
 						}
 					}
-					Intent intent = new Intent(MyInfoEditActivity.this, LoginActivity.class);
+					Intent intent = new Intent(MyInfoEditActivity.this, MainActivity.class);
 					startActivity(intent);
 					MyInfoEditActivity.this.finish();
 
@@ -246,7 +282,40 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 			// TODO Auto-generated method stub
+			progressDialog.dismiss();
 			ToastUtils.show(getApplicationContext(), "完善信息失败" + arg3.toString());
+		}
+	};
+	private TextHttpResponseHandler updateavatar = new TextHttpResponseHandler("UTF-8") {
+
+		@Override
+		public void onSuccess(int arg0, Header[] arg1, String arg2) {
+			System.out.println(arg2);
+			if (arg0 == 200) {
+				Type type = new TypeToken<TJResponse<AvatarUrl>>() {
+				}.getType();
+				TJResponse<AvatarUrl> response = new Gson().fromJson(arg2, type);
+				if (response.getResult().getCode() == 0) {
+					ToastUtils.show(MyInfoEditActivity.this, "修改头像成功");
+					AvatarUrl avatarUrl = response.getData();
+					SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, avatarUrl.getAvatarUrl());
+					isupdateicon = true;
+					EventBus.getDefault().post(new UserIconChange(avatarUrl.getAvatarUrl()));
+
+				} else {
+					ToastUtils.show(MyInfoEditActivity.this, "修改头像失败" + response.getResult().getMessage());
+				}
+			} else {
+				ToastUtils.show(MyInfoEditActivity.this, "(" + arg0 + ")");
+				System.out.println("(" + arg0 + ")");
+			}
+		}
+
+		@Override
+		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+			// TODO Auto-generated method stub
+			ToastUtils.show(MyInfoEditActivity.this, "(" + arg0 + ")" + arg3.toString());
+			System.out.println("(" + arg0 + ")" + arg3.toString());
 		}
 	};
 }

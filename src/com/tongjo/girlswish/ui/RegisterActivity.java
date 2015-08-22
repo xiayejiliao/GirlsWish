@@ -41,6 +41,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 /**
@@ -62,6 +64,9 @@ public class RegisterActivity extends AppCompatActivity {
 	private ActionBar mActionBar;
 
 	private String random;
+	private RadioGroup mRadioGroup;
+	private int sex;
+	private boolean issexchoose=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +80,28 @@ public class RegisterActivity extends AppCompatActivity {
 		et_captcha = (EditText) findViewById(R.id.et_register_captcha);
 		bt_getcaptcha = (TextView) findViewById(R.id.bt_register_getcaptcha);
 		bt_sure = (Button) findViewById(R.id.bt_register_sure);
+		mRadioGroup=(RadioGroup)findViewById(R.id.rg_register_sex);
 		bt_getcaptcha.setOnClickListener(onClickListener);
 		bt_sure.setOnClickListener(onClickListener);
+		
+		mRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				// TODO Auto-generated method stub
+				issexchoose=true;
+				if(checkedId==R.id.rb_register_men){
+					sex=1;
+				}
+				if(checkedId==R.id.rb_register_women){
+					sex=0;
+				}
+			}
+		});
 
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
+		
+		
 
 	}
 
@@ -145,6 +168,10 @@ public class RegisterActivity extends AppCompatActivity {
 			case R.id.bt_register_sure:
 				String captcha = et_captcha.getText().toString();
 				String password = et_password.getText().toString();
+				if (!issexchoose) {
+					ToastUtils.show(getApplicationContext(), "请选择性别");
+					return;
+				}
 				if (StringUtils.isEmpty(password)) {
 					ToastUtils.show(getApplicationContext(), "密码空");
 					return;
@@ -161,6 +188,7 @@ public class RegisterActivity extends AppCompatActivity {
 				requestParams1.put("tel", sendphone);
 				requestParams1.put("password", password);
 				requestParams1.put("authcode", captcha);
+				requestParams1.put("gender", sex);
 				progressdialog = ProgressDialog.show(RegisterActivity.this, "提示", "注册中", false, false);
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_REGISTER, requestParams1, httpregister);
 				break;
@@ -210,6 +238,7 @@ public class RegisterActivity extends AppCompatActivity {
 				TJResponse<Object> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
 					Intent intent = new Intent(RegisterActivity.this, MyInfoEditActivity.class);
+					intent.putExtra("sex", sex);
 					startActivity(intent);
 					RegisterActivity.this.finish();
 				} else {
