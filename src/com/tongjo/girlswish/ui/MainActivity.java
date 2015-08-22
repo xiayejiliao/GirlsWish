@@ -92,8 +92,11 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
+		
 		mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		actionBar = getSupportActionBar();
+		
+		actionBar.setTitle("Wishes");
 		// actionBar.setHomeAsUpIndicator(R.drawable.ic_reorder_white_24dp);
 		// 设置返回按钮
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -308,5 +311,6 @@ public class MainActivity extends AppCompatActivity {
 		tv_nick.setText("");
 		tv_school.setText("");
 		Picasso.with(this).load(R.drawable.addavatar).into(iv_icon);
+		finish();
 	}
 }
