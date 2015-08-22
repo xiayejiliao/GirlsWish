@@ -23,6 +23,7 @@ import com.j256.ormlite.stmt.Where;
 import com.tongjo.bean.TJMessage;
 import com.tongjo.bean.TJMessageList;
 import com.tongjo.bean.TJUserInfo;
+import com.tongjo.bean.TJWish;
 import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.emchat.UserUtils.UserGetLisener;
 import com.tongjo.girlswish.utils.AppConstant;
@@ -35,8 +36,9 @@ public class MessageUtils {
 	}
 
 	public static void addMessageToDb(final Context appContext, final EMMessage emMessage) {
+		Log.d("Test", "addMessageToDb" + emMessage.toString());
 		try {
-			int msg_type = emMessage.getIntAttribute("type", AppConstant.MSG_TYPE_SYSTEM);
+			int msg_type = emMessage.getIntAttribute("type", AppConstant.MSG_TYPE_CHAT);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
 			if (msg_type == AppConstant.MSG_TYPE_CHAT) {
 				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
@@ -92,15 +94,20 @@ public class MessageUtils {
 				message.setContent(((TextMessageBody) emMessage.getBody()).getMessage());
 				mTJMessageDao.update(message);
 			} else {
-				Type type = new TypeToken<TJMessageList>() {
-				}.getType();
-				TJMessageList data = new Gson().fromJson(((TextMessageBody) emMessage.getBody()).getMessage(), type);
-				List<TJMessage> messageList = (List<TJMessage>) data.getNotices();
+				Log.d("test", "存入数据库");
+				// 将消息存入数据库
+				TJMessage tjMessage = new TJMessage();
+				tjMessage.set_id(UUID.fromString(emMessage.getStringAttribute("_id")));
+				tjMessage.setTitle(emMessage.getStringAttribute("title"));
+				tjMessage.setContent(emMessage.getStringAttribute("content"));
+				tjMessage.setWishId(emMessage.getStringAttribute("wishId"));
+				tjMessage.setUserId(emMessage.getStringAttribute("userId"));
+				tjMessage.setNoticeUrl(emMessage.getStringAttribute("noticeUrl"));
+				tjMessage.setType(emMessage.getIntAttribute("type"));
+				tjMessage.setCreatedTime(emMessage.getStringAttribute("createdTime"));
+				tjMessage.setRead(false);
 				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
-				for (TJMessage message : messageList) {
-					message.setRead(false);
-					mTJMessageDao.createIfNotExists(message);
-				}
+			    mTJMessageDao.createIfNotExists(tjMessage);
 
 				QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
 				Where<TJMessage, UUID> where = builder.where();
@@ -123,7 +130,7 @@ public class MessageUtils {
 				message.setType(AppConstant.MSG_TYPE_SYSTEM);
 				mTJMessageDao.update(message);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			Log.e(TAG, e.getStackTrace().toString());
 		}
 	}

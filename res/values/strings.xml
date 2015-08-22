@@ -66,6 +66,7 @@
     <string name="connect_failuer_toast">网络连接失败</string>
     <string name="confirm_resend">确认重发</string>
     <string name="resend">重发</string>
+    <string name="button_pushtotalk">按住说话</string>
     <!-- 登录界面 -->
     <string name="login_phonedescription">请输入手机号</string>
     <string name="login_passworddescription">请输入密码</string>

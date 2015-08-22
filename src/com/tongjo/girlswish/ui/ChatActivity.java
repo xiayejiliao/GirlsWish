@@ -373,6 +373,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			}
 		} );
 	    this.setCenterText(toChatUserHxid);
+	    onConversationInit();
+	    onListViewCreation();
 	}
 
 	protected void onConversationInit(){
@@ -614,7 +616,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             }
 
             //如果是当前会话的消息，刷新聊天页面
-            if(username.equals(getToChatUserHxid())){
+            if(message.getIntAttribute("type", AppConstant.MSG_TYPE_CHAT) == AppConstant.MSG_TYPE_CHAT
+            		&& username.equals(getToChatUserHxid())){
                 refreshUIWithNewMessage();
                 //声音和震动提示有新消息
                 HXSDKHelper.getInstance().getNotifier().viberateAndPlayTone(message);
@@ -1015,7 +1018,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * @param view
 	 */
 	public void toggleMore(View view) {
-		/*if (more.getVisibility() == View.GONE) {
+		if (more.getVisibility() == View.GONE) {
 			EMLog.d(TAG, "more gone");
 			hideKeyboard();
 			more.setVisibility(View.VISIBLE);
@@ -1030,8 +1033,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			} else {
 				more.setVisibility(View.GONE);
 			}
-
-		}*/
+		}
 	}
 
 	/**

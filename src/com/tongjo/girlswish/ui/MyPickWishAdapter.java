@@ -98,7 +98,7 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 				public void onClick(View v) {
 					// TODO 启动聊天窗口
 					Intent intent = new Intent(Mcontext, ChatActivity.class);
-					intent.putExtra("chatToUser", tjWish.getCreatorUser());
+					intent.putExtra("toUserHxid", tjWish.getCreatorUser().getHxid());
 					Mcontext.startActivity(intent);
 				}
 			});
