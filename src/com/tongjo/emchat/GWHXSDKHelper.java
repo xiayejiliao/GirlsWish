@@ -42,6 +42,7 @@ import com.easemob.chat.EMContact;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.ChatType;
 import com.easemob.chat.EMMessage.Type;
+import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
 import com.easemob.util.EMLog;
 import com.easemob.util.EasyUtils;
@@ -255,9 +256,11 @@ public class GWHXSDKHelper extends HXSDKHelper{
               //修改标题,这里使用默认
             	String title = "您有一条系统消息,快去看看";
 				int msg_type = message.getIntAttribute("type",
-						AppConstant.MSG_TYPE_SYSTEM);
+						AppConstant.MSG_TYPE_CHAT);
 				if (msg_type == AppConstant.MSG_TYPE_CHAT) {
 					title = "您的好友给你发来一条消息";
+				}else{
+					title = "系统消息：" + ((TextMessageBody)message.getBody()).getMessage();
 				}
                 return title;
             }
@@ -289,7 +292,7 @@ public class GWHXSDKHelper extends HXSDKHelper{
 				// 设置点击通知栏跳转事件
 				Intent intent = new Intent(appContext, MainActivity.class);
 				int msg_type = message.getIntAttribute("type",
-						AppConstant.MSG_TYPE_SYSTEM);
+						AppConstant.MSG_TYPE_CHAT);
 				if (msg_type == AppConstant.MSG_TYPE_CHAT) {
 					intent = new Intent(appContext, ChatActivity.class);
 					intent.putExtra("toUserHxid", message.getFrom());
@@ -326,6 +329,8 @@ public class GWHXSDKHelper extends HXSDKHelper{
     public HXNotifier createNotifier(){
         return new HXNotifier(){
             public synchronized void onNewMsg(final EMMessage message) {
+            	/*将改消息加入数据库*/
+            	MessageUtils.addMessageToDb(appContext, message);
                 if(EMChatManager.getInstance().isSlientMessage(message)){
                     return;
                 }
