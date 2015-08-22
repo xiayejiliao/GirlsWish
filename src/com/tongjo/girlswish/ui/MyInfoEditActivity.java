@@ -138,22 +138,22 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		case R.id.bt_myinfo_next:
 			String name = et_name.getText().toString();
 			String school = et_school.getText().toString();
-			if(isupdateicon==false){
+		/*	if(isupdateicon==false){
 				ToastUtils.show(getApplicationContext(), "请上传头像");
 				return;
-			}
+			}*/
 			if (ischoosesex == false) {
 				ToastUtils.show(getApplicationContext(), "选择性别");
 				return;
 			}
-			if (StringUtils.isEmpty(name)) {
+			/*if (StringUtils.isEmpty(name)) {
 				ToastUtils.show(getApplicationContext(), "姓名空");
 				return;
-			}
-			if (StringUtils.isEmpty(school)) {
+			}*/
+			/*if (StringUtils.isEmpty(school)) {
 				ToastUtils.show(getApplicationContext(), "学校空");
 				return;
-			}
+			}*/
 			
 			RequestParams requestParams = new RequestParams();
 			requestParams.put("nickname", name);

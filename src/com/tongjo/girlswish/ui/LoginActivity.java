@@ -100,6 +100,9 @@ public class LoginActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		
+	
+		
 		bt_login = (Button) findViewById(R.id.bt_login_sure);
 		et_phone = (EditText) findViewById(R.id.et_login_name);
 		et_pass = (EditText) findViewById(R.id.et_login_pass);
