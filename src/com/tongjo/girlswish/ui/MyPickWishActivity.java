@@ -1,41 +1,12 @@
 package com.tongjo.girlswish.ui;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
-import com.tongjo.bean.TJResponse;
-import com.tongjo.bean.TJSchool;
-import com.tongjo.bean.TJUserInfo;
-import com.tongjo.bean.TJWish;
-import com.tongjo.bean.TJWishList;
-import com.tongjo.girlswish.R;
-import com.tongjo.girlswish.ui.MainTabMeFragment.Wishs;
-import com.tongjo.girlswish.utils.AppConstant;
-import com.tongjo.girlswish.utils.SpUtils;
-import com.tongjo.girlswish.utils.ToastUtils;
-import com.tongjo.girlwish.data.DataContainer;
-import com.umeng.analytics.MobclickAgent;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -44,12 +15,22 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
+import com.tongjo.bean.TJResponse;
+import com.tongjo.bean.TJWish;
+import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.ui.MainTabMeFragment.Wishs;
+import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.SpUtils;
+import com.tongjo.girlswish.utils.ToastUtils;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 

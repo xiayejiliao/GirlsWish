@@ -13,9 +13,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.view.GravityCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -64,12 +68,17 @@ public class MainTabWishFragment extends BaseFragment {
 	private MainTabWishAdapter mAdapter = null;
 	private WishDialogFragment dialog = null;
 	private ViewGroup mEmptyView = null;
+	
+	private static final int wishwomen = 0;
+	private static final int wishmen = 1;
+	private static final int wishall = 2;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		EventBus.getDefault().register(this);
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 	@Override
 	public void onDestroy() {
@@ -87,16 +96,45 @@ public class MainTabWishFragment extends BaseFragment {
 		InitView(rootView);
 		updateUi(true);
 		/* MockData(); */
-		getWishData();
+		getWishData(wishall);
 		return rootView;
 	}
 
+	/**
+	 * 添加心愿选择的菜单
+	 */
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		inflater.inflate(R.menu.main, menu);
+	}
+	
+	
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case R.id.action_all:
+			getWishData(wishall);
+			break;
+		case R.id.action_men:
+			getWishData(wishmen);
+			break;
+		case R.id.action_women:
+			getWishData(wishwomen);
+			break;
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
 	public void onEventMainThread(WishDelete event) {
-		getWishData();
+		getWishData(wishall);
 	}
 	public void onEventMainThread(WishPush event) {
-		getWishData();
+		getWishData(wishall);
 	}
 	public void InitView(View view) {
 		mListView = (PullToRefreshListView) view.findViewById(R.id.listview);
@@ -145,9 +183,9 @@ public class MainTabWishFragment extends BaseFragment {
 
 			@Override
 			public void MItemLongPress(View v, int position) {
-				DeleteConfirmDialog newFragment = DeleteConfirmDialog
+				/*DeleteConfirmDialog newFragment = DeleteConfirmDialog
 						.newInstance("确定删除心愿", "删除心愿", null, mListener);
-				newFragment.show(getActivity().getFragmentManager(), "dialog");
+				newFragment.show(getActivity().getFragmentManager(), "dialog");*/
 			}
 
 		});
@@ -162,7 +200,7 @@ public class MainTabWishFragment extends BaseFragment {
 								| DateUtils.FORMAT_ABBREV_ALL);
 				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 
-				getWishData();
+				getWishData(wishall);
 			}
 		});
 
@@ -197,20 +235,12 @@ public class MainTabWishFragment extends BaseFragment {
 		}
 	};
 
-	public void MockData() {
-		for (int i = 0; i < 35; i++) {
-			TJWish wish = new TJWish();
-			DataContainer.WishList.add(wish);
-		}
-		mAdapter.setList(DataContainer.WishList);
-	}
-
 	/**
 	 * 获取心愿列表
 	 */
-	public void getWishData() {
+	public void getWishData(int gender) {
 		RequestParams requestParams = new RequestParams();
-		requestParams.add("page", "0");
+		requestParams.add("gender", String.valueOf(gender));
 		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISH, new TextHttpResponseHandler("UTF-8") {
 
 					@Override
