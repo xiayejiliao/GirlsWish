@@ -75,6 +75,7 @@ import com.easemob.util.EMLog;
 import com.easemob.util.FileUtils;
 import com.easemob.util.LatLng;
 import com.easemob.util.TextFormater;
+import com.tongjo.emchat.UserUtils;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.DateUtils;
 import com.tongjo.girlswish.utils.SmileUtils;
@@ -288,7 +289,9 @@ public class MessageAdapter extends BaseAdapter{
 		if (!(chatType == ChatType.GroupChat || chatType == chatType.ChatRoom) && message.direct == EMMessage.Direct.SEND) {
 			holder.tv_ack = (TextView) convertView.findViewById(R.id.tv_ack);
 			holder.tv_delivered = (TextView) convertView.findViewById(R.id.tv_delivered);
-			if (holder.tv_ack != null) {
+			holder.tv_ack.setVisibility(View.INVISIBLE);
+			holder.tv_delivered.setVisibility(View.INVISIBLE);
+			/*if (holder.tv_ack != null) {
 				if (message.isAcked) {
 					if (holder.tv_delivered != null) {
 						holder.tv_delivered.setVisibility(View.INVISIBLE);
@@ -306,7 +309,8 @@ public class MessageAdapter extends BaseAdapter{
 						}
 					}
 				}
-			}
+			}*/
+			
 		} else {
 			// 如果是文本或者地图消息并且不是group messgae,chatroom message，显示的时候给对方发送已读回执
 			if ((message.getType() == Type.TXT || message.getType() == Type.LOCATION) && !message.isAcked && chatType != ChatType.GroupChat && chatType != ChatType.ChatRoom) {
@@ -385,13 +389,27 @@ public class MessageAdapter extends BaseAdapter{
 	 * @param message
 	 * @param imageView
 	 */
-	private void setUserAvatar(EMMessage message, ImageView imageView){
-	    /*if(message.direct == Direct.SEND){
+	private void setUserAvatar(final EMMessage message, ImageView imageView){
+	    if(message.direct == Direct.SEND){
 	        //显示自己头像
 	        UserUtils.setUserAvatar(context, EMChatManager.getInstance().getCurrentUser(), imageView);
 	    }else{
 	        UserUtils.setUserAvatar(context, message.getFrom(), imageView);
-	    }*/
+	    }
+	    imageView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				if(message.direct == Direct.SEND){
+					// 跳转到自己的主页
+					intent.setClass(context, MyinfoActivity.class);
+					context.startActivity(intent);
+				}else{
+					
+				}
+			}
+		});
 	}
 
 	/**

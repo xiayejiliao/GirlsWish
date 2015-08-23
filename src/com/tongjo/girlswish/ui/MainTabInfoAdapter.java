@@ -1,7 +1,11 @@
 package com.tongjo.girlswish.ui;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -14,11 +18,14 @@ import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MyGestureListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.ViewHolder;
+import com.tongjo.girlswish.utils.DateUtils;
 import com.tongjo.girlswish.utils.ImageUtils;
+import com.tongjo.girlswish.utils.SmileUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.Spannable;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -30,6 +37,7 @@ import android.view.View.OnTouchListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TextView.BufferType;
 
 /**
  * 消息页面对应的Adapter
@@ -119,8 +127,16 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		TJMessage message = mList.get(arg0);
 		// holder.iconImageView.setImageResource(R.drawable.sound);
 		holder.titleTextVIew.setText(message.getTitle());
-		holder.msgTextView.setText(message.getContent());
-		holder.timeTextView.setText(message.getCreatedTime());
+		Spannable span = SmileUtils.getSmiledText(mContext, message.getContent());
+		// 设置内容
+		holder.msgTextView.setText(span, BufferType.SPANNABLE);
+		//holder.timeTextView.setText(message.getCreatedTime());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+		try {
+			holder.timeTextView.setText(DateUtils.getTimestampString(sdf.parse(message.getCreatedTime())));
+		} catch (ParseException e) {
+			holder.timeTextView.setText(message.getCreatedTime());
+		}
 		if (message.isRead()) {
 			holder.msgAlterTextView.setVisibility(View.INVISIBLE);
 		} else {
