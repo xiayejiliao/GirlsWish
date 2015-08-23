@@ -31,6 +31,8 @@ public class AppConstant {
 	public static final String USER_SCHOOLID = "user_schoolid";
 	public static final String USER_SCHOOLNAME = "user_schoolname";
 	public static final String USER_SCHOOLCOORDINATES = "user_schoolcoordinates";
+	public static final String USER_HXID = "user_hxid";
+	public static final String USER_HXPASSWORD = "user_hxpassword";
 
 	// web
 	public static final String URL_BASE = "http://api.wish.tongjo.com";

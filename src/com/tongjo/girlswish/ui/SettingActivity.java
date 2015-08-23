@@ -4,6 +4,9 @@ import java.lang.reflect.Type;
 
 import org.apache.http.Header;
 
+import com.easemob.EMCallBack;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMGroupManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
@@ -27,6 +30,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -126,6 +130,7 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
 					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME, "");
 					ToastUtils.show(SettingActivity.this, "退出当前账号");
 					EventBus.getDefault().post(new UserLogout());
+					EMChatManager.getInstance().logout();
 					startActivity(new Intent(SettingActivity.this,LoginActivity.class));
 					finish();
 

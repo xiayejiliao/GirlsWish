@@ -78,11 +78,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Loginactivitystyle" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.RegisterActivity"
@@ -181,6 +176,13 @@
             android:label="@string/title_activity_my_push_wish" >
         </activity>
         <activity android:name="com.umeng.fb.ConversationActivity" >
+        </activity>
+        <activity android:name=".ui.StartActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
