@@ -8,6 +8,13 @@
     android:background="#f2f0eb" 
     android:fitsSystemWindows="true"
     tools:context=".ChatActivity">
+    
+     <include
+         android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/toolbar" />
+    
     <LinearLayout
         android:id="@+id/bar_bottom"
         android:layout_width="match_parent"
@@ -348,6 +355,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bar_bottom"
+        android:layout_below="@id/toolbar"
         >
 
         <ProgressBar

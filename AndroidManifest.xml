@@ -71,7 +71,8 @@
             android:name=".ui.MainTabActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity android:name=".ui.ChatActivity" >
+        <activity android:name=".ui.ChatActivity" 
+             android:theme="@style/MaterialAppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".ui.LoginActivity"
@@ -176,6 +177,17 @@
             android:name=".ui.MyPickWishActivity"
             android:label="@string/title_activity_my_pick_wish" >
         </activity>
+        
+         <activity
+            android:name=".ui.OtherInfoActivity"
+            android:theme="@style/MaterialAppTheme.NoActionBar"
+            android:label="@string/back" >
+        </activity>
+         <activity
+            android:name=".ui.SpaceImageDetailActivity"
+            android:theme="@style/IMTheme.Transparent" >
+        </activity>
+        
         <activity
             android:name=".ui.MyPushWishActivity"
             android:label="@string/title_activity_my_push_wish" >

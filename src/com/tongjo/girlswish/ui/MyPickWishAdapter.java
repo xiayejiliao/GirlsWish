@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -99,6 +100,19 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 					// TODO 启动聊天窗口
 					Intent intent = new Intent(Mcontext, ChatActivity.class);
 					intent.putExtra("toUserHxid", tjWish.getCreatorUser().getHxid());
+					Mcontext.startActivity(intent);
+				}
+			});
+			
+			holder.ivicon.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) { 
+					// 跳转到个人信息详情页面
+					Intent intent = new Intent(Mcontext, OtherInfoActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("user", tjWish.getCreatorUser());
+					intent.putExtras(bundle);
 					Mcontext.startActivity(intent);
 				}
 			});
