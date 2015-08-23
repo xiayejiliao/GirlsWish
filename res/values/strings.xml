@@ -233,11 +233,11 @@
     <string name="register_next">下一步</string>
     <string name="register_getpic">获取图片</string>
     <string name="register_uploadpic">上传图片</string>
-    <string name="register_school">学校:</string>
+    <string name="register_school">学校</string>
     <string name="register_schooldescription">选择学校</string>
-    <string name="register_nickname">昵称:</string>
+    <string name="register_nickname">昵称</string>
     <string name="register_nicknamedescription">输入昵称</string>
-    <string name="register_sex">性别:</string>
+    <string name="register_sex">性别</string>
     <string name="register_sex_man">男</string>
     <string name="register_sex_women">女</string>
 

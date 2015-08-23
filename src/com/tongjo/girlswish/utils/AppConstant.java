@@ -50,6 +50,7 @@ public class AppConstant {
 	public static final String URL_UPLOADICON = "/user/avatar";
 	public static final String URL_USEREDIT = "/user/edit";
 	public static final String URL_USERGET = "/user";
+	public static final String URL_GETSCHOOL = "/school";
 
 	// intent
 	public static final int FORRESULT_LOG = 10101;

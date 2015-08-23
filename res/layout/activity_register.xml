@@ -33,6 +33,55 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/register_sex"
+                    android:textColor="@color/black" />
+
+                <RadioGroup
+                    android:id="@+id/rg_register_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/rb_register_men"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:checked="false"
+                        android:text="@string/register_sex_man" />
+
+                    <RadioButton
+                        android:id="@+id/rb_register_women"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:checked="false"
+                        android:text="@string/register_sex_women" />
+                </RadioGroup>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:hint="注册后不可更改" 
+                    android:singleLine="true"
+                    android:textSize="10sp"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:paddingLeft="15dp" >
 

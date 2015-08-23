@@ -11,9 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.view.GravityCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,12 +35,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
-import com.squareup.picasso.Picasso;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJWish;
 import com.tongjo.bean.TJWishList;
 import com.tongjo.girlswish.R;
-import com.tongjo.girlswish.event.UserLogout;
 import com.tongjo.girlswish.event.WishDelete;
 import com.tongjo.girlswish.event.WishPush;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
@@ -50,7 +46,6 @@ import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
-import com.tongjo.girlswish.widget.DeleteConfirmDialog;
 import com.tongjo.girlswish.widget.DeleteConfirmDialog.DialogClickListener;
 import com.tongjo.girlwish.data.DataContainer;
 
@@ -68,10 +63,10 @@ public class MainTabWishFragment extends BaseFragment {
 	private MainTabWishAdapter mAdapter = null;
 	private WishDialogFragment dialog = null;
 	private ViewGroup mEmptyView = null;
-	
-	private static final int wishwomen = 0;
-	private static final int wishmen = 1;
-	private static final int wishall = 2;
+
+	private static final String wishwomen = "0";
+	private static final String wishmen = "1";
+	private static final String wishall = "2";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -80,12 +75,22 @@ public class MainTabWishFragment extends BaseFragment {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 	}
+
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		EventBus.getDefault().unregister(this);
 		super.onDestroy();
 	}
+
+	 @Override
+	    public void setUserVisibleHint(boolean isVisibleToUser) {
+	        super.setUserVisibleHint(isVisibleToUser);
+	        if (isVisibleToUser) {
+	        	/*getWishData(wishall);*/
+	        }
+	    }
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -108,8 +113,6 @@ public class MainTabWishFragment extends BaseFragment {
 		// TODO Auto-generated method stub
 		inflater.inflate(R.menu.main, menu);
 	}
-	
-	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -129,18 +132,21 @@ public class MainTabWishFragment extends BaseFragment {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	public void onEventMainThread(WishDelete event) {
 		getWishData(wishall);
 	}
+
 	public void onEventMainThread(WishPush event) {
 		getWishData(wishall);
 	}
+
 	public void InitView(View view) {
 		mListView = (PullToRefreshListView) view.findViewById(R.id.listview);
 		mEmptyView = (ViewGroup) view.findViewById(R.id.empty_view);
 		mAdapter = new MainTabWishAdapter(getActivity(), DataContainer.WishList);
 		mListView.setAdapter(mAdapter);
+		mListView.setEmptyView(mEmptyView);
 		mAdapter.setMItemClickListener(new MItemClickListener() {
 
 			@Override
@@ -183,9 +189,12 @@ public class MainTabWishFragment extends BaseFragment {
 
 			@Override
 			public void MItemLongPress(View v, int position) {
-				/*DeleteConfirmDialog newFragment = DeleteConfirmDialog
-						.newInstance("确定删除心愿", "删除心愿", null, mListener);
-				newFragment.show(getActivity().getFragmentManager(), "dialog");*/
+				/*
+				 * DeleteConfirmDialog newFragment = DeleteConfirmDialog
+				 * .newInstance("确定删除心愿", "删除心愿", null, mListener);
+				 * newFragment.show(getActivity().getFragmentManager(),
+				 * "dialog");
+				 */
 			}
 
 		});
@@ -207,19 +216,8 @@ public class MainTabWishFragment extends BaseFragment {
 	}
 
 	public void updateUi(boolean isEmpty) {
-		if (isEmpty) {
-			mEmptyView.setVisibility(View.VISIBLE);
-			mListView.setVisibility(View.GONE);
-		}
-
-		if (DataContainer.WishList.size() < 1) {
-			mEmptyView.setVisibility(View.VISIBLE);
-			mListView.setVisibility(View.GONE);
-		} else {
-			mEmptyView.setVisibility(View.GONE);
-			mListView.setVisibility(View.VISIBLE);
-			mAdapter.notifyDataSetChanged();
-		}
+		mAdapter.setList(DataContainer.WishList);
+		mAdapter.notifyDataSetChanged();
 	}
 
 	/** 长按按钮弹出的对话框的按键操作 */
@@ -238,16 +236,17 @@ public class MainTabWishFragment extends BaseFragment {
 	/**
 	 * 获取心愿列表
 	 */
-	public void getWishData(int gender) {
+	public void getWishData(String gender) {
 		RequestParams requestParams = new RequestParams();
-		requestParams.add("gender", String.valueOf(gender));
-		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISH, new TextHttpResponseHandler("UTF-8") {
+		requestParams.add("gender", gender);
+		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISH,requestParams,
+				new TextHttpResponseHandler("UTF-8") {
 
 					@Override
 					public void onSuccess(int arg0, Header[] arg1, String arg2) {
 						mListView.onRefreshComplete();
 						if (arg2 == null) {
-							ToastUtils.show(getActivity(), "心愿列表获取失败:");
+							ToastUtils.show(getActivity(), "心愿列表获取失败");
 							return;
 						}
 						Log.d(TAG, arg2);
@@ -264,7 +263,7 @@ public class MainTabWishFragment extends BaseFragment {
 							if (response == null
 									|| response.getResult() == null
 									|| response.getData() == null) {
-								ToastUtils.show(getActivity(), "心愿列表获取失败:");
+								ToastUtils.show(getActivity(), "心愿列表获取失败");
 								return;
 							}
 							if (response.getResult().getCode() == 0) {
@@ -276,7 +275,7 @@ public class MainTabWishFragment extends BaseFragment {
 											.addAll((List<TJWish>) response
 													.getData().getWishes());
 									updateUi(false);
-									ToastUtils.show(getActivity(), "心愿列表获取成功");
+									/*ToastUtils.show(getActivity(), "心愿列表获取成功");*/
 								}
 							} else {
 								ToastUtils.show(getActivity(), "心愿列表获取失败:"
@@ -336,10 +335,26 @@ public class MainTabWishFragment extends BaseFragment {
 							}
 							if (response.getResult().getCode() == 0) {
 								ToastUtils.show(getActivity(), "摘取心愿成功" + arg0);
-							} else if (response.getResult().getCode() == 0) {
+								getWishData(wishall);
+							} else if (response.getResult().getCode() == 1) {
 								ToastUtils.show(getActivity(), "没有登录，需要登录"
 										+ arg0);
-							} else {
+							} 
+							//2次数超过限制
+							else if(response.getResult().getCode() == 2){
+								ToastUtils.show(getActivity(), "摘取心愿失败:"
+										+ response.getResult().getMessage());
+							}
+							
+							//3信息不完善
+							else if(response.getResult().getCode() == 3){
+								ToastUtils.show(getActivity(), "摘取心愿失败:"
+										+ response.getResult().getMessage());
+								
+								Intent intent = new Intent(getActivity(),MyinfoActivity.class);
+								startActivity(intent);
+								
+							}else{
 								ToastUtils.show(getActivity(), "摘取心愿失败:"
 										+ response.getResult().getMessage());
 							}

@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <TextView
+        android:id="@+id/tv_schoolchoose_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="没有学校供选择"
+        android:singleLine="true" />
+
     <ListView
         android:id="@+id/lv_register_school"
         android:layout_width="match_parent"

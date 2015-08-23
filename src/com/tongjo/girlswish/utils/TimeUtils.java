@@ -217,7 +217,7 @@ public class TimeUtils {
 		}
 		long temp=t1-t2;
 		if(temp>0&&temp<60*60*1000){
-			return temp/60/1000+"分";
+			return temp/60/1000+"分钟";
 		}
 		if(temp>=60*60*1000&&temp<24*60*60*1000){
 			return temp/60/60/1000+"小时";

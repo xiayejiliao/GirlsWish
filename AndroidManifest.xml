@@ -75,7 +75,7 @@
         </activity>
         <activity
             android:name=".ui.LoginActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Loginactivitystyle" >
             <intent-filter>
@@ -86,23 +86,23 @@
         </activity>
         <activity
             android:name=".ui.RegisterActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.MyInfoEditActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.RegisterActivity1"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.RegisterActivity2"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.UploadAvatarActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".test.TestActivity"
@@ -110,17 +110,17 @@
         </activity>
         <activity
             android:name=".ui.ResetPassActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.ResetPassActivity2"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.AddWishActivity"
-            android:theme="@style/MaterialAppTheme.NoActionBar" 
-            android:windowSoftInputMode="adjustUnspecified|stateAlwaysVisible" 
-            android:configChanges="orientation|keyboardHidden">
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/MaterialAppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustUnspecified|stateAlwaysVisible" >
         </activity>
         <activity android:name=".ui.UserBasicInfoActivity" >
         </activity>
@@ -136,20 +136,20 @@
         </activity>
         <activity
             android:name=".ui.RegisterSchollChooseActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.RegisterSexChooseActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.SettingActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <!-- 详细系统消息界面 -->
         <activity
             android:name=".ui.SystemMsgActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.GuideActivity"
@@ -157,17 +157,16 @@
         </activity>
         <activity
             android:name=".ui.MyinfoActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:theme="@style/MaterialAppTheme" >
         </activity>
         <activity
             android:name=".ui.MainActivity"
-            android:launchMode="singleInstance"
             android:theme="@style/MaterialAppTheme.NoActionBar" >
         </activity>
         <activity
             android:name=".ui.AboutActivity"
-            android:launchMode="singleInstance" >
+            android:launchMode="singleTop" >
         </activity>
         <activity
             android:name=".ui.SuggestActivity"
