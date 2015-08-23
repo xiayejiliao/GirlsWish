@@ -87,20 +87,24 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 	public void onBindViewHolder(final ViewHolder holder, int arg1) {
 		// TODO Auto-generated method stub
 		final TJWish tjWish = wish.get(arg1);
-		if (tjWish.getPickerUser() == null) {
-			holder.tvinfo.setVisibility(View.VISIBLE);
-			holder.layout.setVisibility(View.GONE);
+		if (tjWish.getIsPicked() == 0) {
 			holder.ivtalk.setVisibility(View.GONE);
 			holder.tvtime.setVisibility(View.GONE);
-			holder.tvinfo.setText("心愿等待被摘取");
 			holder.tvtitle.setVisibility(View.GONE);
+			holder.ivsex.setVisibility(View.GONE);
+			holder.tvSchool.setVisibility(View.GONE);
+			holder.tvNick.setVisibility(View.GONE);
+			holder.tvtime.setVisibility(View.GONE);
+			holder.ivicon.setImageResource(R.drawable.wishunpicked);
 
 		} else {
-			holder.tvinfo.setVisibility(View.GONE);
-			holder.layout.setVisibility(View.VISIBLE);
 			holder.ivtalk.setVisibility(View.VISIBLE);
 			holder.tvtime.setVisibility(View.VISIBLE);
 			holder.tvtitle.setVisibility(View.VISIBLE);
+			holder.tvtime.setVisibility(View.VISIBLE);
+			holder.tvNick.setVisibility(View.VISIBLE);
+			holder.tvSchool.setVisibility(View.VISIBLE);
+			holder.ivsex.setVisibility(View.VISIBLE);
 
 			String t = TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, tjWish.getPickedTime());
 
@@ -150,13 +154,12 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 		// for any view that will be set as you render a row
 		public ImageView ivicon;
 		public ImageView ivtalk;
+		public ImageView ivsex;
 		public TextView tvNick;
 		public TextView tvSchool;
 		public TextView tvcontent;
 		public TextView tvtime;
-		public TextView tvinfo;
 		public TextView tvtitle;
-		public RelativeLayout rLayout;
 		public RelativeLayout layout;
 
 		// We also create a constructor that accepts the entire item row
@@ -165,13 +168,11 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 			super(itemView);
 			ivtalk = (ImageView) itemView.findViewById(R.id.iv_mypushwish_talk);
 			ivicon = (ImageView) itemView.findViewById(R.id.iv_mypushwish_icon);
+			ivsex = (ImageView) itemView.findViewById(R.id.iv_mypushwish_sex);
 			tvNick = (TextView) itemView.findViewById(R.id.tv_mypushwish_nick);
 			tvSchool = (TextView) itemView.findViewById(R.id.tv_mypushwish_school);
 			tvcontent = (TextView) itemView.findViewById(R.id.tv_mypushwish_content);
 			tvtime = (TextView) itemView.findViewById(R.id.tv_mypushwish_time);
-			tvinfo = (TextView) itemView.findViewById(R.id.tv_mypushwish_info);
-			rLayout = (RelativeLayout) itemView.findViewById(R.id.rl_mypushwish_item);
-			layout = (RelativeLayout) itemView.findViewById(R.id.ll_mypushwish_name);
 			tvtitle = (TextView) itemView.findViewById(R.id.tv_mypushwish_title);
 			itemView.setOnLongClickListener(new OnLongClickListener() {
 
