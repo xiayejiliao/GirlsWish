@@ -53,14 +53,16 @@
                             android:id="@+id/wish_username"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:singleLine="true"
                             android:text="同济大学"
                             android:textSize="@dimen/text_size_14" />
 
                         <TextView
                             android:id="@+id/public_time"
-                            android:layout_width="wrap_content"
+                            android:layout_width="@dimen/margin_100"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
+                            android:singleLine="true"
                             android:layout_weight="1.0"
                             android:gravity="right"
                             android:textColor="#9b9b9b"
