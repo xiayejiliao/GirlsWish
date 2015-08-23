@@ -61,7 +61,6 @@ public class MainTabWishFragment extends BaseFragment {
 	private final String TAG = "MainTabWishFragment";
 	private PullToRefreshListView mListView = null;
 	private MainTabWishAdapter mAdapter = null;
-	private WishDialogFragment dialog = null;
 	private ViewGroup mEmptyView = null;
 
 	private static final String wishwomen = "0";
@@ -83,14 +82,14 @@ public class MainTabWishFragment extends BaseFragment {
 		super.onDestroy();
 	}
 
-	 @Override
-	    public void setUserVisibleHint(boolean isVisibleToUser) {
-	        super.setUserVisibleHint(isVisibleToUser);
-	        if (isVisibleToUser) {
-	        	/*getWishData(wishall);*/
-	        }
-	    }
-	
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		if (isVisibleToUser) {
+			/* getWishData(wishall); */
+		}
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -99,7 +98,7 @@ public class MainTabWishFragment extends BaseFragment {
 				false);
 
 		InitView(rootView);
-		updateUi(true);
+		updateUi(0);
 		/* MockData(); */
 		getWishData(wishall);
 		return rootView;
@@ -199,7 +198,7 @@ public class MainTabWishFragment extends BaseFragment {
 
 		});
 
-		mListView.setMode(Mode.BOTH);
+		mListView.setMode(Mode.PULL_FROM_START);
 		mListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
@@ -208,39 +207,53 @@ public class MainTabWishFragment extends BaseFragment {
 								| DateUtils.FORMAT_SHOW_DATE
 								| DateUtils.FORMAT_ABBREV_ALL);
 				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-
-				getWishData(wishall);
+				
+				if(mListView.getCurrentMode().equals(Mode.PULL_FROM_END)){
+					TJWish wish = DataContainer.WishList.get(DataContainer.WishList.size()-1);
+					String wishId = null;
+					if(wish != null && wish.get_id() != null ){
+						wishId = wish.get_id().toString();
+					}
+					
+					getWishData(wishall,wishId,false);
+				}else{
+					getWishData(wishall);
+				}
+				
 			}
 		});
 
 	}
 
-	public void updateUi(boolean isEmpty) {
+	public void updateUi(int total) {
+		
+		if(total > DataContainer.WishList.size()){
+			mListView.setMode(Mode.BOTH);
+		}else{
+			mListView.setMode(Mode.PULL_FROM_START);
+		}
+		
 		mAdapter.setList(DataContainer.WishList);
 		mAdapter.notifyDataSetChanged();
 	}
 
-	/** 长按按钮弹出的对话框的按键操作 */
-	private DialogClickListener mListener = new DialogClickListener() {
-		@Override
-		public void doPositiveClick() {
 
-		}
-
-		@Override
-		public void doNegativeClick() {
-
-		}
-	};
-
+	public void getWishData(String gender){
+		getWishData(gender,null,true);
+	}
+	
 	/**
 	 * 获取心愿列表
+	 * isRefresh为true表示刷新，false表示加载更多
 	 */
-	public void getWishData(String gender) {
+	public void getWishData(String gender,String lastId,final boolean isRefresh) {
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("gender", gender);
-		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISH,requestParams,
-				new TextHttpResponseHandler("UTF-8") {
+		if(!StringUtils.isBlank(lastId)){
+			requestParams.add("lastid", lastId);
+		}
+		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISH,
+				requestParams, new TextHttpResponseHandler("UTF-8") {
 
 					@Override
 					public void onSuccess(int arg0, Header[] arg1, String arg2) {
@@ -270,12 +283,17 @@ public class MainTabWishFragment extends BaseFragment {
 								if (response.getData().getWishes() != null) {
 									Log.d(TAG, response.getData().getWishes()
 											.toString());
-									DataContainer.WishList.clear();
+									if(isRefresh){
+										DataContainer.WishList.clear();
+									}
 									DataContainer.WishList
 											.addAll((List<TJWish>) response
 													.getData().getWishes());
-									updateUi(false);
-									/*ToastUtils.show(getActivity(), "心愿列表获取成功");*/
+									updateUi(response.getData().getTotal());
+									/*
+									 * ToastUtils.show(getActivity(),
+									 * "心愿列表获取成功");
+									 */
 								}
 							} else {
 								ToastUtils.show(getActivity(), "心愿列表获取失败:"
@@ -309,9 +327,6 @@ public class MainTabWishFragment extends BaseFragment {
 
 					@Override
 					public void onSuccess(int arg0, Header[] arg1, String arg2) {
-						if (dialog != null) {
-							dialog.dismiss();
-						}
 						if (arg2 == null) {
 							ToastUtils.show(getActivity(), "摘取心愿失败");
 							return;
@@ -339,22 +354,23 @@ public class MainTabWishFragment extends BaseFragment {
 							} else if (response.getResult().getCode() == 1) {
 								ToastUtils.show(getActivity(), "没有登录，需要登录"
 										+ arg0);
-							} 
-							//2次数超过限制
-							else if(response.getResult().getCode() == 2){
+							}
+							// 2次数超过限制
+							else if (response.getResult().getCode() == 2) {
 								ToastUtils.show(getActivity(), "摘取心愿失败:"
 										+ response.getResult().getMessage());
 							}
-							
-							//3信息不完善
-							else if(response.getResult().getCode() == 3){
+
+							// 3信息不完善
+							else if (response.getResult().getCode() == 3) {
 								ToastUtils.show(getActivity(), "摘取心愿失败:"
 										+ response.getResult().getMessage());
-								
-								Intent intent = new Intent(getActivity(),MyinfoActivity.class);
+
+								Intent intent = new Intent(getActivity(),
+										MyinfoActivity.class);
 								startActivity(intent);
-								
-							}else{
+
+							} else {
 								ToastUtils.show(getActivity(), "摘取心愿失败:"
 										+ response.getResult().getMessage());
 							}
@@ -364,87 +380,8 @@ public class MainTabWishFragment extends BaseFragment {
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2,
 							Throwable arg3) {
-						if (dialog != null) {
-							dialog.dismiss();
-						}
 						ToastUtils.show(getActivity(), "摘取心愿失败" + arg0);
 					}
 				});
-	}
-
-	@SuppressLint("ValidFragment")
-	public class WishDialogFragment extends DialogFragment {
-		public int mPosition;
-		protected TextView userName;
-		protected TextView schoolName;
-		protected ImageView avatar;
-		protected ImageView pick;
-		protected TextView content;
-		protected ViewGroup bottomBg;
-
-		public WishDialogFragment(int position) {
-			super();
-			this.mPosition = position;
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-			View view = inflater.inflate(R.layout.fragment_wishdetail,
-					container);
-			userName = (TextView) view.findViewById(R.id.wish_username);
-			schoolName = (TextView) view.findViewById(R.id.wish_schoolname);
-			avatar = (ImageView) view.findViewById(R.id.wish_avatar);
-			pick = (ImageView) view.findViewById(R.id.wish_pick);
-			content = (TextView) view.findViewById(R.id.wish_content);
-			bottomBg = (ViewGroup) view.findViewById(R.id.wish_bottom);
-
-			final TJWish wish = DataContainer.WishList.get(mPosition);
-			if (wish != null) {
-				if (wish.getContent() != null) {
-					content.setText(wish.getContent());
-				}
-
-				if (wish.getCreatorUser() != null
-						&& wish.getCreatorUser().getNickname() != null) {
-					userName.setText(wish.getCreatorUser().getNickname());
-				}
-				if (wish.getCreatorUser() != null
-						&& wish.getCreatorUser().getSchool() != null
-						&& wish.getCreatorUser().getSchool().getName() != null) {
-					schoolName.setText(wish.getCreatorUser().getSchool()
-							.getName());
-				}
-				if (!StringUtils.isEmpty(wish.getBackgroundColor())) {
-					int color = 0;
-					try {
-						color = Integer.parseInt(wish.getBackgroundColor(), 16);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-					int red = color >> 4;
-					int green = (color >> 2) % 256;
-					int blue = color % 256;
-					bottomBg.setBackgroundColor(Color.rgb(red, green, blue));
-				}
-			}
-
-			pick.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					if (wish != null && wish.get_id() != null) {
-						pickWish(wish.get_id().toString());
-					} else {
-
-					}
-				}
-
-			});
-
-			return view;
-		}
 	}
 }

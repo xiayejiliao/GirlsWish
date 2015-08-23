@@ -1,7 +1,11 @@
 package com.tongjo.girlswish.ui;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -14,6 +18,7 @@ import com.tongjo.girlswish.ui.MainTabInfoAdapter.ViewHolder;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MyGestureListener;
+import com.tongjo.girlswish.utils.DateUtils;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 
@@ -39,7 +44,7 @@ public class SystemMsgAdapter extends BaseAdapter {
 	private static String TAG = "SystemMsgAdapter";
 	private Context mContext;
 	private List<TJMessage> mList = new ArrayList<TJMessage>();
-	
+
 	private MItemClickListener ICListener;
 	private MItemLongPressListener LPListener;
 	private GestureDetector gestureDetector;
@@ -107,40 +112,41 @@ public class SystemMsgAdapter extends BaseAdapter {
 			convertView = mInflater.inflate(R.layout.listitem_info, null);
 
 			holder.iconImageView = (ImageView) convertView.findViewById(R.id.info_list_icon);
-			holder.titleTextVIew = (TextView) convertView
-					.findViewById(R.id.info_list_title);
-			holder.msgTextView = (TextView) convertView
-					.findViewById(R.id.info_list_msg);
-			holder.timeTextView = (TextView) convertView
-					.findViewById(R.id.info_list_time);
+			holder.titleTextVIew = (TextView) convertView.findViewById(R.id.info_list_title);
+			holder.msgTextView = (TextView) convertView.findViewById(R.id.info_list_msg);
+			holder.timeTextView = (TextView) convertView.findViewById(R.id.info_list_time);
 			holder.msgAlterTextView = (TextView) convertView.findViewById(R.id.info_list_msg_alert);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		TJMessage message = mList.get(arg0);
-		//holder.iconImageView.setImageResource(R.drawable.sound);
+		// holder.iconImageView.setImageResource(R.drawable.sound);
 		holder.titleTextVIew.setText(message.getTitle());
 		holder.msgTextView.setText(message.getContent());
-		holder.timeTextView.setText(message.getCreatedTime());
-		if(message.isRead()){
+		// holder.timeTextView.setText(message.getCreatedTime());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+		try {
+			holder.timeTextView.setText(DateUtils.getTimestampString(sdf.parse(message.getCreatedTime())));
+		} catch (ParseException e) {
+			holder.timeTextView.setText(message.getCreatedTime());
+		}
+		if (message.isRead()) {
 			holder.msgAlterTextView.setVisibility(View.INVISIBLE);
-		}else{
+		} else {
 			holder.msgAlterTextView.setVisibility(View.VISIBLE);
 		}
-		/*if (arg0 % 4 == 0) {
-			convertView.setBackgroundColor(mContext.getResources().getColor(
-					R.color.addwish_blueColor));
-		} else if (arg0 % 4 == 1) {
-			convertView.setBackgroundColor(mContext.getResources().getColor(
-					R.color.addwish_redColor));
-		} else if (arg0 % 4 == 2) {
-			convertView.setBackgroundColor(mContext.getResources().getColor(
-					R.color.addwish_greenColor));
-		} else {
-			convertView.setBackgroundColor(mContext.getResources().getColor(
-					R.color.addwish_yellowColor));
-		}*/
+		/*
+		 * if (arg0 % 4 == 0) {
+		 * convertView.setBackgroundColor(mContext.getResources().getColor(
+		 * R.color.addwish_blueColor)); } else if (arg0 % 4 == 1) {
+		 * convertView.setBackgroundColor(mContext.getResources().getColor(
+		 * R.color.addwish_redColor)); } else if (arg0 % 4 == 2) {
+		 * convertView.setBackgroundColor(mContext.getResources().getColor(
+		 * R.color.addwish_greenColor)); } else {
+		 * convertView.setBackgroundColor(mContext.getResources().getColor(
+		 * R.color.addwish_yellowColor)); }
+		 */
 		final ViewHolder finalholder = holder;
 		if (!StringUtils.isEmpty(message.getAvatarUrl())) {
 			ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
@@ -169,7 +175,7 @@ public class SystemMsgAdapter extends BaseAdapter {
 				return false;
 			}
 		});
-		
+
 		return convertView;
 	}
 
@@ -180,6 +186,7 @@ public class SystemMsgAdapter extends BaseAdapter {
 		public TextView timeTextView;
 		public TextView msgAlterTextView;
 	}
+
 	/** Item点击对应的事件 */
 	public void setMItemClickListener(MItemClickListener listener) {
 		ICListener = listener;
@@ -220,8 +227,7 @@ public class SystemMsgAdapter extends BaseAdapter {
 
 		// 手势移动操作，移动时触发
 		@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY) {
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			System.out.println("onScroll");
 			return true;
 		}
@@ -234,8 +240,7 @@ public class SystemMsgAdapter extends BaseAdapter {
 
 		// 手势移动操作，UP时才会触发
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			System.out.println("onFling");
 			return false;
 		}

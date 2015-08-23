@@ -36,65 +36,21 @@ public class MessageUtils {
 	}
 
 	public static void addMessageToDb(final Context appContext, final EMMessage emMessage) {
-		Log.d("Test", "addMessageToDb" + emMessage.toString());
 		try {
 			int msg_type = emMessage.getIntAttribute("type", AppConstant.MSG_TYPE_CHAT);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
 			if (msg_type == AppConstant.MSG_TYPE_CHAT) {
-				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
-				QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
-				Where<TJMessage, UUID> where = builder.where();
-				// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息
-				where.in("type", Arrays.asList(AppConstant.MSG_TYPE_CHAT));
-				where.eq("hxid", emMessage.getFrom());
-				builder.setWhere(where);
-				builder.orderBy("createdTime", false);
-				PreparedQuery<TJMessage> preparedQuery = builder.prepare();
-				List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
-				TJMessage message;
-				if (querMessageList.size() <= 0) {
-					message = new TJMessage();
-					message.setHxid(emMessage.getFrom());
-					message.setTitle(emMessage.getFrom());
-					mTJMessageDao.createIfNotExists(message);
 
-					UserUtils.getUserByHxid(appContext, emMessage.getFrom(), new UserGetLisener() {
-
-						@Override
-						public void onGetUser(TJUserInfo userInfo) {
-							try {
-								Dao<TJUserInfo, UUID> mTJUerInfoDao = new OrmLiteHelper(appContext).getTJUserInfoDao();
-								mTJUerInfoDao.createIfNotExists(userInfo);
-								Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
-								QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
-								Where<TJMessage, UUID> where = builder.where();
-								// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息
-								where.in("type", Arrays.asList(AppConstant.MSG_TYPE_CHAT));
-								where.eq("hxid", emMessage.getFrom());
-								builder.setWhere(where);
-								builder.orderBy("createdTime", false);
-								PreparedQuery<TJMessage> preparedQuery = builder.prepare();
-								List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
-								if (querMessageList.size() > 0) {
-									querMessageList.get(0).setTitle(userInfo.getRealname());
-									querMessageList.get(0).setAvatarUrl(userInfo.getAvatarUrl());
-									mTJMessageDao.update(querMessageList.get(0));
-								}
-							} catch (SQLException e) {
-								Log.e(TAG, e.getStackTrace().toString());
-							}
-						}
-					});
-				} else {
-					message = querMessageList.get(0);
-				}
-				message.setRead(false);
+				TJMessage message = new TJMessage();
+				message.setTitle(emMessage.getFrom());
+				message.setHxid(emMessage.getFrom());
 				message.setType(AppConstant.MSG_TYPE_CHAT);
 				message.setCreatedTime(sdf.format(new Date(emMessage.getMsgTime())));
 				message.setContent(((TextMessageBody) emMessage.getBody()).getMessage());
-				mTJMessageDao.update(message);
+				message.setRead(false);
+
+				addChatMessage(appContext, message);
 			} else {
-				Log.d("test", "存入数据库");
 				// 将消息存入数据库
 				TJMessage tjMessage = new TJMessage();
 				tjMessage.set_id(UUID.fromString(emMessage.getStringAttribute("_id")));
@@ -106,32 +62,102 @@ public class MessageUtils {
 				tjMessage.setType(emMessage.getIntAttribute("type"));
 				tjMessage.setCreatedTime(emMessage.getStringAttribute("createdTime"));
 				tjMessage.setRead(false);
-				Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
-			    mTJMessageDao.createIfNotExists(tjMessage);
 
-				QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
-				Where<TJMessage, UUID> where = builder.where();
-				where.in("type", Arrays.asList(AppConstant.MSG_TYPE_SYSTEM));
-				builder.setWhere(where);
-				PreparedQuery<TJMessage> preparedQuery = builder.prepare();
-				List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
-				TJMessage message;
-				if (querMessageList.size() <= 0) {
-					message = new TJMessage();
-					message.set_id(UUID.fromString(AppConstant.MSG_SYSTEM_UUID));
-					message.setTitle("系统消息");
-					mTJMessageDao.createIfNotExists(message);
-				} else {
-					message = querMessageList.get(0);
-				}
-				message.setContent(((TextMessageBody) emMessage.getBody()).getMessage());
-				message.setCreatedTime(sdf.format(new Date(emMessage.getMsgTime())));
-				message.setRead(false);
-				message.setType(AppConstant.MSG_TYPE_SYSTEM);
-				mTJMessageDao.update(message);
+				addSysMessage(appContext, tjMessage);
 			}
 		} catch (Exception e) {
 			Log.e(TAG, e.getStackTrace().toString());
+		}
+	}
+
+	public static void addChatMessage(final Context appContext, final TJMessage message) {
+		try {
+			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
+			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
+			Where<TJMessage, UUID> where = builder.where();
+			// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息
+			where.in("type", Arrays.asList(AppConstant.MSG_TYPE_CHAT));
+			where.and();
+			where.eq("hxid", message.getHxid());
+			builder.setWhere(where);
+			builder.orderBy("createdTime", false);
+			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
+			List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
+			if (querMessageList.size() <= 0) {
+				message.set_id(UUID.randomUUID());
+				mTJMessageDao.create(message);
+				UserUtils.getUserByHxid(appContext, message.getHxid(), new UserGetLisener() {
+
+					@Override
+					public void onGetUser(TJUserInfo userInfo) {
+						try {
+							Dao<TJUserInfo, UUID> mTJUerInfoDao = new OrmLiteHelper(appContext).getTJUserInfoDao();
+							mTJUerInfoDao.createIfNotExists(userInfo);
+							message.setTitle(userInfo.getNickname());
+
+							Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
+							QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
+							Where<TJMessage, UUID> where = builder.where();
+							// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息
+							where.in("type", Arrays.asList(AppConstant.MSG_TYPE_CHAT));
+							where.and();
+							where.eq("hxid", message.getHxid());
+							builder.setWhere(where);
+							builder.orderBy("createdTime", false);
+							PreparedQuery<TJMessage> preparedQuery = builder.prepare();
+							List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
+							if (querMessageList.size() > 0) {
+								querMessageList.get(0).setTitle(userInfo.getNickname());
+								querMessageList.get(0).setAvatarUrl(userInfo.getAvatarUrl());
+								mTJMessageDao.update(querMessageList.get(0));
+							}
+						} catch (SQLException e) {
+							Log.e(TAG, e.getStackTrace().toString());
+						}
+					}
+				});
+			} else {
+				TJMessage updateMessage = querMessageList.get(0);
+				updateMessage.setRead(false);
+				updateMessage.setContent(message.getContent());
+				updateMessage.setRead(false);
+				updateMessage.setCreatedTime(message.getCreatedTime());
+				mTJMessageDao.update(message);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.e(TAG, e.getMessage());
+		}
+	}
+
+	public static void addSysMessage(final Context appContext, final TJMessage message) {
+		try {
+			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
+			mTJMessageDao.createIfNotExists(message);
+
+			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
+			Where<TJMessage, UUID> where = builder.where();
+			where.in("type", Arrays.asList(AppConstant.MSG_TYPE_SYSTEM));
+			builder.setWhere(where);
+			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
+			List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
+			TJMessage sysMessage;
+			if (querMessageList.size() <= 0) {
+				sysMessage = new TJMessage();
+				sysMessage.set_id(UUID.fromString(AppConstant.MSG_SYSTEM_UUID));
+				sysMessage.setTitle("系统消息");
+				mTJMessageDao.createIfNotExists(sysMessage);
+			} else {
+				sysMessage = querMessageList.get(0);
+			}
+			sysMessage.setContent(message.getTitle());
+			sysMessage.setCreatedTime(message.getCreatedTime());
+			sysMessage.setRead(false);
+			sysMessage.setType(AppConstant.MSG_TYPE_SYSTEM);
+			mTJMessageDao.update(sysMessage);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.e(TAG, e.getMessage());
 		}
 	}
 }

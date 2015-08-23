@@ -1,8 +1,11 @@
 package com.tongjo.girlswish.ui;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.Header;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -34,8 +38,10 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.tongjo.bean.TJMessage;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJWish;
+import com.tongjo.emchat.MessageUtils;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.event.WishDelete;
@@ -105,6 +111,30 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 					// TODO 启动聊天窗口
 					Intent intent = new Intent(Mcontext, ChatActivity.class);
 					intent.putExtra("toUserHxid", tjWish.getCreatorUser().getHxid());
+					// 聊天记录加入列表
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+					TJMessage message = new TJMessage();
+					message.setHxid(tjWish.getCreatorUser().getHxid());
+					message.setContent("");
+					message.setCreatedTime(sdf.format(new Date()));
+					message.setTitle(tjWish.getCreatorUser().getNickname());
+					message.setRead(true);
+					message.setAvatarUrl(tjWish.getCreatorUser().getAvatarUrl());
+					message.setType(AppConstant.MSG_TYPE_CHAT);
+					MessageUtils.addChatMessage(Mcontext, message);
+					Mcontext.startActivity(intent);
+				}
+			});
+			
+			holder.ivicon.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) { 
+					// 跳转到个人信息详情页面
+					Intent intent = new Intent(Mcontext, OtherInfoActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("user", tjWish.getCreatorUser());
+					intent.putExtras(bundle);
 					Mcontext.startActivity(intent);
 				}
 			});

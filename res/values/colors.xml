@@ -64,6 +64,7 @@
     <color name="wish_background">#FAFAFA</color>
     <color name="wish_floatingactionbutton">#4FC3F7</color>
     <color name="wish_backgrounddown">#F7F9FA</color>
+    
     <!-- 我的界面颜色 -->
 
     <color name="me_info_bg">#f3d2d5</color>
@@ -82,6 +83,12 @@
     <color name="info_list_msg">#9B9B9B</color>
     <color name="info_list_title">#4A4A4A</color>
     <color name="info_list_time">#9B9B9B</color>
+    
+    <!-- 聊天界面 -->
+    <color name="top_bar_normal_bg">#00acff</color>
+    <color name="gray_normal">#666667</color>
+    <color name="grid_state_pressed">#1Affffff</color>
+    <color name="grid_state_focused">#80000000</color>
 
     <!-- 我的资料界面 -->
     <color name="myinfo_broder">#FAFAFA</color>
