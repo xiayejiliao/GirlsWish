@@ -106,6 +106,12 @@ public class RegisterActivity extends AppCompatActivity {
 	}
 
 	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		startActivity(new Intent(this, LoginActivity.class));
+		super.onBackPressed();
+	}
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:

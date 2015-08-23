@@ -232,15 +232,14 @@ public class LoginActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.ltv_login_forget:
 			Intent intent1 = new Intent(LoginActivity.this, ResetPassActivity.class);
-			
 			startActivity(intent1);
 			tv_forgetpass.setTextColor(getResources().getColor(R.color.lblue));
-
 			break;
 		case R.id.ltv_login_register:
 			Intent intent2 = new Intent(LoginActivity.this, RegisterActivity.class);
 			startActivity(intent2);
 			tv_register.setTextColor(getResources().getColor(R.color.lblue));
+			finish();
 			break;
 		default:
 			break;
