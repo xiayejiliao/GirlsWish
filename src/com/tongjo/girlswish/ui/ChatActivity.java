@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -96,8 +97,10 @@ import com.tongjo.emchat.GWHXSDKHelper;
 import com.tongjo.emchat.HXSDKHelper;
 import com.tongjo.emchat.UserUtils;
 import com.tongjo.emchat.UserUtils.UserGetLisener;
+import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.CommonUtils;
 import com.tongjo.girlswish.utils.SmileUtils;
 import com.tongjo.girlswish.widget.ExpandGridView;
 import com.tongjo.girlswish.widget.PasteEditText;
@@ -153,6 +156,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private View buttonSetModeKeyboard;
 	private View buttonSetModeVoice;
 	private View buttonSend;
+	private View buttonPressToSpeak;
 	// private ViewPager expressionViewpager;
 	private LinearLayout emojiIconContainer;
 	private LinearLayout btnContainer;
@@ -164,6 +168,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private InputMethodManager manager;
 	private List<String> reslist;
 	private Drawable[] micImages;
+	private int chatType;
 	private EMConversation conversation;
 	public static ChatActivity activityInstance = null;
 	private MessageAdapter adapter;
@@ -180,9 +185,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private Button btnMore;
 	public String playMsgId;
 	private PowerManager.WakeLock wakeLock;
+    private ImageView voiceCallBtn;
+    private ImageView videoCallBtn;
 
 	private SwipeRefreshLayout swipeRefreshLayout;
-	
+	private VoiceRecorder voiceRecorder;
 	// 给谁发送消息
 	private TJUserInfo toChatUser;
 	//  环信id
@@ -209,10 +216,16 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * initView
 	 */
 	protected void initView() {
+		recordingContainer = findViewById(R.id.recording_container);
+		micImage = (ImageView) findViewById(R.id.mic_image);
+		recordingHint = (TextView) findViewById(R.id.recording_hint);
 		listView = (ListView) findViewById(R.id.list);
 		mEditTextContent = (PasteEditText) findViewById(R.id.et_sendmessage);
+		buttonSetModeKeyboard = findViewById(R.id.btn_set_mode_keyboard);
 		edittext_layout = (RelativeLayout) findViewById(R.id.edittext_layout);
+		buttonSetModeVoice = findViewById(R.id.btn_set_mode_voice);
 		buttonSend = findViewById(R.id.btn_send);
+		buttonPressToSpeak = findViewById(R.id.btn_press_to_speak);
 		expressionViewpager = (ViewPager) findViewById(R.id.vPager);
 		emojiIconContainer = (LinearLayout) findViewById(R.id.ll_face_container);
 		btnContainer = (LinearLayout) findViewById(R.id.ll_btn_container);
@@ -225,6 +238,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		iv_emoticons_checked.setVisibility(View.INVISIBLE);
 		more = findViewById(R.id.more);
 		edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_normal);
+		voiceCallBtn = (ImageView) findViewById(R.id.btn_voice_call);
+		videoCallBtn = (ImageView) findViewById(R.id.btn_video_call);
 
 		// 表情list
 		reslist = getExpressionRes(35);
@@ -236,6 +251,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		views.add(gv2);
 		expressionViewpager.setAdapter(new ExpressionPagerAdapter(views));
 		edittext_layout.requestFocus();
+		voiceRecorder = new VoiceRecorder(micImageHandler);
+		//buttonPressToSpeak.setOnTouchListener(new PressToSpeakListen());
 		mEditTextContent.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
@@ -357,6 +374,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 					Where<TJMessage, UUID> where = builder.where();
 					// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息
 					where.in("type", Arrays.asList(AppConstant.MSG_TYPE_CHAT));
+					where.and();
 					where.eq("hxid", toChatUserHxid);
 					builder.setWhere(where);
 					builder.orderBy("createdTime", false);
@@ -585,8 +603,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 		} else if (id == R.id.btn_video) {
 			// 点击摄像图标
-			//Intent intent = new Intent(ChatActivity.this, ImageGridActivity.class);
-			//startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
+			Intent intent = new Intent(ChatActivity.this, ImageGridActivity.class);
+			startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
 		} else if (id == R.id.btn_file) { // 点击文件图标
 			selectFileFromLocal();
 		}
@@ -684,18 +702,18 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * 照相获取图片
 	 */
 	public void selectPicFromCamera() {
-		/*if (!CommonUtils.isExitsSdcard()) {
+		if (!CommonUtils.isExitsSdcard()) {
 			String st = getResources().getString(R.string.sd_card_does_not_exist);
 			Toast.makeText(getApplicationContext(), st, 0).show();
 			return;
 		}
 
-		cameraFile = new File(PathUtil.getInstance().getImagePath(), DemoApplication.getInstance().getUserName()
+		cameraFile = new File(PathUtil.getInstance().getImagePath(), ((BaseApplication)this.getApplication()).LoadLocalUserInfo().get_id().toString()
 				+ System.currentTimeMillis() + ".jpg");
 		cameraFile.getParentFile().mkdirs();
 		startActivityForResult(
 				new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
-				REQUEST_CODE_CAMERA);*/
+				REQUEST_CODE_CAMERA);
 	}
 
 	/**
@@ -794,8 +812,14 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 */
 	private void sendPicture(final String filePath) {
 		String to = toChatUserHxid;
-		// create and add image message in view
 		final EMMessage message = EMMessage.createSendMessage(EMMessage.Type.IMAGE);
+		// 如果是群聊，设置chattype,默认是单聊
+		if (chatType == CHATTYPE_GROUP){
+			message.setChatType(ChatType.GroupChat);
+		}else if(chatType == CHATTYPE_CHATROOM){
+		    message.setChatType(ChatType.ChatRoom);
+		}
+
 		message.setReceipt(to);
 		ImageMessageBody body = new ImageMessageBody(new File(filePath));
 		// 默认超过100k的图片会压缩后发给对方，可以设置成发送原图
@@ -806,7 +830,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		listView.setAdapter(adapter);
 		adapter.refreshSelectLast();
 		setResult(RESULT_OK);
-		// more(more);
 	}
 
 	/**
@@ -962,11 +985,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		buttonSetModeKeyboard.setVisibility(View.VISIBLE);
 		buttonSend.setVisibility(View.GONE);
 		btnMore.setVisibility(View.VISIBLE);
+		buttonPressToSpeak.setVisibility(View.VISIBLE);
 		iv_emoticons_normal.setVisibility(View.VISIBLE);
 		iv_emoticons_checked.setVisibility(View.INVISIBLE);
 		btnContainer.setVisibility(View.VISIBLE);
 		emojiIconContainer.setVisibility(View.GONE);
-
 	}
 
 	/**
@@ -975,15 +998,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * @param view
 	 */
 	public void setModeKeyboard(View view) {
-		// mEditTextContent.setOnFocusChangeListener(new OnFocusChangeListener()
-		// {
-		// @Override
-		// public void onFocusChange(View v, boolean hasFocus) {
-		// if(hasFocus){
-		// getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-		// }
-		// }
-		// });
 		edittext_layout.setVisibility(View.VISIBLE);
 		more.setVisibility(View.GONE);
 		view.setVisibility(View.GONE);
@@ -991,6 +1005,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		// mEditTextContent.setVisibility(View.VISIBLE);
 		mEditTextContent.requestFocus();
 		// buttonSend.setVisibility(View.VISIBLE);
+		buttonPressToSpeak.setVisibility(View.GONE);
 		if (TextUtils.isEmpty(mEditTextContent.getText())) {
 			btnMore.setVisibility(View.VISIBLE);
 			buttonSend.setVisibility(View.GONE);
@@ -998,7 +1013,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			btnMore.setVisibility(View.GONE);
 			buttonSend.setVisibility(View.VISIBLE);
 		}
-
 	}
 
 	/**
@@ -1076,15 +1090,20 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String filename = expressionAdapter.getItem(position);
+				Log.d("test", "test:" + filename);
 				try {
 					// 文字输入框可见时，才可输入表情
 					// 按住说话可见，不让输入表情
 					if (buttonSetModeKeyboard.getVisibility() != View.VISIBLE) {
+						
+						Log.d("test", "test:" + "visibility");
 
 						if (filename != "delete_expression") { // 不是删除键，显示表情
 							// 这里用的反射，所以混淆的时候不要混淆SmileUtils这个类
-							Class clz = Class.forName("com.easemob.chatuidemo.utils.SmileUtils");
+							Class clz = Class.forName("com.tongjo.girlswish.utils.SmileUtils");
 							Field field = clz.getField(filename);
+							Log.d("test", "test:" + SmileUtils.getSmiledText(ChatActivity.this,
+									(String) field.get(null)));
 							mEditTextContent.append(SmileUtils.getSmiledText(ChatActivity.this,
 									(String) field.get(null)));
 						} else { // 删除文字或者表情
@@ -1111,6 +1130,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 						}
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 
 			}
