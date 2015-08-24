@@ -16,6 +16,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -96,6 +97,12 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 			if (tjWish.getCreatorUser().getSchool() != null) {
 				holder.tvSchool.setText(tjWish.getCreatorUser().getSchool().getName());
 			}
+			int sex= tjWish.getCreatorUser().getGender();
+			if(sex==0){
+				holder.ivsex.setImageResource(R.drawable.women);
+			}else if ( sex==1) {
+				holder.ivsex.setImageResource(R.drawable.men);
+			}
 			ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), holder.ivicon, displayImageOptions);
 			holder.ivtalk.setOnClickListener(new OnClickListener() {
 
@@ -115,6 +122,19 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 					message.setAvatarUrl(tjWish.getCreatorUser().getAvatarUrl());
 					message.setType(AppConstant.MSG_TYPE_CHAT);
 					MessageUtils.addChatMessage(Mcontext, message);
+					Mcontext.startActivity(intent);
+				}
+			});
+			
+			holder.ivicon.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) { 
+					// 跳转到个人信息详情页面
+					Intent intent = new Intent(Mcontext, OtherInfoActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("user", tjWish.getCreatorUser());
+					intent.putExtras(bundle);
 					Mcontext.startActivity(intent);
 				}
 			});
@@ -150,6 +170,7 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 		// for any view that will be set as you render a row
 		public ImageView ivicon;
 		public ImageView ivtalk;
+		public ImageView ivsex;
 		public TextView tvNick;
 		public TextView tvSchool;
 		public TextView tvcontent;
@@ -162,11 +183,11 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 			super(itemView);
 			ivtalk = (ImageView) itemView.findViewById(R.id.iv_mypickwish_talk);
 			ivicon = (ImageView) itemView.findViewById(R.id.iv_mypickwish_icon);
+			ivsex = (ImageView) itemView.findViewById(R.id.iv_mypickwish_sex);
 			tvNick = (TextView) itemView.findViewById(R.id.tv_mypickwish_nick);
 			tvSchool = (TextView) itemView.findViewById(R.id.tv_mypickwish_school);
 			tvcontent = (TextView) itemView.findViewById(R.id.tv_mypickwish_content);
 			tvtime = (TextView) itemView.findViewById(R.id.tv_mypickwish_time);
-			rLayout = (RelativeLayout) itemView.findViewById(R.id.rl_mypickwish_item);
 			// item 长按弹出删除对话框
 			itemView.setOnLongClickListener(new OnLongClickListener() {
 

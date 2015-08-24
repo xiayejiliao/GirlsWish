@@ -165,7 +165,7 @@ public class MainTabWishAdapter extends BaseAdapter {
 				holder.content.setText("\t\t\t\t" + wish.getContent());
 			}else{
 				holder.content.setText("");
-			}
+			} 
 
 			if (wish.getCreatorUser() != null
 					&& wish.getCreatorUser().getGender() == 0) {
@@ -189,7 +189,7 @@ public class MainTabWishAdapter extends BaseAdapter {
 			 * holder.bottomBg.setBackgroundColor(Color.parseColor
 			 * ("#"+wish.getBackgroundColor())); }
 			 */
-			if (!StringUtils.isEmpty(wish.getCreatorUser().getAvatarUrl())) {
+			if (wish.getCreatorUser() != null && !StringUtils.isEmpty(wish.getCreatorUser().getAvatarUrl())) {
 				ImageLoader.getInstance().displayImage(
 						wish.getCreatorUser().getAvatarUrl(), holder.avatar,
 						displayImageOptions);

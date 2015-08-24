@@ -8,12 +8,12 @@
         android:showAsAction="never"
         android:title="全部心愿"/>
     <item
-        android:id="@+id/action_men"
+        android:id="@+id/action_women"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="女生心愿"/>
+        android:title="女生心愿"/> 
     <item
-        android:id="@+id/action_women"
+        android:id="@+id/action_men"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="男生心愿"/>

@@ -20,111 +20,94 @@
             android:layout_height="match_parent"
             android:orientation="vertical" >
 
-            <RelativeLayout
+            <FrameLayout
                 android:id="@+id/rl_mypushwish_item"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginLeft="16dp" >
+                android:layout_height="98dp" >
+
+                <TextView
+                    android:id="@+id/tv_mypushwish_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginTop="6dp"
+                    android:text="摘心愿的人"
+                    android:textSize="10sp" />
+
+                <ImageView
+                    android:id="@+id/iv_mypushwish_icon"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="26dp"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/wishunpicked" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="83dp"
+                    android:layout_marginTop="26dp"
                     android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/tv_mypushwish_title"
+                        android:id="@+id/tv_mypushwish_nick"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@+id/ll_mypushwish_name"
-                        android:layout_alignRight="@+id/ll_mypushwish_name"
-                        android:layout_marginTop="5dp"
-                        android:text="摘心愿的人" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-
-                        <RelativeLayout
-                            android:layout_width="176dp"
-                            android:layout_height="62dp"
-                            android:layout_centerVertical="true" >
-
-                            <ImageView
-                                android:id="@+id/iv_mypushwish_icon"
-                                android:layout_width="62dp"
-                                android:layout_height="62dp"
-                                android:layout_centerVertical="true"
-                                android:scaleType="fitStart"
-                                android:src="@drawable/ic_broken_image_black_24dp" />
-
-                            <RelativeLayout
-                                android:id="@+id/ll_mypushwish_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_marginLeft="72dp"
-                                android:orientation="vertical" >
-
-                                <TextView
-                                    android:id="@+id/tv_mypushwish_nick"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentTop="true"
-                                    android:singleLine="true"
-                                    android:text="@string/nickname" />
-
-                                <TextView
-                                    android:id="@+id/tv_mypushwish_school"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentBottom="true"
-                                    android:singleLine="true"
-                                    android:text="@string/school" />
-
-                                <TextView
-                                    android:id="@+id/tv_mypushwish_info"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerVertical="true"
-                                    android:singleLine="true"
-                                    android:text="info"
-                                    android:visibility="visible" />
-                            </RelativeLayout>
-                        </RelativeLayout>
-                    </RelativeLayout>
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="90dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true" >
-
-                    <TextView
-                        android:id="@+id/tv_mypushwish_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="5dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
                         android:singleLine="true"
-                        android:text="time" />
+                        android:text="@string/nickname"
+                        android:textSize="14sp" />
 
                     <ImageView
-                        android:id="@+id/iv_mypushwish_talk"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/ic_message_black_24dp" />
-                </RelativeLayout>
-            </RelativeLayout>
+                        android:id="@+id/iv_mypushwish_sex"
+                        android:layout_width="15dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/men" >
+                    </ImageView>
+
+                    <TextView
+                        android:id="@+id/tv_mypushwish_school"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:text="@string/school"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_mypushwish_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="31dp"
+                    android:layout_marginTop="6dp"
+                    android:singleLine="true"
+                    android:text="7天"
+                    android:textColor="@color/setting_textcolor"
+                    android:textSize="10sp" />
+
+                <ImageView
+                    android:id="@+id/iv_mypushwish_talk"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="31dp"
+                    android:layout_marginTop="32dp"
+                    android:src="@drawable/talk_" />
+            </FrameLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.1dp"
-                android:background="@color/black" />
+                android:background="@color/black" 
+                android:alpha="0.5"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" 
+                android:layout_height="150dp"
                 android:background="@color/wish_backgrounddown" >
 
                 <RelativeLayout
@@ -137,39 +120,14 @@
                         android:id="@+id/tv_mypushwish_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
                         android:lineSpacingExtra="@dimen/margin_12"
                         android:maxLines="3"
                         android:minLines="3"
-                        android:text="\t\t\t\t我在测试下划线我在测试下划线，我在测试下划线，
-                        我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线"
-                        android:textSize="@dimen/margin_18" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:orientation="vertical" >
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginLeft="@dimen/margin_24"
-                            android:layout_marginTop="@dimen/margin_24"
-                            android:background="#979797" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="@dimen/margin_32"
-                            android:background="#979797" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="@dimen/margin_32"
-                            android:background="#979797" />
-                    </LinearLayout>
+                        android:text="\t\t\t\t我在测试下划线我在测试下划线，我在测试下划线， 我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线，我在测试下划线"
+                        android:textSize="@dimen/margin_14" />
                 </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>

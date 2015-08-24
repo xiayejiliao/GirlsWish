@@ -43,10 +43,10 @@
                 android:id="@+id/iv_myinfo_icon"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
-                android:layout_marginRight="10dp"
                 android:layout_centerVertical="true"
-                android:padding="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/view_myinfo_intoicon"
+                android:padding="10dp"
                 android:src="@drawable/chat_image_selector" />
         </RelativeLayout>
 
@@ -85,7 +85,8 @@
                 android:gravity="center_vertical"
                 android:hint="@string/myinfo_nicker"
                 android:maxWidth="120dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textColor="@color/setting_textcolor" />
         </RelativeLayout>
 
         <View
@@ -124,7 +125,8 @@
                 android:hint="@string/myinfo_school"
                 android:maxWidth="120dp"
                 android:singleLine="true"
-                android:src="@drawable/icon_lunch" />
+                android:src="@drawable/icon_lunch"
+                android:textColor="@color/setting_textcolor" />
         </RelativeLayout>
 
         <View
@@ -164,7 +166,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
-                android:text="男" />
+                android:text="男"
+                android:textColor="@color/setting_textcolor" />
         </RelativeLayout>
 
         <View
@@ -191,7 +194,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
-                android:text="13265894215" />
+                android:text="13265894215"
+                android:textColor="@color/setting_textcolor" />
         </RelativeLayout>
 
         <View

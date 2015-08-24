@@ -192,6 +192,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 								SpUtils.put(getApplicationContext(), AppConstant.USER_SEX, userInfo.getGender());
 								SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, userInfo.getAvatarUrl());
 								SpUtils.put(getApplicationContext(), AppConstant.USER_EMAIL, userInfo.getEmail());
+								SpUtils.put(getApplicationContext(), AppConstant.USER_HXID, userInfo.getHxid());
+								SpUtils.put(getApplicationContext(), AppConstant.USER_HXPASSWORD, userInfo.getHxpassword());
 								TJSchool userSchool = userInfo.getSchool();
 								if (userSchool != null) {
 									SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLID, userSchool.get_id().toString());
@@ -230,15 +232,14 @@ public class LoginActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.ltv_login_forget:
 			Intent intent1 = new Intent(LoginActivity.this, ResetPassActivity.class);
-			
 			startActivity(intent1);
 			tv_forgetpass.setTextColor(getResources().getColor(R.color.lblue));
-
 			break;
 		case R.id.ltv_login_register:
 			Intent intent2 = new Intent(LoginActivity.this, RegisterActivity.class);
 			startActivity(intent2);
 			tv_register.setTextColor(getResources().getColor(R.color.lblue));
+			finish();
 			break;
 		default:
 			break;
@@ -256,7 +257,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 	 *            然后在手机端登录环信时，客户端同样适用hash后的密码登录。
 	 */
 	private void loginEMChat(String username, String password) {
-
 		EMChatManager.getInstance().login(username, password, new EMCallBack() {// 回调
 					@Override
 					public void onSuccess() {

@@ -40,6 +40,7 @@ import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -194,6 +195,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private TJUserInfo toChatUser;
 	//  环信id
 	private String toChatUserHxid;
+	
+	private Toolbar toolbar;
 
 	private Handler micImageHandler = new Handler() {
 		@Override
@@ -216,6 +219,19 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * initView
 	 */
 	protected void initView() {
+		
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
+		toolbar.setTitle("对话");
+
+		// 设置导航按钮
+		toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ChatActivity.this.finish();
+			}
+		});
+		
 		recordingContainer = findViewById(R.id.recording_container);
 		micImage = (ImageView) findViewById(R.id.mic_image);
 		recordingHint = (TextView) findViewById(R.id.recording_hint);

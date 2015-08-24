@@ -156,4 +156,12 @@ public class ButtonWithArrow extends LinearLayout{
 		typeArray.recycle();
 		
 	}
+	
+	/**
+	 * 获取左边的TextView
+	 * @return
+	 */
+	public TextView getLeftTextView(){
+		return mLeftText;
+	}
 }

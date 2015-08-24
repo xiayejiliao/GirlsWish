@@ -97,6 +97,7 @@
     <!-- seting 界面 -->
     <color name="setting_broder">#FAFAFA</color>
     <color name="setting_background">#FFFFFF</color>
+    <color name="setting_textcolor">#9B9B9B</color>
 
     <!-- material color -->
     <color name="colorAccent">#FF80AB</color>
