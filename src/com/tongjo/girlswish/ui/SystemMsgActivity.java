@@ -14,9 +14,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -56,7 +59,7 @@ import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlwish.data.DataContainer;
 
-public class SystemMsgActivity extends BaseFragmentActivity implements EMEventListener {
+public class SystemMsgActivity extends AppCompatActivity implements EMEventListener {
 	private final static int MEG_WHAT_TOATS = 10010;
 	private static String TAG = "MainTabInfoFragment";
 	// private SlideListView mListView;
@@ -67,13 +70,29 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 	private MsgDialogFragment menuDialog = null;
 	private boolean mIsRefreshing;
 
+	private ActionBar mActionBar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_systemmsg);
-		setCenterText("绯荤粺淇℃伅");
-
+		mActionBar = getSupportActionBar();
+		mActionBar.setTitle(R.string.mess);
+		mActionBar.setDisplayHomeAsUpEnabled(true);
 		initView();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void initView() {

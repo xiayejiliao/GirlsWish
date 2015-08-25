@@ -8,7 +8,7 @@
             android:title="@string/nav_pushwish"/>
         <item
             android:id="@+id/nav_pickwish"
-            android:icon="@drawable/selector_favorite"
+            android:icon="@drawable/selector_pick"
             android:title="@string/nav_pickwish"/>
     </group>
     <group
