@@ -154,11 +154,11 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		if (resultCode == RESULT_OK) {
 			if (requestCode == SCHOOL) {
 				String schoolname = data.getStringExtra("schoolname");
+				String schoolid = data.getStringExtra("schoolid");
 				tv_school.setText(schoolname);
 				RequestParams params = new RequestParams();
-				params.put("nickname", tv_nicker.getText());
-				params.put("schoolId", tv_school.getText());
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, updatenikeandschool);
+				params.put("schoolId", schoolid);
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, updateschool);
 			}
 			if (requestCode == REQUEST_CAMERA) {
 				File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
@@ -252,14 +252,14 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				RequestParams params = new RequestParams();
 				params.put("nickname", tv_nicker.getText());
 				params.put("schoolId", tv_school.getText());
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, updatenikeandschool);
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, updatenike);
 			}
 		});
 		builder.setNegativeButton("取消", null);
 		builder.show();
 	}
 
-	private TextHttpResponseHandler updatenikeandschool = new TextHttpResponseHandler("UTF-8") {
+	private TextHttpResponseHandler updatenike = new TextHttpResponseHandler("UTF-8") {
 
 		@Override
 		public void onSuccess(int arg0, Header[] arg1, String arg2) {
@@ -268,19 +268,43 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				}.getType();
 				TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
-					ToastUtils.show(MyinfoActivity.this, "修改成功");
+					ToastUtils.show(MyinfoActivity.this, "修改昵称成功");
 					SpUtils.put(getApplicationContext(), AppConstant.USER_NICKNAME, tv_nicker.getText());
-					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME, tv_school.getText());
 					EventBus.getDefault().post(new UserNicknameChange(tv_nicker.getText().toString()));
-					EventBus.getDefault().post(new UserSchoolnameChange(tv_school.getText().toString()));
 				} else {
-					ToastUtils.show(MyinfoActivity.this, "修改失败" + response.getResult().getMessage());
+					ToastUtils.show(MyinfoActivity.this, "修改昵称失败" + response.getResult().getMessage());
 				}
 			} else {
 				ToastUtils.show(MyinfoActivity.this, "(" + arg0 + ")");
 			}
 		}
 
+		@Override
+		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+			// TODO Auto-generated method stub
+			ToastUtils.show(MyinfoActivity.this, "(" + arg1 + ")" + arg3.toString());
+		}
+	};
+	private TextHttpResponseHandler updateschool = new TextHttpResponseHandler("UTF-8") {
+		
+		@Override
+		public void onSuccess(int arg0, Header[] arg1, String arg2) {
+			if (arg0 == 200) {
+				Type type = new TypeToken<TJResponse<TJUserInfo>>() {
+				}.getType();
+				TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
+				if (response.getResult().getCode() == 0) {
+					ToastUtils.show(MyinfoActivity.this, "修改学校成功");
+					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME, tv_school.getText());
+					EventBus.getDefault().post(new UserSchoolnameChange(tv_school.getText().toString()));
+				} else {
+					ToastUtils.show(MyinfoActivity.this, "修改学校失败" + response.getResult().getMessage());
+				}
+			} else {
+				ToastUtils.show(MyinfoActivity.this, "(" + arg0 + ")");
+			}
+		}
+		
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 			// TODO Auto-generated method stub

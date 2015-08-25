@@ -125,12 +125,12 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		/*	if(isupdateicon==false){
 				ToastUtils.show(getApplicationContext(), "请上传头像");
 				return;
-			}*/
+			}
 			if (ischoosesex == false) {
 				ToastUtils.show(getApplicationContext(), "选择性别");
 				return;
 			}
-			/*if (StringUtils.isEmpty(name)) {
+			if (StringUtils.isEmpty(name)) {
 				ToastUtils.show(getApplicationContext(), "姓名空");
 				return;
 			}*/

@@ -79,16 +79,23 @@
             android:layout_height="0.1dp"
             android:background="@color/black" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
             android:paddingLeft="15dp" >
 
+            <View
+                android:id="@+id/view11"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true" />
+
             <TextView
                 android:id="@+id/bt_resetpass_getcaptcha"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
                 android:gravity="center_vertical"
                 android:text="@string/resetpass_getcaptcha" />
 
@@ -97,9 +104,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/bt_resetpass_getcaptcha"
+                android:layout_toRightOf="@id/view11"
                 android:background="@null"
                 android:hint="@string/resetpass_captcha" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
@@ -111,9 +120,9 @@
         android:id="@+id/bt_resetpass_sure"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_marginTop="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/selector_bg_button_sure"
         android:gravity="center"
         android:text="@string/resetpass_sure"

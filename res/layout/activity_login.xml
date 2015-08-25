@@ -18,7 +18,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/logothree" />
+            android:src="@drawable/logofour" />
 
         <LinearLayout
             android:id="@+id/linerlayout_login_input"

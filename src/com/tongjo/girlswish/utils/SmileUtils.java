@@ -145,9 +145,14 @@ public class SmileUtils {
 	}
 
 	public static Spannable getSmiledText(Context context, CharSequence text) {
-	    Spannable spannable = spannableFactory.newSpannable(text);
-	    addSmiles(context, spannable);
-	    return spannable;
+		if(text!=null){
+			Spannable spannable = spannableFactory.newSpannable(text);
+			addSmiles(context, spannable);
+			return spannable;
+		}else {
+			return null;
+		}
+	    
 	}
 	
 	public static boolean containsKey(String key){
