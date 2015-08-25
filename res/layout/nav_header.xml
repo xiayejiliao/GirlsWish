@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:text="@string/nickname"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <TextView
@@ -39,6 +40,7 @@
             android:layout_marginTop="10dp"
             android:singleLine="true"
             android:text="@string/school"
+            android:textColor="@color/white"
             android:textSize="18sp" />
     </LinearLayout>
 

@@ -9,11 +9,12 @@
     <string name="school">学校</string>
     <string name="nickname">昵称</string>
     <string name="sex">性别</string>
-    <string name="app_name">GirlsWish</string>
+    <string name="app_name">Wishes</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="nav_item_wishes">已摘心愿</string>
     <string name="nav_item_message">我的消息</string>
+    <string name="mess">消息</string>
 
     <!-- navigation -->
     <string name="drawer_open">Open navigation drawer</string>
@@ -201,7 +202,7 @@
     <string name="video">[视频]</string>
     <string name="file">[文件]</string>
     <string name="voice_call">[语音通话]</string>
-    <string name="voice">声音</string>    
+    <string name="voice">声音</string>
     <string name="not_download">未下载:</string>
     <!-- 登录界面 -->
     <string name="login_phonedescription">请输入手机号</string>
@@ -263,5 +264,6 @@
     <string name="wish_complete">完成</string>
     <string name="title_activity_my_pick_wish">MyPickWishActivity</string>
     <string name="title_activity_my_push_wish">MyPushWishActivity</string>
+    <string name="title_activity_webview">WebviewActivity</string>
 
 </resources>

@@ -14,9 +14,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -56,7 +59,7 @@ import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlwish.data.DataContainer;
 
-public class SystemMsgActivity extends BaseFragmentActivity implements EMEventListener {
+public class SystemMsgActivity extends AppCompatActivity implements EMEventListener {
 	private final static int MEG_WHAT_TOATS = 10010;
 	private static String TAG = "MainTabInfoFragment";
 	// private SlideListView mListView;
@@ -67,13 +70,29 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 	private MsgDialogFragment menuDialog = null;
 	private boolean mIsRefreshing;
 
+	private ActionBar mActionBar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_systemmsg);
-		setCenterText("系统信息");
-
+		mActionBar = getSupportActionBar();
+		mActionBar.setTitle(R.string.mess);
+		mActionBar.setDisplayHomeAsUpEnabled(true);
 		initView();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void initView() {
@@ -95,22 +114,21 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 					if (message.getType() >= 0) {
 						Intent intent = new Intent();
 						switch (message.getType()) {
-						// 系统消息
+						// 打开web页面
 						case AppConstant.MSG_TYPE_NOTICE:
 							if (!StringUtils.isEmpty(message.getNoticeUrl())) {
-								Uri uri = Uri.parse(message.getNoticeUrl());
-								intent = new Intent(Intent.ACTION_VIEW, uri);
-								//intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");
+								intent.setClass(SystemMsgActivity.this, WebviewActivity.class);
+								intent.putExtra(WebviewActivity.WEBURL, message.getNoticeUrl());
 								startActivity(intent);
 							}
 							break;
 						// 心愿被摘
 						case AppConstant.MSG_TYPE_WISH_PICKED:
-							intent.setClass(SystemMsgActivity.this, GirlUnderwayWishActivity.class);
+							intent.setClass(SystemMsgActivity.this, MyPushWishActivity.class);
 							intent.putExtra("wish", message.getWish());
 							startActivity(intent);
 							break;
-						// 心愿完成
+						// 蹇冩効瀹屾垚
 						case AppConstant.MSG_TYPE_WISH_FINISH:
 							intent.setClass(SystemMsgActivity.this, GirlFinishWishActivity.class);
 							intent.putExtra("wish", message.getWish());
@@ -155,7 +173,7 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 			}
 		});
 
-		// 暂无消息点击加载
+		// 鏆傛棤娑堟伅鐐瑰嚮鍔犺浇
 		mEmptyView.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -171,7 +189,7 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this).getTJMessageDao();
 			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
 			Where<TJMessage, UUID> where = builder.where();
-			// 详细的系统消息
+			// 璇︾粏鐨勭郴缁熸秷鎭�
 			where.in("type", Arrays.asList(AppConstant.MSG_TYPE_NOTICE, AppConstant.MSG_TYPE_WISH_PICKED, AppConstant.MSG_TYPE_WISH_PICKED));
 			builder.setWhere(where);
 			builder.orderBy("createdTime", false);
@@ -228,7 +246,7 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 			if (querMessageList.size() <= 0) {
 				message = new TJMessage();
 				message.set_id(UUID.fromString(AppConstant.MSG_SYSTEM_UUID));
-				message.setTitle("系统消息");
+				message.setTitle("绯荤粺娑堟伅");
 				mTJMessageDao.createIfNotExists(message);
 			} else {
 				message = querMessageList.get(0);
@@ -245,7 +263,7 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 	}
 
 	/**
-	 * 获取消息列表
+	 * 鑾峰彇娑堟伅鍒楄〃
 	 */
 	public void getMessageData() {
 		RequestParams requestParams = new RequestParams();
@@ -257,7 +275,7 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 				Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
 				mListView.onRefreshComplete();
 				if (arg2 == null) {
-					handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:").sendToTarget();
+					handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触:").sendToTarget();
 					return;
 				}
 				if (arg0 == 200) {
@@ -265,34 +283,34 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 					}.getType();
 					TJResponse<TJMessageList> response = new Gson().fromJson(arg2, type);
 					if (response == null || response.getResult() == null || response.getData() == null) {
-						handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:").sendToTarget();
+						handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触:").sendToTarget();
 						return;
 					}
 					if (response.getResult().getCode() == 0) {
 						if (response.getData().getNotices() != null) {
 							Log.d(TAG, response.getData().getNotices().toString());
-							// 加入数据库
+							// 鍔犲叆鏁版嵁搴�
 							addMessage((List<TJMessage>) response.getData().getNotices());
 							refreshUI();
 						}
 					} else {
-						handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:" + response.getResult().getMessage()).sendToTarget();
+						handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触:" + response.getResult().getMessage()).sendToTarget();
 					}
 				} else {
-					handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:" + arg0).sendToTarget();
+					handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触:" + arg0).sendToTarget();
 				}
 			}
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 				mListView.onRefreshComplete();
-				handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败" + arg0).sendToTarget();
+				handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触" + arg0).sendToTarget();
 			}
 		});
 	}
 
 	/**
-	 * 事件监听
+	 * 浜嬩欢鐩戝惉
 	 * 
 	 * see {@link EMNotifierEvent}
 	 */
@@ -315,7 +333,7 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 		}
 	}
 
-	/* 有新消息到来刷新页面 */
+	/* 鏈夋柊娑堟伅鍒版潵鍒锋柊椤甸潰 */
 	private void refreshUI() {
 		selectData();
 	}
@@ -344,7 +362,7 @@ public class SystemMsgActivity extends BaseFragmentActivity implements EMEventLi
 
 		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
 
-		// 把此activity 从foreground activity 列表里移除
+		// 鎶婃activity 浠巉oreground activity 鍒楄〃閲岀Щ闄�
 		sdkHelper.popActivity(this);
 
 		super.onStop();
