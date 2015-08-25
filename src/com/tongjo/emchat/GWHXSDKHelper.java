@@ -330,7 +330,7 @@ public class GWHXSDKHelper extends HXSDKHelper{
         return new HXNotifier(){
             public synchronized void onNewMsg(final EMMessage message) {
             	/*将改消息加入数据库*/
-            	MessageUtils.addMessageToDb(appContext, message);
+            	MessageUtils.addMessage(appContext, message);
                 if(EMChatManager.getInstance().isSlientMessage(message)){
                     return;
                 }
