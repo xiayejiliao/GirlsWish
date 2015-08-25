@@ -4,4 +4,4 @@
 /.apt_generated/
 .DS_Store
 .classpath
-.project.properties
+project.properties

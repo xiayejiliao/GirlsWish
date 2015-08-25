@@ -257,7 +257,7 @@
     <string name="title_activity_suggest">SuggestActivity</string>
     <string name="nav_setting">设置</string>
     <string name="nav_pickwish">摘取的心愿</string>
-    <string name="nav_pushwish">发表的心愿</string>
+    <string name="nav_pushwish">许下的心愿</string>
 
     <!-- 心愿 -->
     <string name="wish_complete">完成</string>
