@@ -158,7 +158,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				tv_school.setText(schoolname);
 				RequestParams params = new RequestParams();
 				params.put("schoolId", schoolid);
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, updateschool);
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT,params, updateschool);
 			}
 			if (requestCode == REQUEST_CAMERA) {
 				File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
@@ -250,9 +250,8 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				// TODO Auto-generated method stub
 				tv_nicker.setText(nicker.getText().toString());
 				RequestParams params = new RequestParams();
-				params.put("nickname", tv_nicker.getText());
-				params.put("schoolId", tv_school.getText());
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, updatenike);
+				params.put("nickname", nicker.getText().toString());
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, params,updatenike);
 			}
 		});
 		builder.setNegativeButton("取消", null);
@@ -269,8 +268,8 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
 					ToastUtils.show(MyinfoActivity.this, "修改昵称成功");
-					SpUtils.put(getApplicationContext(), AppConstant.USER_NICKNAME, tv_nicker.getText());
-					EventBus.getDefault().post(new UserNicknameChange(tv_nicker.getText().toString()));
+					SpUtils.put(getApplicationContext(), AppConstant.USER_NICKNAME, response.getData().getNickname());
+					EventBus.getDefault().post(new UserNicknameChange(response.getData().getNickname()));
 				} else {
 					ToastUtils.show(MyinfoActivity.this, "修改昵称失败" + response.getResult().getMessage());
 				}
@@ -295,8 +294,9 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				TJResponse<TJUserInfo> response = new Gson().fromJson(arg2, type);
 				if (response.getResult().getCode() == 0) {
 					ToastUtils.show(MyinfoActivity.this, "修改学校成功");
-					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME, tv_school.getText());
-					EventBus.getDefault().post(new UserSchoolnameChange(tv_school.getText().toString()));
+					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME, response.getData().getSchool().getName());
+					SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLID, response.getData().getSchool().get_id().toString());
+					EventBus.getDefault().post(new UserSchoolnameChange(response.getData().getSchool().getName()));
 				} else {
 					ToastUtils.show(MyinfoActivity.this, "修改学校失败" + response.getResult().getMessage());
 				}
@@ -315,7 +315,6 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 
 		@Override
 		public void onSuccess(int arg0, Header[] arg1, String arg2) {
-			System.out.println(arg2);
 			if (arg0 == 200) {
 				Type type = new TypeToken<TJResponse<AvatarUrl>>() {
 				}.getType();
