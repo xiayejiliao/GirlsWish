@@ -147,7 +147,9 @@ public class SystemMsgAdapter extends BaseAdapter {
 		 * convertView.setBackgroundColor(mContext.getResources().getColor(
 		 * R.color.addwish_yellowColor)); }
 		 */
+		
 		final ViewHolder finalholder = holder;
+		
 		if (!StringUtils.isEmpty(message.getAvatarUrl())) {
 			ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
 			ImageLoader.getInstance().init(configuration);
