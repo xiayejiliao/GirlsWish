@@ -96,7 +96,7 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
 			startActivity(new Intent(SettingActivity.this, ResetPassActivity.class));
 			break;
 		case R.id.bt_setting_about:
-			startActivity(new Intent(SettingActivity.this, AboutActivity.class));
+			//startActivity(new Intent(SettingActivity.this, AboutActivity.class));
 			break;
 		case R.id.bt_setting_suggest:
 			FeedbackAgent agent = new FeedbackAgent(SettingActivity.this);
