@@ -73,8 +73,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
                     android:hint="注册后不可更改"
                     android:singleLine="true"
+                    android:textColorHint="@color/colorPrimary"
                     android:textSize="10sp" />
             </LinearLayout>
 

@@ -167,7 +167,7 @@ public class RegisterActivity extends AppCompatActivity {
 						bt_getcaptcha.setTextColor(Color.BLACK);
 						bt_getcaptcha.setEnabled(true);
 						et_phone.setEnabled(true);
-						bt_getcaptcha.setText("获取验证码");
+						bt_getcaptcha.setText("重新获取");
 					}
 				});
 				break;

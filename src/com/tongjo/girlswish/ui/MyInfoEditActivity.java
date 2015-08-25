@@ -11,6 +11,9 @@ import java.lang.reflect.Type;
 
 import org.apache.http.Header;
 
+import com.easemob.EMCallBack;
+import com.easemob.chat.EMChatManager;
+import com.easemob.chat.EMGroupManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.RequestParams;
@@ -49,6 +52,7 @@ import android.os.Environment;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.MediaStore.MediaColumns;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -262,6 +266,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 						SpUtils.put(getApplicationContext(), AppConstant.USER_EMAIL, userInfo.getEmail());
 						SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, userInfo.getTel());
 						TJSchool userSchool = userInfo.getSchool();
+						loginEMChat(userInfo.getHxid(), userInfo.getHxpassword());
 						if (userSchool != null) {
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLID, userSchool.get_id().toString());
 							SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLNAME, userSchool.getName());
@@ -319,4 +324,28 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 			System.out.println("(" + arg0 + ")" + arg3.toString());
 		}
 	};
+	private void loginEMChat(String username, String password) {
+		EMChatManager.getInstance().login(username, password, new EMCallBack() {// 回调
+					@Override
+					public void onSuccess() {
+						runOnUiThread(new Runnable() {
+							public void run() {
+								EMGroupManager.getInstance().loadAllGroups();
+								EMChatManager.getInstance().loadAllConversations();
+								Log.d("main", "登陆聊天服务器成功！");
+							}
+						});
+					}
+
+					@Override
+					public void onProgress(int progress, String status) {
+
+					}
+
+					@Override
+					public void onError(int code, String message) {
+						Log.d("main", "登陆聊天服务器失败！");
+					}
+				});
+	}
 }
