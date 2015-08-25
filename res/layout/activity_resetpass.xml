@@ -12,7 +12,7 @@
         android:layout_height="80dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="45dp"
-        android:background="@drawable/logothree" />
+        android:background="@drawable/logofour" />
 
     <LinearLayout
         android:id="@+id/linerlayout_resetpass_input"
