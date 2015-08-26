@@ -18,6 +18,7 @@ import com.tongjo.girlswish.ui.MainTabInfoAdapter.ViewHolder;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MyGestureListener;
+import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.DateUtils;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.StringUtils;
@@ -136,6 +137,11 @@ public class SystemMsgAdapter extends BaseAdapter {
 		} else {
 			holder.msgAlterTextView.setVisibility(View.VISIBLE);
 		}
+		if (message.getType() == AppConstant.MSG_TYPE_NOTICE) {
+			holder.iconImageView.setImageResource(R.drawable.msg_sys);
+		} else {
+			holder.iconImageView.setImageResource(R.drawable.msg_wish);
+		}
 		/*
 		 * if (arg0 % 4 == 0) {
 		 * convertView.setBackgroundColor(mContext.getResources().getColor(
@@ -147,25 +153,6 @@ public class SystemMsgAdapter extends BaseAdapter {
 		 * convertView.setBackgroundColor(mContext.getResources().getColor(
 		 * R.color.addwish_yellowColor)); }
 		 */
-		
-		final ViewHolder finalholder = holder;
-		
-		if (!StringUtils.isEmpty(message.getAvatarUrl())) {
-			ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
-			ImageLoader.getInstance().init(configuration);
-
-			ImageLoader.getInstance().loadImage(message.getAvatarUrl(), new ImageSize(R.dimen.info_list_img_width, R.dimen.info_list_img_height), new SimpleImageLoadingListener() {
-				public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-					if (loadedImage != null) {
-						finalholder.iconImageView.setImageBitmap(ImageUtils.getRoundCornerDrawable(loadedImage, 360));
-					}
-				};
-
-				public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-					Log.d(TAG, "头像加载失败");
-				};
-			});
-		}
 		convertView.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				curPosition = arg0;

@@ -34,6 +34,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.text.Spannable;
 import android.text.TextUtils;
@@ -75,9 +76,11 @@ import com.easemob.util.EMLog;
 import com.easemob.util.FileUtils;
 import com.easemob.util.LatLng;
 import com.easemob.util.TextFormater;
+import com.tongjo.bean.TJUserInfo;
 import com.tongjo.emchat.ImageCache;
 import com.tongjo.emchat.ImageUtils;
 import com.tongjo.emchat.UserUtils;
+import com.tongjo.emchat.UserUtils.UserGetLisener;
 import com.tongjo.emchat.VoicePlayClickListener;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.Constant;
@@ -524,13 +527,30 @@ public class MessageAdapter extends BaseAdapter{
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent();
 				if(message.direct == Direct.SEND){
 					// 跳转到自己的主页
+					Intent intent = new Intent();
 					intent.setClass(context, MyinfoActivity.class);
 					context.startActivity(intent);
 				}else{
-					
+					UserUtils.getUserByHxid(context, message.getFrom(), new UserGetLisener() {
+						
+						@Override
+						public void onGetUser(final TJUserInfo userInfo) {
+							((Activity)context).runOnUiThread(new Runnable() {
+								
+								@Override
+								public void run() {
+									Intent intent = new Intent();
+									intent.setClass(context, OtherInfoActivity.class);
+									Bundle bundle = new Bundle();
+									bundle.putSerializable("user", userInfo);
+									intent.putExtras(bundle);
+									context.startActivity(intent);
+								}
+							});
+						}
+					});
 				}
 			}
 		});

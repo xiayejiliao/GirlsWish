@@ -18,6 +18,7 @@ import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MyGestureListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.ViewHolder;
+import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.DateUtils;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.SmileUtils;
@@ -130,7 +131,7 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		Spannable span = SmileUtils.getSmiledText(mContext, message.getContent());
 		// 设置内容
 		holder.msgTextView.setText(span, BufferType.SPANNABLE);
-		//holder.timeTextView.setText(message.getCreatedTime());
+		// holder.timeTextView.setText(message.getCreatedTime());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
 		try {
 			holder.timeTextView.setText(DateUtils.getTimestampString(sdf.parse(message.getCreatedTime())));
@@ -153,22 +154,26 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		 * convertView.setBackgroundColor(mContext.getResources().getColor(
 		 * R.color.addwish_yellowColor)); }
 		 */
-		final ViewHolder finalholder = holder;
-		if (!StringUtils.isEmpty(message.getAvatarUrl())) {
-			ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
-			ImageLoader.getInstance().init(configuration);
+		if (message.getType() == AppConstant.MSG_TYPE_SYSTEM) {
+			holder.iconImageView.setImageResource(R.drawable.msg_sys_all);
+		} else {
+			final ViewHolder finalholder = holder;
+			if (!StringUtils.isEmpty(message.getAvatarUrl())) {
+				ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
+				ImageLoader.getInstance().init(configuration);
 
-			ImageLoader.getInstance().loadImage(message.getAvatarUrl(), new ImageSize(R.dimen.info_list_img_width, R.dimen.info_list_img_height), new SimpleImageLoadingListener() {
-				public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-					if (loadedImage != null) {
-						finalholder.iconImageView.setImageBitmap(ImageUtils.getRoundCornerDrawable(loadedImage, 360));
-					}
-				};
+				ImageLoader.getInstance().loadImage(message.getAvatarUrl(), new ImageSize(R.dimen.info_list_img_width, R.dimen.info_list_img_height), new SimpleImageLoadingListener() {
+					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+						if (loadedImage != null) {
+							finalholder.iconImageView.setImageBitmap(ImageUtils.getRoundCornerDrawable(loadedImage, 360));
+						}
+					};
 
-				public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-					Log.d(TAG, "头像加载失败");
-				};
-			});
+					public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+						Log.d(TAG, "头像加载失败");
+					};
+				});
+			}
 		}
 		convertView.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {

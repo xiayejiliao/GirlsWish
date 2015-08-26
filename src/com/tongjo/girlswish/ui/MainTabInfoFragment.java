@@ -35,7 +35,11 @@ import com.tongjo.bean.TJUserInfo;
 import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.emchat.GWHXSDKHelper;
 import com.tongjo.emchat.HXSDKHelper;
+import com.tongjo.emchat.UserUtils;
+import com.tongjo.emchat.UserUtils.UserGetLisener;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.event.NewMsgEvent;
+import com.tongjo.girlswish.event.UnReadSetEvent;
 import com.tongjo.girlswish.ui.MainTabInfoAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabInfoAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.ui.SystemMsgActivity.MsgDialogFragment;
@@ -43,6 +47,8 @@ import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.CollectionUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlwish.data.DataContainer;
+
+import de.greenrobot.event.EventBus;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -91,7 +97,6 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 		selectData();
 		mListView.setEmptyView(mEmptyView);
 		mListView.setAdapter(mListAdapter);
-		updateUi();
 
 		mListAdapter.setMItemClickListener(new MItemClickListener() {
 
@@ -113,8 +118,8 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 							break;
 						}
 						message.setRead(true);
+						refreshUI();
 						updateMessage(message);
-						updateUi();
 						startActivity(intent);
 					}
 				}
@@ -241,20 +246,6 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 
 	}
 
-	public void updateUi() {
-		if(mListAdapter != null){
-			mListAdapter.notifyDataSetChanged();
-		}
-		boolean hasUnReadMsg = false;
-		for (TJMessage msg : DataContainer.MessageList) {
-			if (!msg.isRead()) {
-				
-				hasUnReadMsg = true;
-			}
-		}
-		//((MainTabActivity) this.getActivity()).setAlertView(0, hasUnReadMsg);
-	}
-
 	/**
 	 * 获取消息列表
 	 */
@@ -305,8 +296,8 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 	@Override
 	public void onResume() {
 		super.onResume();
-		selectData();
-		updateUi();
+		refreshUI();
+		EventBus.getDefault().register(this);
 		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
 		if (sdkHelper == null) {
 			System.out.println("test null");
@@ -330,6 +321,8 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 		// 把此activity 从foreground activity 列表里移除
 		sdkHelper.popActivity(this.getActivity());
 
+	    EventBus.getDefault().unregister(this);
+		
 		super.onStop();
 	}
 
@@ -358,14 +351,39 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 		}
 	}
 
+	public void onEventMainThread(NewMsgEvent event) {
+		refreshUI();
+	}
+	
 	/* 有新消息到来刷新页面 */
 	private void refreshUI() {
-		selectData();
-		this.getActivity().runOnUiThread(new Runnable() {
-			public void run() {
-				updateUi();
+		if (mListAdapter != null) {
+			mListAdapter.notifyDataSetChanged();
+		}
+		boolean hasUnReadMsg = false;
+		for (final TJMessage message : DataContainer.MessageList) {
+			if (!message.isRead()) {
+
+				hasUnReadMsg = true;
 			}
-		});
+			if (message.getUserId() == null && message.getHxid() != null) {
+				UserUtils.getUserByHxid(this.getContext(), message.getHxid(), new UserGetLisener() {
+
+					@Override
+					public void onGetUser(TJUserInfo userInfo) {
+						DataContainer.userInfoMap.put(userInfo.getHxid(), userInfo);
+						message.setTitle(userInfo.getNickname());
+						message.setAvatarUrl(userInfo.getAvatarUrl());
+						message.setUserId(userInfo.get_id().toString());
+						updateMessage(message);
+					}
+				});
+			}
+		}
+		UnReadSetEvent event = new UnReadSetEvent();
+		event.setUnread(hasUnReadMsg);
+		EventBus.getDefault().post(event);
+		// ((MainTabActivity) this.getActivity()).setAlertView(0, hasUnReadMsg);
 	}
 
 	private Handler handler = new Handler() {

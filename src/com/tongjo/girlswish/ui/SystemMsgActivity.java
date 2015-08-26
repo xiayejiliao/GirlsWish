@@ -124,14 +124,26 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 							break;
 						// 心愿被摘
 						case AppConstant.MSG_TYPE_WISH_PICKED:
+							/*if (message.getWishId() == null) {
+								ToastUtils.show(SystemMsgActivity.this, "心愿不存在，请刷新");
+							} else {
+								intent.setClass(SystemMsgActivity.this, GirlUnderwayWishActivity.class);
+								intent.putExtra("wishuuid", message.getWishId());
+								startActivity(intent);
+							}*/
 							intent.setClass(SystemMsgActivity.this, MyPushWishActivity.class);
-							intent.putExtra("wish", message.getWish());
 							startActivity(intent);
 							break;
-						// 蹇冩効瀹屾垚
+						// 心愿完成
 						case AppConstant.MSG_TYPE_WISH_FINISH:
-							intent.setClass(SystemMsgActivity.this, GirlFinishWishActivity.class);
-							intent.putExtra("wish", message.getWish());
+							/*if (message.getWish() == null) {
+								ToastUtils.show(SystemMsgActivity.this, "心愿不存在，请刷新");
+							} else {
+								intent.setClass(SystemMsgActivity.this, GirlFinishWishActivity.class);
+								intent.putExtra("wishuuid", message.getWishId());
+								startActivity(intent);
+							}*/
+							intent.setClass(SystemMsgActivity.this, MyPickWishActivity.class);
 							startActivity(intent);
 							break;
 						}
@@ -335,13 +347,15 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 
 	/* 鏈夋柊娑堟伅鍒版潵鍒锋柊椤甸潰 */
 	private void refreshUI() {
-		selectData();
+		if (mListAdapter != null) {
+			mListAdapter.notifyDataSetChanged();
+		}
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		selectData();
+		refreshUI();
 		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
 		if (sdkHelper == null) {
 			System.out.println("test null");

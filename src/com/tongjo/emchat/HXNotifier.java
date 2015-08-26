@@ -124,7 +124,7 @@ public class HXNotifier {
      */
     public synchronized void onNewMsg(EMMessage message) {
     	/*将改消息加入数据库*/
-    	MessageUtils.addMessageToDb(appContext, message);
+    	MessageUtils.addMessage(appContext, message);
         if(EMChatManager.getInstance().isSlientMessage(message)){
             return;
         }
@@ -144,7 +144,7 @@ public class HXNotifier {
     public synchronized void onNewMesg(List<EMMessage> messages) {
     	/*将改消息加入数据库*/
     	for(EMMessage message : messages){
-    		MessageUtils.addMessageToDb(appContext, message);
+    		MessageUtils.addMessage(appContext, message);
     	}
         if(EMChatManager.getInstance().isSlientMessage(messages.get(messages.size()-1))){
             return;

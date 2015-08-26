@@ -60,4 +60,7 @@
         <item name="colorPrimaryDark">@android:color/transparent</item>
     </style>
     
+    <style name="horizontal_slide" parent="@style/IMTheme.Transparent">
+        <item name="android:windowAnimationStyle">@style/AnimFade2</item>
+    </style>
 </resources>

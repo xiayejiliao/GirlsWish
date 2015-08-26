@@ -27,12 +27,19 @@ import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.StringUtils;
+import com.tongjo.girlwish.data.DataContainer;
 
 public class UserUtils {
 	protected static final String R = null;
 	private static String TAG = "UserUtils";
 
 	public static void getUserByHxid(final Context appContext, final String hxid, final UserGetLisener userGetLisener) {
+		if (DataContainer.userInfo != null && hxid.equals(DataContainer.userInfo.getHxid())) {
+			userGetLisener.onGetUser(DataContainer.userInfo);
+		}
+		if (DataContainer.userInfoMap.containsKey(hxid)) {
+			userGetLisener.onGetUser(DataContainer.userInfoMap.get(hxid));
+		}
 		try {
 			Dao<TJUserInfo, UUID> mTJUserDao = new OrmLiteHelper(appContext).getTJUserInfoDao();
 			QueryBuilder<TJUserInfo, UUID> builder = mTJUserDao.queryBuilder();

@@ -1,10 +1,16 @@
 package com.tongjo.girlwish.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.tongjo.bean.TJLocalUserInfo;
 import com.tongjo.bean.TJMessage;
+import com.tongjo.bean.TJUserInfo;
 import com.tongjo.bean.TJWish;
 import com.tongjo.bean.TJWishList;
 
@@ -22,7 +28,7 @@ public class DataContainer {
 	public final static List<TJMessage> SystemMsgList = new ArrayList<TJMessage>();
 	public static TJWishList mewishs=new TJWishList();
 	public static TJLocalUserInfo userInfo= new TJLocalUserInfo();
-	
+	public static Map<String, TJUserInfo> userInfoMap = new ConcurrentHashMap<String, TJUserInfo>();
 	public void clear(){
 		if(WishList != null){
 			WishList.clear();

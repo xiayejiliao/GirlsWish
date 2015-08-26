@@ -18,9 +18,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import android.content.Context;
@@ -96,6 +99,7 @@ import com.tongjo.bean.TJUserInfo;
 import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.emchat.GWHXSDKHelper;
 import com.tongjo.emchat.HXSDKHelper;
+import com.tongjo.emchat.MessageUtils;
 import com.tongjo.emchat.UserUtils;
 import com.tongjo.emchat.UserUtils.UserGetLisener;
 import com.tongjo.girlswish.BaseApplication;
@@ -105,12 +109,13 @@ import com.tongjo.girlswish.utils.CommonUtils;
 import com.tongjo.girlswish.utils.SmileUtils;
 import com.tongjo.girlswish.widget.ExpandGridView;
 import com.tongjo.girlswish.widget.PasteEditText;
+import com.tongjo.girlwish.data.DataContainer;
 
 /**
  * 聊天页面
  * 
  */
-public class ChatActivity extends BaseActivity implements OnClickListener, EMEventListener{
+public class ChatActivity extends BaseActivity implements OnClickListener, EMEventListener {
 	private static final String TAG = "ChatActivity";
 	private static final int REQUEST_CODE_EMPTY_HISTORY = 2;
 	public static final int REQUEST_CODE_CONTEXT_MENU = 3;
@@ -186,16 +191,16 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private Button btnMore;
 	public String playMsgId;
 	private PowerManager.WakeLock wakeLock;
-    private ImageView voiceCallBtn;
-    private ImageView videoCallBtn;
+	private ImageView voiceCallBtn;
+	private ImageView videoCallBtn;
 
 	private SwipeRefreshLayout swipeRefreshLayout;
 	private VoiceRecorder voiceRecorder;
 	// 给谁发送消息
 	private TJUserInfo toChatUser;
-	//  环信id
+	// 环信id
 	private String toChatUserHxid;
-	
+
 	private Toolbar toolbar;
 
 	private Handler micImageHandler = new Handler() {
@@ -205,7 +210,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			micImage.setImageDrawable(micImages[msg.what]);
 		}
 	};
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -219,7 +224,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * initView
 	 */
 	protected void initView() {
-		
+
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		toolbar.setTitle("对话");
 
@@ -231,7 +236,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 				ChatActivity.this.finish();
 			}
 		});
-		
+
 		recordingContainer = findViewById(R.id.recording_container);
 		micImage = (ImageView) findViewById(R.id.mic_image);
 		recordingHint = (TextView) findViewById(R.id.recording_hint);
@@ -268,7 +273,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		expressionViewpager.setAdapter(new ExpressionPagerAdapter(views));
 		edittext_layout.requestFocus();
 		voiceRecorder = new VoiceRecorder(micImageHandler);
-		//buttonPressToSpeak.setOnTouchListener(new PressToSpeakListen());
+		// buttonPressToSpeak.setOnTouchListener(new PressToSpeakListen());
 		mEditTextContent.setOnFocusChangeListener(new OnFocusChangeListener() {
 
 			@Override
@@ -317,48 +322,47 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			}
 		});
 
-		 swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.chat_swipe_layout);
+		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.chat_swipe_layout);
 
-		 swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
-		                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
+		swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
-		 swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+		swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 
-		         @Override
-		         public void onRefresh() {
-		                 new Handler().postDelayed(new Runnable() {
+			@Override
+			public void onRefresh() {
+				new Handler().postDelayed(new Runnable() {
 
-		                         @Override
-		                         public void run() {
-		                                 if (listView.getFirstVisiblePosition() == 0 && !isloading && haveMoreData) {
-		                                         List<EMMessage> messages;
-		                                         try {
-		                                        	 messages = conversation.loadMoreMsgFromDB(adapter.getItem(0).getMsgId(), pagesize);
-		                                         } catch (Exception e1) {
-	                                                 swipeRefreshLayout.setRefreshing(false);
-	                                                 return;
-		                                         }
-		                                         
-		                                         if (messages.size() > 0) {
-	                                                 adapter.notifyDataSetChanged();
-	                                                 adapter.refreshSeekTo(messages.size() - 1);
-	                                                 if (messages.size() != pagesize){
-	                                                     haveMoreData = false;
-	                                                 }
-		                                         } else {
-		                                             haveMoreData = false;
-		                                         }
-		                                         
-		                                         isloading = false;
+					@Override
+					public void run() {
+						if (listView.getFirstVisiblePosition() == 0 && !isloading && haveMoreData) {
+							List<EMMessage> messages;
+							try {
+								messages = conversation.loadMoreMsgFromDB(adapter.getItem(0).getMsgId(), pagesize);
+							} catch (Exception e1) {
+								swipeRefreshLayout.setRefreshing(false);
+								return;
+							}
 
-		                                 }else{
-		                                     Toast.makeText(ChatActivity.this, getResources().getString(R.string.no_more_messages), Toast.LENGTH_SHORT).show();
-		                                 }
-		                                 swipeRefreshLayout.setRefreshing(false);
-		                         }
-		                 }, 1000);
-		         }
-		 });
+							if (messages.size() > 0) {
+								adapter.notifyDataSetChanged();
+								adapter.refreshSeekTo(messages.size() - 1);
+								if (messages.size() != pagesize) {
+									haveMoreData = false;
+								}
+							} else {
+								haveMoreData = false;
+							}
+
+							isloading = false;
+
+						} else {
+							Toast.makeText(ChatActivity.this, getResources().getString(R.string.no_more_messages), Toast.LENGTH_SHORT).show();
+						}
+						swipeRefreshLayout.setRefreshing(false);
+					}
+				}, 1000);
+			}
+		});
 	}
 
 	private void setUpView() {
@@ -368,91 +372,80 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 		manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(
-				PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
-		
+		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
+
 		toChatUserHxid = getIntent().getStringExtra("toUserHxid");
 		UserUtils.getUserByHxid(this, toChatUserHxid, new UserGetLisener() {
-			
+
 			@Override
 			public void onGetUser(final TJUserInfo userInfo) {
 				try {
-					Dao<TJUserInfo, UUID> mTJUerInfoDao = new OrmLiteHelper(ChatActivity.this.getApplicationContext()).getTJUserInfoDao();
-					mTJUerInfoDao.createIfNotExists(userInfo);
+					/*
+					 * Dao<TJUserInfo, UUID> mTJUerInfoDao = new
+					 * OrmLiteHelper(ChatActivity
+					 * .this.getApplicationContext()).getTJUserInfoDao();
+					 * mTJUerInfoDao.createIfNotExists(userInfo);
+					 */
 					toChatUser = userInfo;
 					runOnUiThread(new Runnable() {
 						public void run() {
-							ChatActivity.this.setCenterText(userInfo.getRealname());
+							toolbar.setTitle(userInfo.getNickname());
 						}
 					});
-					Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(ChatActivity.this.getApplicationContext()).getTJMessageDao();
-					QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
-					Where<TJMessage, UUID> where = builder.where();
-					// 消息界面只显示聊天消息（和一个人的聊天为一条记录）和系统消息
-					where.in("type", Arrays.asList(AppConstant.MSG_TYPE_CHAT));
-					where.and();
-					where.eq("hxid", toChatUserHxid);
-					builder.setWhere(where);
-					builder.orderBy("createdTime", false);
-					PreparedQuery<TJMessage> preparedQuery = builder.prepare();
-					List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
-					if (querMessageList.size() > 0 && !querMessageList.get(0).getTitle().equals(userInfo.getRealname())) {
-						querMessageList.get(0).setTitle(userInfo.getRealname());
-						mTJMessageDao.update(querMessageList.get(0));
-					}
-				} catch (SQLException e) {
+					DataContainer.userInfoMap.put(userInfo.getHxid(), userInfo);
+				} catch (Exception e) {
 					Log.e(TAG, e.getStackTrace().toString());
 				}
-				
+
 			}
-		} );
-	    this.setCenterText(toChatUserHxid);
-	    onConversationInit();
-	    onListViewCreation();
+		});
+		this.setCenterText(toChatUserHxid);
+		onConversationInit();
+		onListViewCreation();
 	}
 
-	protected void onConversationInit(){
+	protected void onConversationInit() {
 		// 单人聊天
-	    conversation = EMChatManager.getInstance().getConversationByType(toChatUserHxid,EMConversationType.Chat);
-        // 把此会话的未读数置为0
-        conversation.markAllMessagesAsRead();
+		conversation = EMChatManager.getInstance().getConversationByType(toChatUserHxid, EMConversationType.Chat);
+		// 把此会话的未读数置为0
+		conversation.markAllMessagesAsRead();
 
-        // 初始化db时，每个conversation加载数目是getChatOptions().getNumberOfMessagesLoaded
-        // 这个数目如果比用户期望进入会话界面时显示的个数不一样，就多加载一些
-        final List<EMMessage> msgs = conversation.getAllMessages();
-        int msgCount = msgs != null ? msgs.size() : 0;
-        if (msgCount < conversation.getAllMsgCount() && msgCount < pagesize) {
-            String msgId = null;
-            if (msgs != null && msgs.size() > 0) {
-                msgId = msgs.get(0).getMsgId();
-            }
-            conversation.loadMoreMsgFromDB(msgId, pagesize);
-        }
+		// 初始化db时，每个conversation加载数目是getChatOptions().getNumberOfMessagesLoaded
+		// 这个数目如果比用户期望进入会话界面时显示的个数不一样，就多加载一些
+		final List<EMMessage> msgs = conversation.getAllMessages();
+		int msgCount = msgs != null ? msgs.size() : 0;
+		if (msgCount < conversation.getAllMsgCount() && msgCount < pagesize) {
+			String msgId = null;
+			if (msgs != null && msgs.size() > 0) {
+				msgId = msgs.get(0).getMsgId();
+			}
+			conversation.loadMoreMsgFromDB(msgId, pagesize);
+		}
 	}
-	
-	protected void onListViewCreation(){
-        adapter = new MessageAdapter(ChatActivity.this, toChatUserHxid, CHATTYPE_SINGLE);
-        // 显示消息
-        listView.setAdapter(adapter);
-        
-        listView.setOnScrollListener(new ListScrollListener());
-        adapter.refreshSelectLast();
 
-        listView.setOnTouchListener(new OnTouchListener() {
+	protected void onListViewCreation() {
+		adapter = new MessageAdapter(ChatActivity.this, toChatUserHxid, CHATTYPE_SINGLE);
+		// 显示消息
+		listView.setAdapter(adapter);
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                hideKeyboard();
-                more.setVisibility(View.GONE);
-                iv_emoticons_normal.setVisibility(View.VISIBLE);
-                iv_emoticons_checked.setVisibility(View.INVISIBLE);
-                emojiIconContainer.setVisibility(View.GONE);
-                btnContainer.setVisibility(View.GONE);
-                return false;
-            }
-        });
+		listView.setOnScrollListener(new ListScrollListener());
+		adapter.refreshSelectLast();
+
+		listView.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				hideKeyboard();
+				more.setVisibility(View.GONE);
+				iv_emoticons_normal.setVisibility(View.VISIBLE);
+				iv_emoticons_checked.setVisibility(View.INVISIBLE);
+				emojiIconContainer.setVisibility(View.GONE);
+				btnContainer.setVisibility(View.GONE);
+				return false;
+			}
+		});
 	}
-	
+
 	/**
 	 * onActivityResult
 	 */
@@ -478,10 +471,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 				break;
 
 			case RESULT_CODE_FORWARD: // 转发消息
-				/*EMMessage forwardMsg = (EMMessage) adapter.getItem(data.getIntExtra("position", 0));
-				Intent intent = new Intent(this, ForwardMessageActivity.class);
-				intent.putExtra("forward_msg_id", forwardMsg.getMsgId());
-				startActivity(intent);*/
+				/*
+				 * EMMessage forwardMsg = (EMMessage)
+				 * adapter.getItem(data.getIntExtra("position", 0)); Intent
+				 * intent = new Intent(this, ForwardMessageActivity.class);
+				 * intent.putExtra("forward_msg_id", forwardMsg.getMsgId());
+				 * startActivity(intent);
+				 */
 				break;
 			default:
 				break;
@@ -554,15 +550,14 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 				double longitude = data.getDoubleExtra("longitude", 0);
 				String locationAddress = data.getStringExtra("address");
 				if (locationAddress != null && !locationAddress.equals("")) {
-				    toggleMore(more);
+					toggleMore(more);
 					sendLocationMsg(latitude, longitude, "", locationAddress);
 				} else {
 					String st = getResources().getString(R.string.unable_to_get_loaction);
 					Toast.makeText(this, st, 0).show();
 				}
 				// 重发消息
-			} else if (requestCode == REQUEST_CODE_TEXT || requestCode == REQUEST_CODE_VOICE
-					|| requestCode == REQUEST_CODE_PICTURE || requestCode == REQUEST_CODE_LOCATION
+			} else if (requestCode == REQUEST_CODE_TEXT || requestCode == REQUEST_CODE_VOICE || requestCode == REQUEST_CODE_PICTURE || requestCode == REQUEST_CODE_LOCATION
 					|| requestCode == REQUEST_CODE_VIDEO || requestCode == REQUEST_CODE_FILE) {
 				resendMessage();
 			} else if (requestCode == REQUEST_CODE_COPY_AND_PASTE) {
@@ -602,7 +597,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		} else if (id == R.id.btn_picture) {
 			selectPicFromLocal(); // 点击图片图标
 		} else if (id == R.id.btn_location) { // 位置
-			//startActivityForResult(new Intent(this, BaiduMapActivity.class), REQUEST_CODE_MAP);
+			// startActivityForResult(new Intent(this, BaiduMapActivity.class),
+			// REQUEST_CODE_MAP);
 		} else if (id == R.id.iv_emoticons_normal) { // 点击显示表情框
 			more.setVisibility(View.VISIBLE);
 			iv_emoticons_normal.setVisibility(View.INVISIBLE);
@@ -630,83 +626,77 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * 事件监听
 	 * 
 	 * see {@link EMNotifierEvent}
-     */
-    @Override
-    public void onEvent(EMNotifierEvent event) {
-        switch (event.getEvent()) {
-        case EventNewMessage:
-        {
-            //获取到message
-            EMMessage message = (EMMessage) event.getData();
-            
-            String username = null;
-            //群组消息
-            if(message.getChatType() == ChatType.GroupChat || message.getChatType() == ChatType.ChatRoom){
-                username = message.getTo();
-            }
-            else{
-                //单聊消息
-                username = message.getFrom();
-            }
+	 */
+	@Override
+	public void onEvent(EMNotifierEvent event) {
+		switch (event.getEvent()) {
+		case EventNewMessage: {
+			// 获取到message
+			EMMessage message = (EMMessage) event.getData();
 
-            //如果是当前会话的消息，刷新聊天页面
-            if(message.getIntAttribute("type", AppConstant.MSG_TYPE_CHAT) == AppConstant.MSG_TYPE_CHAT
-            		&& username.equals(getToChatUserHxid())){
-                refreshUIWithNewMessage();
-                //声音和震动提示有新消息
-                HXSDKHelper.getInstance().getNotifier().viberateAndPlayTone(message);
-            }else{
-                //如果消息不是和当前聊天ID的消息
-                HXSDKHelper.getInstance().getNotifier().onNewMsg(message);
-            }
+			String username = null;
+			// 群组消息
+			if (message.getChatType() == ChatType.GroupChat || message.getChatType() == ChatType.ChatRoom) {
+				username = message.getTo();
+			} else {
+				// 单聊消息
+				username = message.getFrom();
+			}
 
-            break;
-        }
-        case EventDeliveryAck:
-        {
-            //获取到message
-            EMMessage message = (EMMessage) event.getData();
-            refreshUI();
-            break;
-        }
-        case EventReadAck:
-        {
-            //获取到message
-            EMMessage message = (EMMessage) event.getData();
-            refreshUI();
-            break;
-        }
-        case EventOfflineMessage:
-        {
-            //a list of offline messages 
-            //List<EMMessage> offlineMessages = (List<EMMessage>) event.getData();
-            refreshUI();
-            break;
-        }
-        default:
-            break;
-        }
-        
-    }
-	
-	
-	private void refreshUIWithNewMessage(){
-	    if(adapter == null){
-	        return;
-	    }
-	    
-	    runOnUiThread(new Runnable() {
-            public void run() {
-                adapter.refreshSelectLast();
-            }
-        });
+			// 如果是当前会话的消息，刷新聊天页面
+			if (message.getIntAttribute("type", AppConstant.MSG_TYPE_CHAT) == AppConstant.MSG_TYPE_CHAT && username.equals(getToChatUserHxid())) {
+				refreshUIWithNewMessage();
+				// 声音和震动提示有新消息
+				HXSDKHelper.getInstance().getNotifier().viberateAndPlayTone(message);
+			} else {
+				// 如果消息不是和当前聊天ID的消息
+				HXSDKHelper.getInstance().getNotifier().onNewMsg(message);
+			}
+
+			break;
+		}
+		case EventDeliveryAck: {
+			// 获取到message
+			EMMessage message = (EMMessage) event.getData();
+			refreshUI();
+			break;
+		}
+		case EventReadAck: {
+			// 获取到message
+			EMMessage message = (EMMessage) event.getData();
+			refreshUI();
+			break;
+		}
+		case EventOfflineMessage: {
+			// a list of offline messages
+			// List<EMMessage> offlineMessages = (List<EMMessage>)
+			// event.getData();
+			refreshUI();
+			break;
+		}
+		default:
+			break;
+		}
+
+	}
+
+	private void refreshUIWithNewMessage() {
+		if (adapter == null) {
+			return;
+		}
+
+		runOnUiThread(new Runnable() {
+			public void run() {
+				adapter.refreshSelectLast();
+			}
+		});
 	}
 
 	private void refreshUI() {
-	    if(adapter == null){
-            return;
-        }
-	    
+		if (adapter == null) {
+			return;
+		}
+
 		runOnUiThread(new Runnable() {
 			public void run() {
 				adapter.refresh();
@@ -724,12 +714,9 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			return;
 		}
 
-		cameraFile = new File(PathUtil.getInstance().getImagePath(), ((BaseApplication)this.getApplication()).LoadLocalUserInfo().get_id().toString()
-				+ System.currentTimeMillis() + ".jpg");
+		cameraFile = new File(PathUtil.getInstance().getImagePath(), ((BaseApplication) this.getApplication()).LoadLocalUserInfo().get_id().toString() + System.currentTimeMillis() + ".jpg");
 		cameraFile.getParentFile().mkdirs();
-		startActivityForResult(
-				new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
-				REQUEST_CODE_CAMERA);
+		startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)), REQUEST_CODE_CAMERA);
 	}
 
 	/**
@@ -830,10 +817,10 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		String to = toChatUserHxid;
 		final EMMessage message = EMMessage.createSendMessage(EMMessage.Type.IMAGE);
 		// 如果是群聊，设置chattype,默认是单聊
-		if (chatType == CHATTYPE_GROUP){
+		if (chatType == CHATTYPE_GROUP) {
 			message.setChatType(ChatType.GroupChat);
-		}else if(chatType == CHATTYPE_CHATROOM){
-		    message.setChatType(ChatType.ChatRoom);
+		} else if (chatType == CHATTYPE_CHATROOM) {
+			message.setChatType(ChatType.ChatRoom);
 		}
 
 		message.setReceipt(to);
@@ -1037,9 +1024,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * @param view
 	 */
 	public void emptyHistory(View view) {
-		/*String st5 = getResources().getString(R.string.Whether_to_empty_all_chats);
-		startActivityForResult(new Intent(this, AlertDialog.class).putExtra("titleIsCancel", true).putExtra("msg", st5)
-				.putExtra("cancel", true), REQUEST_CODE_EMPTY_HISTORY);*/
+		/*
+		 * String st5 =
+		 * getResources().getString(R.string.Whether_to_empty_all_chats);
+		 * startActivityForResult(new Intent(this,
+		 * AlertDialog.class).putExtra("titleIsCancel", true).putExtra("msg",
+		 * st5) .putExtra("cancel", true), REQUEST_CODE_EMPTY_HISTORY);
+		 */
 	}
 
 	/**
@@ -1081,7 +1072,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 	}
 
-
 	/**
 	 * 获取表情的gridview的子view
 	 * 
@@ -1110,15 +1100,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 					// 文字输入框可见时，才可输入表情
 					// 按住说话可见，不让输入表情
 					if (buttonSetModeKeyboard.getVisibility() != View.VISIBLE) {
-						
+
 						if (filename != "delete_expression") { // 不是删除键，显示表情
 							// 这里用的反射，所以混淆的时候不要混淆SmileUtils这个类
 							Class clz = Class.forName("com.tongjo.girlswish.utils.SmileUtils");
 							Field field = clz.getField(filename);
-							Log.d("test", "test:" + SmileUtils.getSmiledText(ChatActivity.this,
-									(String) field.get(null)));
-							mEditTextContent.append(SmileUtils.getSmiledText(ChatActivity.this,
-									(String) field.get(null)));
+							Log.d("test", "test:" + SmileUtils.getSmiledText(ChatActivity.this, (String) field.get(null)));
+							mEditTextContent.append(SmileUtils.getSmiledText(ChatActivity.this, (String) field.get(null)));
 						} else { // 删除文字或者表情
 							if (!TextUtils.isEmpty(mEditTextContent.getText())) {
 
@@ -1132,8 +1120,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 										if (SmileUtils.containsKey(cs.toString()))
 											mEditTextContent.getEditableText().delete(i, selectionStart);
 										else
-											mEditTextContent.getEditableText().delete(selectionStart - 1,
-													selectionStart);
+											mEditTextContent.getEditableText().delete(selectionStart - 1, selectionStart);
 									} else {
 										mEditTextContent.getEditableText().delete(selectionStart - 1, selectionStart);
 									}
@@ -1173,20 +1160,20 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	public void onResume() {
 		super.onResume();
 
-		 if(adapter != null){
-		     adapter.refresh();
-	     }
+		if (adapter != null) {
+			adapter.refresh();
+		}
 
 		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
-		if(sdkHelper == null){
+		if (sdkHelper == null) {
 			System.out.println("test null");
 		}
 		sdkHelper.pushActivity(this);
 		// register the event listener when enter the foreground
 		EMChatManager.getInstance().registerEventListener(
 				this,
-				new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage,EMNotifierEvent.Event.EventOfflineMessage,
-						EMNotifierEvent.Event.EventDeliveryAck, EMNotifierEvent.Event.EventReadAck });
+				new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage, EMNotifierEvent.Event.EventOfflineMessage, EMNotifierEvent.Event.EventDeliveryAck,
+						EMNotifierEvent.Event.EventReadAck });
 	}
 
 	@Override
@@ -1199,7 +1186,37 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 		// 把此activity 从foreground activity 列表里移除
 		sdkHelper.popActivity(this);
-		
+		EMMessage emMessage = conversation.getLastMessage();
+		if (emMessage != null) {
+			TJMessage tjMessage = new TJMessage();
+			tjMessage.setHxid(toChatUserHxid);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+			tjMessage.setCreatedTime(sdf.format(new Date(emMessage.getMsgTime())));
+			switch (emMessage.getType()) {
+			// 根据消息type显示item
+			case IMAGE: // 图片
+				tjMessage.setContent("图片");
+				break;
+			case TXT: // 文本
+				tjMessage.setContent(((TextMessageBody) emMessage.getBody()).getMessage());
+				break;
+			case LOCATION: // 位置
+				tjMessage.setContent("位置");
+				break;
+			case VOICE: // 语音
+				tjMessage.setContent("语音");
+				break;
+			case VIDEO: // 视频
+				tjMessage.setContent("视频");
+				break;
+			case FILE: // 一般文件
+				tjMessage.setContent("文件");
+				break;
+			default:
+				tjMessage.setContent("");
+			}
+			MessageUtils.updateChatMessage(this, tjMessage);
+		}
 		super.onStop();
 	}
 
@@ -1219,7 +1236,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 				manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		}
 	}
-
 
 	/**
 	 * 返回

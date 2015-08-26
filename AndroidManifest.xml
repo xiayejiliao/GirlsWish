@@ -75,6 +75,19 @@
             android:name=".ui.ChatActivity"
             android:theme="@style/MaterialAppTheme.NoActionBar" >
         </activity>
+        <!-- 显示下载大图页面 -->
+        <activity
+            android:name=".ui.ShowBigImage"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" >
+        </activity>
+         <!-- 选择视频 -->
+        <activity
+            android:name=".ui.ImageGridActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="stateAlwaysHidden" >
+        </activity>
         <activity
             android:name=".ui.LoginActivity"
             android:launchMode="singleTop"

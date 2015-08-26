@@ -2,6 +2,8 @@ package com.tongjo.girlswish.ui;
 
 import com.squareup.picasso.Picasso;
 import com.tongjo.girlswish.R;
+import com.tongjo.girlswish.event.NewMsgEvent;
+import com.tongjo.girlswish.event.UnReadSetEvent;
 import com.tongjo.girlswish.event.UserIconChange;
 import com.tongjo.girlswish.event.UserLogout;
 import com.tongjo.girlswish.event.UserNicknameChange;
@@ -11,6 +13,7 @@ import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.widget.CircleImageView;
 
 import de.greenrobot.event.EventBus;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -28,9 +31,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -44,6 +49,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,7 +61,7 @@ import android.widget.TextView;
  * @Description: 主界面包括策划导航，和标签导航
  * @author 16ren
  * @date 2015年8月20日 下午5:38:10
- *
+ * 
  */
 public class MainActivity extends AppCompatActivity {
 	// 策划框架 v4包里面的
@@ -80,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
 
 	// 添加心愿按钮
 	private FloatingActionButton mFloatBtn = null;
+	// 主页导航
+	private ViewPager viewPager = null;
+	private SampleFragmentPagerAdapter mPagerAdapter = null;
+	private TabLayout tabLayout = null;
 
 	/**
 	 * Used to store the last screen title. For use in
@@ -92,10 +104,10 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		
+
 		mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		actionBar = getSupportActionBar();
-		
+
 		actionBar.setTitle("Wishes");
 		// actionBar.setHomeAsUpIndicator(R.drawable.ic_reorder_white_24dp);
 		// 设置返回按钮
@@ -143,11 +155,12 @@ public class MainActivity extends AppCompatActivity {
 		mDrawer.setDrawerListener(actionBarDrawerToggle);
 
 		// 设置主页viewpager
-		final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-		viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager()));
+		viewPager = (ViewPager) findViewById(R.id.viewpager);
+		mPagerAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), this);
+		viewPager.setAdapter(mPagerAdapter);
 
 		// 设置主页viewpage 导航标签
-		TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+		tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 		tabLayout.setupWithViewPager(viewPager);
 		tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
 
@@ -162,14 +175,14 @@ public class MainActivity extends AppCompatActivity {
 				viewPager.setCurrentItem(arg0.getPosition());
 				// TODO Auto-generated method stub
 				if (arg0.getPosition() == 0) {
-					
+
 					if (mFloatBtn.getVisibility() != View.VISIBLE) {
-						
+
 						mFloatBtn.setVisibility(View.VISIBLE);
 					}
 				} else {
 					if (mFloatBtn.getVisibility() != View.GONE) {
-					
+
 						mFloatBtn.setVisibility(View.GONE);
 					}
 				}
@@ -261,14 +274,20 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	// 主页 心愿墙和消息 pageradapter
-	public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
+	public class SampleFragmentPagerAdapter extends FragmentStatePagerAdapter {
 		final int PAGE_COUNT = 2;
 		private String tabTitles[] = new String[] { "心愿墙", "消息", };
 		private Context mContext;
+		private boolean msgIconVisible = false;
 
 		public SampleFragmentPagerAdapter(FragmentManager fm) {
 			super(fm);
 			// TODO Auto-generated constructor stub
+		}
+
+		public SampleFragmentPagerAdapter(FragmentManager fm, Context mContext) {
+			super(fm);
+			this.mContext = mContext;
 		}
 
 		@Override
@@ -288,10 +307,25 @@ public class MainActivity extends AppCompatActivity {
 			return PAGE_COUNT;
 		}
 
+		@SuppressLint("NewApi")
 		@Override
 		public CharSequence getPageTitle(int position) {
 			// TODO Auto-generated method stub
-			return tabTitles[position];
+			if (position == 0 || !msgIconVisible) {
+				return tabTitles[position];
+			} else {
+				Drawable image = mContext.getResources().getDrawable(R.drawable.bg_alert_info, null);
+				image.setBounds(0, 0, 20, 20);
+				SpannableString sb = new SpannableString(tabTitles[position] + " ");
+				ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BASELINE);
+				int start = tabTitles[position].length();
+				sb.setSpan(imageSpan, start, start + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+				return sb;
+			}
+		}
+
+		public void toggleIcon(boolean msgIconVisible) {
+			this.msgIconVisible = msgIconVisible;
 		}
 	}
 
@@ -312,5 +346,15 @@ public class MainActivity extends AppCompatActivity {
 		tv_school.setText("");
 		Picasso.with(this).load(R.drawable.addavatar).into(iv_icon);
 		finish();
+	}
+
+	public void onEventMainThread(UnReadSetEvent event) {
+		if (mPagerAdapter != null && tabLayout != null) {
+			mPagerAdapter.toggleIcon(event.isUnread());
+			//viewPager.destroyDrawingCache();
+			mPagerAdapter.saveState();
+			//mPagerAdapter.notifyDataSetChanged();
+			//tabLayout.getTabAt(1).setText(mPagerAdapter.getPageTitle(1));
+		}
 	}
 }
