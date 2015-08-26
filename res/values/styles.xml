@@ -75,6 +75,8 @@
         <item name="android:paddingTop">1.0sp</item>
         <item name="android:layout_marginTop">1.0sp</item>
         <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">@dimen/margin_10</item>
+        <item name="android:paddingRight">@dimen/margin_10</item>
         <item name="android:singleLine">true</item>
     </style>
 
