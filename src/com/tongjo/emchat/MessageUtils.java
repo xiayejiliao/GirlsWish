@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.UUID;
 
 import android.content.Context;
-import android.support.v7.util.AsyncListUtil.DataCallback;
 import android.util.Log;
 
 import com.easemob.chat.EMMessage;

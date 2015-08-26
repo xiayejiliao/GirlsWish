@@ -30,7 +30,23 @@
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
-    <style name="MaterialAppTheme.NoActionBar" parent="@style/MaterialAppTheme">
+    <style name="MaterialAppTheme.NoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
+
+        <!-- Main theme colors -->
+        <!-- your app branding color for the app bar -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- darker variant for the status bar and contextual app bars -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- 背景颜色 -->
+        <item name="android:windowBackground">@color/white</item>
+        <!-- 字体颜色 -->
+        <item name="android:textColor">@color/black</item>
+        <!-- 文本字体大小 -->
+        <item name="android:textSize">18sp</item>
+        <!-- activity 切换动画 -->
+        <item name="android:windowAnimationStyle">@style/activityanimation</item>
+        <!-- 溢出菜单样式 -->
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
     </style>
@@ -58,7 +74,7 @@
     </style>
     <!-- activity切换动画 -->
     <style name="activityanimation">
-         <item name="android:activityOpenEnterAnimation">@anim/in_from_right</item>
+        <item name="android:activityOpenEnterAnimation">@anim/in_from_right</item>
         <item name="android:activityOpenExitAnimation">@anim/out_from_left</item>
         <item name="android:activityCloseEnterAnimation">@anim/in_from_left</item>
         <item name="android:activityCloseExitAnimation">@anim/out_from_right</item>
