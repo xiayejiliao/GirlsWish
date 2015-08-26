@@ -28,6 +28,7 @@ import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import android.content.Context;
 import android.content.Intent;
@@ -72,7 +73,21 @@ public class RegisterSchollChooseActivity extends AppCompatActivity {
 		mAsyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 		mAsyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_GETSCHOOL, getschool);
 	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onPageStart("学校选择");
+		//友盟用户活跃统计
+		MobclickAgent.onResume(this);
+	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("学校选择");
+		//友盟用户活跃统计
+		MobclickAgent.onPause(this);
+	}
 	private TextHttpResponseHandler getschool = new TextHttpResponseHandler("UTF-8") {
 
 		@Override

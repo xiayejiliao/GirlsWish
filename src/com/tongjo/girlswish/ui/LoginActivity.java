@@ -57,6 +57,7 @@ import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.LinkTextView;
+import com.umeng.analytics.MobclickAgent;
 
 import de.greenrobot.event.EventBus;
 import android.app.Activity;
@@ -144,6 +145,23 @@ public class LoginActivity extends Activity implements OnClickListener {
 		// iv_personico, displayImageOptions);
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		//友盟页面统计
+		 MobclickAgent.onPageStart("登录页面");
+		//友盟用户活跃统计
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		//友盟页面统计
+		 MobclickAgent.onPageEnd("登录页面");
+		//友盟用户活跃统计
+		MobclickAgent.onPause(this);
+	}
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {

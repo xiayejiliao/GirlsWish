@@ -2,6 +2,7 @@ package com.tongjo.girlswish.ui;
 
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.StringUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -40,7 +41,21 @@ public class WebviewActivity extends AppCompatActivity {
 		}
 		
 	}
-	
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onPageStart("web页面");
+		//友盟用户活跃统计
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("web页面");
+		//友盟用户活跃统计
+		MobclickAgent.onPause(this);
+	}
 	public void ShowWeb(String url){
 		if(mWebView!=null){
 			if (!StringUtils.isEmpty(url)) {

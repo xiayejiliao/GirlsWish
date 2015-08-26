@@ -11,6 +11,7 @@ import com.tongjo.girlswish.event.UserSchoolnameChange;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.widget.CircleImageView;
+import com.umeng.analytics.MobclickAgent;
 
 import de.greenrobot.event.EventBus;
 import android.annotation.SuppressLint;
@@ -218,7 +219,19 @@ public class MainActivity extends AppCompatActivity {
 		initDrawerheader();
 		super.onStart();
 	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		//友盟用户活跃统计
+		MobclickAgent.onResume(this);
+	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		//友盟用户活跃统计
+		MobclickAgent.onPause(this);
+	}
 	// 初始化抽屉导航的header（个人信息）
 	public void initDrawerheader() {
 		tv_nick.setText(SpUtils.get(getApplicationContext(), AppConstant.USER_NICKNAME, "姓名").toString());

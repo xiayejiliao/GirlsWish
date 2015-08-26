@@ -48,6 +48,7 @@ import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.DeleteConfirmDialog.DialogClickListener;
 import com.tongjo.girlwish.data.DataContainer;
+import com.umeng.analytics.MobclickAgent;
 
 import de.greenrobot.event.EventBus;
 
@@ -73,6 +74,18 @@ public class MainTabWishFragment extends BaseFragment {
 		EventBus.getDefault().register(this);
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
+	}
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		MobclickAgent.onPageStart("心愿墙页面");
+		super.onResume();
+	}
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		MobclickAgent.onPageEnd("心愿墙页面");
+		super.onPause();
 	}
 
 	@Override

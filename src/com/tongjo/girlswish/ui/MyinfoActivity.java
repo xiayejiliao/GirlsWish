@@ -31,6 +31,7 @@ import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.CircleImageView;
+import com.umeng.analytics.MobclickAgent;
 
 import de.greenrobot.event.EventBus;
 import android.R.integer;
@@ -113,7 +114,21 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		}
 
 	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onPageStart("个人信息");
+		//友盟用户活跃统计
+		MobclickAgent.onResume(this);
+	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("个人信息");
+		//友盟用户活跃统计
+		MobclickAgent.onPause(this);
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub

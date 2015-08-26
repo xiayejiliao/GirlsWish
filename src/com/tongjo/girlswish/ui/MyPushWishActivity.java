@@ -120,6 +120,7 @@ public class MyPushWishActivity extends BaseActivity {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("发表的心愿列表");
 		//友盟页面统计
 		MobclickAgent.onResume(this);
 	}
@@ -128,6 +129,7 @@ public class MyPushWishActivity extends BaseActivity {
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
+		MobclickAgent.onPageEnd("发表的心愿列表");
 		MobclickAgent.onPause(this);
 	}
 

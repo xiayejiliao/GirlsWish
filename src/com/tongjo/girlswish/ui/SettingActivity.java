@@ -68,12 +68,14 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onPageStart("设置界面");
 		MobclickAgent.onResume(this);//友盟页面统计
 	}
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
+		MobclickAgent.onPageEnd("设置界面");
 		MobclickAgent.onPause(this);//友盟页面统计
 	}
 	@Override

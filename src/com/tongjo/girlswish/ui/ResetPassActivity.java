@@ -31,6 +31,7 @@ import com.tongjo.girlswish.utils.SMSHelper.SendResult;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import android.R.bool;
 import android.R.integer;
@@ -90,7 +91,21 @@ public class ResetPassActivity extends AppCompatActivity {
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 
 	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onPageStart("设置密码界面");
+		//友盟用户活跃统计
+		MobclickAgent.onResume(this);
+	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("设置密码界面");
+		//友盟用户活跃统计
+		MobclickAgent.onPause(this);
+	}
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub

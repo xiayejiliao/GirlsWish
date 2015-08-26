@@ -28,6 +28,7 @@ import com.tongjo.girlswish.event.WishPush;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import de.greenrobot.event.EventBus;
 
@@ -82,108 +83,111 @@ public class AddWishActivity extends BaseActivity {
 		mEditText.setFocusable(true);
 		mEditText.setFocusableInTouchMode(true);
 		mEditText.requestFocus();
-		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.showSoftInput(mEditText, InputMethodManager.SHOW_FORCED);
-		
-		
-		mEditText.addTextChangedListener(new TextWatcher(){
+
+		mEditText.addTextChangedListener(new TextWatcher() {
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				if(start -count+after > 49){
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				if (start - count + after > 49) {
 					ToastUtils.show(AddWishActivity.this, "字数不能超过50个");
 				}
-				
+
 			}
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
-			
-				
+
 			}
-			
+
 		});
-		
+
 	}
 
 	public void addWish(String content) {
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("content", content);
 		requestParams.add("backgroundColor", "9CCF98");
-		asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_ADDWISH,
-				requestParams, new TextHttpResponseHandler("UTF-8") {
+		asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_ADDWISH, requestParams, new TextHttpResponseHandler("UTF-8") {
 
-					@Override
-					public void onSuccess(int arg0, Header[] arg1, String arg2) {
-						if (arg2 == null) {
-							ToastUtils.show(getApplicationContext(), "发布心愿失败:");
-							return;
-						}
-						Log.d(TAG, arg2);
-						if (arg0 == 200) {
-							Type type = new TypeToken<TJResponse<Object>>() {
-							}.getType();
-							TJResponse<Object> response = null;
-							try {
-								response = new Gson().fromJson(arg2, type);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-
-							if (response == null
-									|| response.getResult() == null) {
-								ToastUtils.show(AddWishActivity.this, "发布失败");
-								return;
-							}
-							
-							//0成功
-							if (response.getResult().getCode() == 0) {
-								Toast.makeText(getApplicationContext(),
-										"发布心愿成功" + arg0, Toast.LENGTH_LONG).show();
-								EventBus.getDefault().post(new WishPush(null));
-								AddWishActivity.this.finish();
-							} 
-							//1没有登录
-							else if (response.getResult().getCode() == 1) {
-								ToastUtils.show(AddWishActivity.this, "没有登录，需要登录"
-										+ arg0);
-							} 
-							//2次数超过限制
-							else if(response.getResult().getCode() == 2){
-								ToastUtils.show(AddWishActivity.this, "发布心愿失败:"
-										+ response.getResult().getMessage());
-							}
-							
-							//3信息不完善
-							else if(response.getResult().getCode() == 3){
-								ToastUtils.show(AddWishActivity.this, "发布心愿失败:"
-										+ response.getResult().getMessage());
-								
-								Intent intent = new Intent(AddWishActivity.this,MyinfoActivity.class);
-								startActivity(intent);
-								AddWishActivity.this.finish();
-							}else{
-								ToastUtils.show(AddWishActivity.this, "发布心愿失败:"
-										+ response.getResult().getMessage());
-							}
-							
-						}
+			@Override
+			public void onSuccess(int arg0, Header[] arg1, String arg2) {
+				if (arg2 == null) {
+					ToastUtils.show(getApplicationContext(), "发布心愿失败:");
+					return;
+				}
+				Log.d(TAG, arg2);
+				if (arg0 == 200) {
+					Type type = new TypeToken<TJResponse<Object>>() {
+					}.getType();
+					TJResponse<Object> response = null;
+					try {
+						response = new Gson().fromJson(arg2, type);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 
-					@Override
-					public void onFailure(int arg0, Header[] arg1, String arg2,
-							Throwable arg3) {
-						Toast.makeText(getApplicationContext(),
-								"发布心愿失败" + arg0, Toast.LENGTH_LONG).show();
+					if (response == null || response.getResult() == null) {
+						ToastUtils.show(AddWishActivity.this, "发布失败");
+						return;
 					}
-				});
+
+					// 0成功
+					if (response.getResult().getCode() == 0) {
+						Toast.makeText(getApplicationContext(), "发布心愿成功" + arg0, Toast.LENGTH_LONG).show();
+						EventBus.getDefault().post(new WishPush(null));
+						AddWishActivity.this.finish();
+					}
+					// 1没有登录
+					else if (response.getResult().getCode() == 1) {
+						ToastUtils.show(AddWishActivity.this, "没有登录，需要登录" + arg0);
+					}
+					// 2次数超过限制
+					else if (response.getResult().getCode() == 2) {
+						ToastUtils.show(AddWishActivity.this, "发布心愿失败:" + response.getResult().getMessage());
+					}
+
+					// 3信息不完善
+					else if (response.getResult().getCode() == 3) {
+						ToastUtils.show(AddWishActivity.this, "发布心愿失败:" + response.getResult().getMessage());
+
+						Intent intent = new Intent(AddWishActivity.this, MyinfoActivity.class);
+						startActivity(intent);
+						AddWishActivity.this.finish();
+					} else {
+						ToastUtils.show(AddWishActivity.this, "发布心愿失败:" + response.getResult().getMessage());
+					}
+
+				}
+			}
+
+			@Override
+			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				Toast.makeText(getApplicationContext(), "发布心愿失败" + arg0, Toast.LENGTH_LONG).show();
+			}
+		});
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		//友盟页面统计
+		MobclickAgent.onPageStart("添加心愿");
+		//友盟用户活跃度统计
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("添加心愿");
+		MobclickAgent.onPause(this);
 	}
 }

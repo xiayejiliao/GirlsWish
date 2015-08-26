@@ -16,6 +16,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 友盟错误统计权限 -->
+    <uses-permission android:name="android.permission.READ_LOGS"/>
     <!-- 单元测试框架 -->
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"

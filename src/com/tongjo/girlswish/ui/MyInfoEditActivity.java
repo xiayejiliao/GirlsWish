@@ -36,6 +36,7 @@ import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import de.greenrobot.event.EventBus;
 import android.app.Activity;
@@ -91,7 +92,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	private int sex;
 	private boolean isupdateicon = false;
 	private boolean ischoosesex = false;
-	
+
 	private String schoolid;
 
 	@Override
@@ -103,7 +104,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		bt_next = (Button) findViewById(R.id.bt_myinfo_next);
 		iv_icon = (ImageView) findViewById(R.id.iv_myinfo_personico);
 
-		sex=getIntent().getIntExtra("sex", -1);
+		sex = getIntent().getIntExtra("sex", -1);
 		bt_next.setOnClickListener(this);
 		iv_icon.setOnClickListener(this);
 		et_school.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -121,36 +122,47 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onPageStart("资料完善");
+		// 友盟用户活跃统计
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("资料完善");
+		// 友盟用户活跃统计
+		MobclickAgent.onPause(this);
+	}
+
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.bt_myinfo_next:
 			String name = et_name.getText().toString();
 			String school = et_school.getText().toString();
-		/*	if(isupdateicon==false){
-				ToastUtils.show(getApplicationContext(), "请上传头像");
-				return;
-			}
-			if (ischoosesex == false) {
-				ToastUtils.show(getApplicationContext(), "选择性别");
-				return;
-			}
-			if (StringUtils.isEmpty(name)) {
-				ToastUtils.show(getApplicationContext(), "姓名空");
-				return;
-			}*/
-			/*if (StringUtils.isEmpty(school)) {
-				ToastUtils.show(getApplicationContext(), "学校空");
-				return;
-			}*/
-			
+			/*
+			 * if(isupdateicon==false){ ToastUtils.show(getApplicationContext(),
+			 * "请上传头像"); return; } if (ischoosesex == false) {
+			 * ToastUtils.show(getApplicationContext(), "选择性别"); return; } if
+			 * (StringUtils.isEmpty(name)) {
+			 * ToastUtils.show(getApplicationContext(), "姓名空"); return; }
+			 */
+			/*
+			 * if (StringUtils.isEmpty(school)) {
+			 * ToastUtils.show(getApplicationContext(), "学校空"); return; }
+			 */
+
 			RequestParams requestParams = new RequestParams();
 			requestParams.put("nickname", name);
 			requestParams.put("schoolId", schoolid);
-			if(sex!=-1){
+			if (sex != -1) {
 				requestParams.put("gender", sex);
 			}
 			asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_PROFILE, requestParams, httpprofile);
-			progressDialog=new ProgressDialog(MyInfoEditActivity.this);
+			progressDialog = new ProgressDialog(MyInfoEditActivity.this);
 			progressDialog.show();
 			break;
 		case R.id.et_myinfo_school:
@@ -324,6 +336,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 			System.out.println("(" + arg0 + ")" + arg3.toString());
 		}
 	};
+
 	private void loginEMChat(String username, String password) {
 		EMChatManager.getInstance().login(username, password, new EMCallBack() {// 回调
 					@Override

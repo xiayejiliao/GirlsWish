@@ -8,6 +8,7 @@ import u.aly.v;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
+import com.umeng.analytics.MobclickAgent;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import android.app.Activity;
@@ -151,5 +152,21 @@ public class GuideActivity extends FragmentActivity {
 			// TODO Auto-generated method stub
 			((ViewPager) container).removeView(views.get(position));
 		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onPageStart("引导页面");
+		//友盟用户活跃统计
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("引导页面");
+		//友盟用户活跃统计
+		MobclickAgent.onPause(this);
 	}
 }

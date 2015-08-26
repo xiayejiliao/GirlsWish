@@ -1,6 +1,7 @@
 package com.tongjo.girlswish.ui;
 
 import com.tongjo.girlswish.R;
+import com.umeng.analytics.MobclickAgent;
 
 import android.R.anim;
 import android.app.Activity;
@@ -39,5 +40,18 @@ public class AboutActivity extends AppCompatActivity {
 		}
 		return super.onOptionsItemSelected(item);
 
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onPageStart("关于界面");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("关于界面");
+		MobclickAgent.onPause(this);
 	}
 }

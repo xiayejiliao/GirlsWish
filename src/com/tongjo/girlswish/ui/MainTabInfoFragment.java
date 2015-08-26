@@ -47,9 +47,9 @@ import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.CollectionUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlwish.data.DataContainer;
+import com.umeng.analytics.MobclickAgent;
 
 import de.greenrobot.event.EventBus;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -297,6 +297,8 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 	public void onResume() {
 		super.onResume();
 		refreshUI();
+		//友盟页面统计
+		MobclickAgent.onPageStart("消息列表");
 		EventBus.getDefault().register(this);
 		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
 		if (sdkHelper == null) {
@@ -310,6 +312,12 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 						EMNotifierEvent.Event.EventReadAck });
 	}
 
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		MobclickAgent.onPageEnd("消息列表");
+		super.onPause();
+	}
 	@Override
 	public void onStop() {
 		// unregister this event listener when this activity enters the

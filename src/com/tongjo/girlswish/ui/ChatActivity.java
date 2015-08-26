@@ -110,6 +110,7 @@ import com.tongjo.girlswish.utils.SmileUtils;
 import com.tongjo.girlswish.widget.ExpandGridView;
 import com.tongjo.girlswish.widget.PasteEditText;
 import com.tongjo.girlwish.data.DataContainer;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 聊天页面
@@ -1159,7 +1160,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	@Override
 	public void onResume() {
 		super.onResume();
-
+		MobclickAgent.onPageStart("聊天界面");
+		MobclickAgent.onResume(this);
 		if (adapter != null) {
 			adapter.refresh();
 		}
@@ -1223,6 +1225,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	@Override
 	public void onPause() {
 		super.onPause();
+		MobclickAgent.onPageEnd("聊天界面");
+		MobclickAgent.onPause(this);
 		if (wakeLock.isHeld())
 			wakeLock.release();
 	}
@@ -1302,4 +1306,5 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	public ListView getListView() {
 		return listView;
 	}
+
 }

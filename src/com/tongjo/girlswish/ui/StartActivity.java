@@ -9,6 +9,7 @@ import com.tongjo.girlswish.utils.MyTimer;
 import com.tongjo.girlswish.utils.MyTimer.TimerProgress;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.TimeUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,6 +26,11 @@ public class StartActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		 MobclickAgent.setDebugMode(false);
+		//关闭友盟默认的页面统计，友盟的默认统计只统计activity
+		MobclickAgent.openActivityDurationTrack(false);
+		//设置友盟异常捕获
+		MobclickAgent.setCatchUncaughtExceptions(true);
 		setContentView(R.layout.activity_start);
 		int loginstate = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_LOGINSTATE, 0);
 		if (loginstate == 0) {
@@ -56,6 +62,7 @@ public class StartActivity extends Activity {
 						Thread.currentThread().sleep(2000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
+
 						e.printStackTrace();
 					}
 					startActivity(new Intent(StartActivity.this, MainActivity.class));
@@ -63,6 +70,20 @@ public class StartActivity extends Activity {
 				}
 			}).start();
 		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onPageStart("启动页面");
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageStart("启动页面");
+		MobclickAgent.onPause(this);
 	}
 
 	private void loginEMChat(String username, String password) {

@@ -23,6 +23,7 @@ import com.tongjo.girlswish.utils.MyTimer.TimerProgress;
 import com.tongjo.girlswish.utils.SMSHelper.SMSTYPE;
 import com.tongjo.girlswish.utils.SMSHelper.SendResult;
 import com.tongjo.girlswish.widget.LinkTextView;
+import com.umeng.analytics.MobclickAgent;
 
 import android.R.integer;
 import android.app.Activity;
@@ -104,7 +105,22 @@ public class RegisterActivity extends AppCompatActivity {
 		
 
 	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		//友盟页面统计
+		MobclickAgent.onPageStart("注册页面");
+		//友盟用户活跃统计
+		MobclickAgent.onResume(this);
+	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("注册页面");
+		//友盟用户活跃统计
+		MobclickAgent.onPause(this);
+	}
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub

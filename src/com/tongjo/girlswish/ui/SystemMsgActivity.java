@@ -58,6 +58,7 @@ import com.tongjo.girlswish.utils.CollectionUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlwish.data.DataContainer;
+import com.umeng.analytics.MobclickAgent;
 
 public class SystemMsgActivity extends AppCompatActivity implements EMEventListener {
 	private final static int MEG_WHAT_TOATS = 10010;
@@ -82,6 +83,14 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 		initView();
 	}
 
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPageEnd("系统消息");
+		//友盟用户活跃统计
+		MobclickAgent.onPause(this);
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -355,6 +364,9 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 	@Override
 	public void onResume() {
 		super.onResume();
+		MobclickAgent.onPageStart("系统消息");
+		//友盟用户统计
+		MobclickAgent.onResume(this);
 		refreshUI();
 		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
 		if (sdkHelper == null) {
