@@ -3,6 +3,7 @@ package com.tongjo.girlswish.ui;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 import org.apache.http.Header;
@@ -17,6 +18,14 @@ import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.squareup.picasso.Picasso;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
@@ -26,6 +35,7 @@ import com.tongjo.girlswish.event.UserIconChange;
 import com.tongjo.girlswish.event.UserNicknameChange;
 import com.tongjo.girlswish.event.UserSchoolnameChange;
 import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.CircleTransform;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
@@ -47,6 +57,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.view.GravityCompat;
@@ -67,6 +78,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 	private final static int SCHOOL = 123;
 	private final static int CAMER = 456;
 	private final static int GALLERY = 789;
+	private final static int NEWICON = 745;
 	private int REQUEST_CAMERA = 3621;
 	private int SELECT_FILE = 6523;
 	private CircleImageView iv_icon;
@@ -77,10 +89,10 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 	private AsyncHttpClient asyncHttpClient;
 	private Uri mImageCaptureUri;
 	private ActionBar actionBar;
+	private DisplayImageOptions displayImageOptions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_myinfo);
 
@@ -113,12 +125,21 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 			Picasso.with(this).load(iconurl).into(iv_icon);
 		}
 
+		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.testimg) // 设置图片下载期间显示的图片
+				.showImageForEmptyUri(R.drawable.testimg) // 设置图片Uri为空或是错误的时候显示的图片
+				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
+				.cacheInMemory(false) // 设置下载的图片是否缓存在内存中
+				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
+				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
+				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
+
 	}
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		MobclickAgent.onPageStart("个人信息");
-		//友盟用户活跃统计
+		// 友盟用户活跃统计
 		MobclickAgent.onResume(this);
 	}
 
@@ -126,12 +147,12 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 	public void onPause() {
 		super.onPause();
 		MobclickAgent.onPageEnd("个人信息");
-		//友盟用户活跃统计
+		// 友盟用户活跃统计
 		MobclickAgent.onPause(this);
 	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			finish();
@@ -145,7 +166,6 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.iv_myinfo_icon:
 			geticon();
@@ -164,7 +184,6 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == SCHOOL) {
@@ -173,7 +192,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				tv_school.setText(schoolname);
 				RequestParams params = new RequestParams();
 				params.put("schoolId", schoolid);
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT,params, updateschool);
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, params, updateschool);
 			}
 			if (requestCode == REQUEST_CAMERA) {
 				File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
@@ -183,17 +202,26 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 						break;
 					}
 				}
-				Bitmap bm;
-				bm = BitmapFactory.decodeFile(f.getAbsolutePath());
-				bm = Bitmap.createScaledBitmap(bm, iv_icon.getWidth(), iv_icon.getHeight(), true);
-				bm = ImageUtils.getRoundedCornerBitmap(bm);
-				iv_icon.setImageBitmap(bm);
+				ImageLoader.getInstance().displayImage("file://" + f.getAbsolutePath(), iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
+					@Override
+					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+						super.onLoadingComplete(imageUri, view, loadedImage);
+						// 上传头像
+						ByteArrayOutputStream out = new ByteArrayOutputStream();
+						loadedImage.compress(Bitmap.CompressFormat.PNG, 85, out);
+						RequestParams params = new RequestParams();
+						params.put("image", new ByteArrayInputStream(out.toByteArray()));
+						asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+					}
 
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
-				RequestParams params = new RequestParams();
-				params.put("image", new ByteArrayInputStream(out.toByteArray()));
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+					@Override
+					public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+						super.onLoadingFailed(imageUri, view, failReason);
+						ToastUtils.show(getApplicationContext(), failReason.toString());
+						MobclickAgent.reportError(getApplicationContext(), "照相失败" + failReason.getCause().toString());
+						System.out.println(failReason.getCause().toString());
+					}
+				});
 
 			} else if (requestCode == SELECT_FILE) {
 				Uri selectedImage = data.getData();
@@ -205,15 +233,26 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 				String imgDecodableString = cursor.getString(columnIndex);
 				cursor.close();
-				Bitmap bm = BitmapFactory.decodeFile(imgDecodableString);
-				bm = ImageUtils.scaleImageTo(bm, iv_icon.getWidth(), iv_icon.getHeight());
-				bm = ImageUtils.getRoundedCornerBitmap(bm);
-				iv_icon.setImageBitmap(bm);
-				RequestParams params = new RequestParams();
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
-				params.put("image", new ByteArrayInputStream(out.toByteArray()));
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+				ImageLoader.getInstance().displayImage("file://" + imgDecodableString, iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
+					@Override
+					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+						super.onLoadingComplete(imageUri, view, loadedImage);
+						// 上传头像
+						ByteArrayOutputStream out = new ByteArrayOutputStream();
+						loadedImage.compress(Bitmap.CompressFormat.PNG, 85, out);
+						RequestParams params = new RequestParams();
+						params.put("image", new ByteArrayInputStream(out.toByteArray()));
+						asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+					}
+
+					@Override
+					public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+						super.onLoadingFailed(imageUri, view, failReason);
+						ToastUtils.show(getApplicationContext(), failReason.toString());
+						MobclickAgent.reportError(getApplicationContext(), "照相失败" + failReason.getCause().toString());
+						System.out.println(failReason.getCause().toString());
+					}
+				});
 			}
 
 		}
@@ -266,7 +305,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				tv_nicker.setText(nicker.getText().toString());
 				RequestParams params = new RequestParams();
 				params.put("nickname", nicker.getText().toString());
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, params,updatenike);
+				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, params, updatenike);
 			}
 		});
 		builder.setNegativeButton("取消", null);
@@ -295,12 +334,11 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-			// TODO Auto-generated method stub
 			ToastUtils.show(MyinfoActivity.this, "(" + arg1 + ")" + arg3.toString());
 		}
 	};
 	private TextHttpResponseHandler updateschool = new TextHttpResponseHandler("UTF-8") {
-		
+
 		@Override
 		public void onSuccess(int arg0, Header[] arg1, String arg2) {
 			if (arg0 == 200) {
@@ -319,10 +357,9 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				ToastUtils.show(MyinfoActivity.this, "(" + arg0 + ")");
 			}
 		}
-		
+
 		@Override
 		public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
-			// TODO Auto-generated method stub
 			ToastUtils.show(MyinfoActivity.this, "(" + arg1 + ")" + arg3.toString());
 		}
 	};
@@ -355,6 +392,16 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 			ToastUtils.show(MyinfoActivity.this, "(" + arg0 + ")" + arg3.toString());
 			System.out.println("(" + arg0 + ")" + arg3.toString());
 		}
+	};
+
+	private Handler handler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+		}
+
 	};
 
 	class AvatarUrl {

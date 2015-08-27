@@ -19,8 +19,11 @@ import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJSchool;
 import com.tongjo.bean.TJUserInfo;
@@ -94,6 +97,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	private boolean ischoosesex = false;
 
 	private String schoolid;
+	private DisplayImageOptions displayImageOptions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +122,14 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				}
 			}
 		});
-		;
+		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.testimg) // 设置图片下载期间显示的图片
+				.showImageForEmptyUri(R.drawable.testimg) // 设置图片Uri为空或是错误的时候显示的图片
+				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
+				.cacheInMemory(false) // 设置下载的图片是否缓存在内存中
+				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
+				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
+				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
+
 	}
 
 	@Override
@@ -216,16 +227,26 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 						break;
 					}
 				}
-				Bitmap bm;
-				bm = BitmapFactory.decodeFile(f.getAbsolutePath());
-				bm = Bitmap.createScaledBitmap(bm, iv_icon.getWidth(), iv_icon.getHeight(), true);
-				bm = ImageUtils.getRoundedCornerBitmap(bm);
-				iv_icon.setImageBitmap(bm);
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
-				RequestParams params = new RequestParams();
-				params.put("image", new ByteArrayInputStream(out.toByteArray()));
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+				ImageLoader.getInstance().displayImage("file://" + f.getAbsolutePath(), iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
+					@Override
+					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+						super.onLoadingComplete(imageUri, view, loadedImage);
+						// 上传头像
+						ByteArrayOutputStream out = new ByteArrayOutputStream();
+						loadedImage.compress(Bitmap.CompressFormat.PNG, 85, out);
+						RequestParams params = new RequestParams();
+						params.put("image", new ByteArrayInputStream(out.toByteArray()));
+						asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+					}
+
+					@Override
+					public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+						super.onLoadingFailed(imageUri, view, failReason);
+						ToastUtils.show(getApplicationContext(), failReason.toString());
+						MobclickAgent.reportError(getApplicationContext(), "照相失败" + failReason.getCause().toString());
+						System.out.println(failReason.getCause().toString());
+					}
+				});
 
 			} else if (requestCode == SELECT_FILE) {
 				Uri selectedImage = data.getData();
@@ -237,15 +258,26 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 				String imgDecodableString = cursor.getString(columnIndex);
 				cursor.close();
-				Bitmap bm = BitmapFactory.decodeFile(imgDecodableString);
-				bm = ImageUtils.scaleImageTo(bm, iv_icon.getWidth(), iv_icon.getHeight());
-				bm = ImageUtils.getRoundedCornerBitmap(bm);
-				iv_icon.setImageBitmap(bm);
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				bm.compress(Bitmap.CompressFormat.PNG, 85, out);
-				RequestParams params = new RequestParams();
-				params.put("image", new ByteArrayInputStream(out.toByteArray()));
-				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+				ImageLoader.getInstance().displayImage("file://" + imgDecodableString, iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
+					@Override
+					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+						super.onLoadingComplete(imageUri, view, loadedImage);
+						// 上传头像
+						ByteArrayOutputStream out = new ByteArrayOutputStream();
+						loadedImage.compress(Bitmap.CompressFormat.PNG, 85, out);
+						RequestParams params = new RequestParams();
+						params.put("image", new ByteArrayInputStream(out.toByteArray()));
+						asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_UPLOADICON, params, updateavatar);
+					}
+
+					@Override
+					public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+						super.onLoadingFailed(imageUri, view, failReason);
+						ToastUtils.show(getApplicationContext(), failReason.toString());
+						MobclickAgent.reportError(getApplicationContext(), "照相失败" + failReason.getCause().toString());
+						System.out.println(failReason.getCause().toString());
+					}
+				});
 			} else if (requestCode == SCHOOLCHOOSE) {
 				String schoolname = data.getStringExtra("schoolname");
 				schoolid = data.getStringExtra("schoolid");
