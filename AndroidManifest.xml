@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 友盟错误统计权限 -->
-    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.READ_LOGS" />
     <!-- 单元测试框架 -->
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
@@ -83,7 +83,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide" >
         </activity>
-         <!-- 选择视频 -->
+        <!-- 选择视频 -->
         <activity
             android:name=".ui.ImageGridActivity"
             android:screenOrientation="portrait"
@@ -102,7 +102,9 @@
         </activity>
         <activity
             android:name=".ui.MyInfoEditActivity"
-            android:launchMode="singleTop" >
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ui.RegisterActivity1"
@@ -169,7 +171,9 @@
         </activity>
         <activity
             android:name=".ui.MyinfoActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/MaterialAppTheme" >
         </activity>
         <activity
@@ -210,8 +214,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.WebviewActivity">
+        <activity android:name=".ui.WebviewActivity" >
         </activity>
     </application>
 

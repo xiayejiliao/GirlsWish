@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.http.Header;
 
@@ -47,6 +49,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -99,6 +102,9 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	private String schoolid;
 	private DisplayImageOptions displayImageOptions;
 
+	// 照相机拍照后 ，图片保存的位置
+	private String mCurrentPhotoPath;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -146,6 +152,12 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		MobclickAgent.onPageEnd("资料完善");
 		// 友盟用户活跃统计
 		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		// TODO Auto-generated method stub
+		super.onConfigurationChanged(newConfig);
 	}
 
 	@Override
@@ -198,9 +210,22 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 			public void onClick(DialogInterface dialog, int item) {
 				if (items[item].equals("照相机")) {
 					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
-					File f = new File(android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "temp.jpg");
-					intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-					startActivityForResult(intent, REQUEST_CAMERA);
+					if (intent.resolveActivity(getPackageManager()) != null) {
+						try {
+							File f = createImageFile();
+							// 指定了MediaStore.EXTRA_OUTPUT后，返回的intent会是null
+							intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+							Bundle outState = new Bundle();
+							outState.putString("mCurrentPhotoPath", mCurrentPhotoPath);
+							onSaveInstanceState(outState);
+							startActivityForResult(intent, REQUEST_CAMERA);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							MobclickAgent.reportError(MyInfoEditActivity.this, e);
+							e.printStackTrace();
+						}
+					}
+
 				} else if (items[item].equals("相册")) {
 					Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 					intent.setType("image/*");
@@ -220,14 +245,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		System.out.println(requestCode);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == REQUEST_CAMERA) {
-				File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString());
-				for (File temp : f.listFiles()) {
-					if (temp.getName().equals("temp.jpg")) {
-						f = temp;
-						break;
-					}
-				}
-				ImageLoader.getInstance().displayImage("file://" + f.getAbsolutePath(), iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
+				ImageLoader.getInstance().displayImage("file://" + mCurrentPhotoPath, iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
 					@Override
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 						super.onLoadingComplete(imageUri, view, loadedImage);
@@ -247,6 +265,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 						System.out.println(failReason.getCause().toString());
 					}
 				});
+				galleryAddPic();
 
 			} else if (requestCode == SELECT_FILE) {
 				Uri selectedImage = data.getData();
@@ -284,6 +303,29 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				et_school.setText(schoolname);
 			}
 		}
+	}
+
+	//获取一个图片保存路径
+	private File createImageFile() throws IOException {
+		// Create an image file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String imageFileName = "JPEG_" + timeStamp + "_";
+		File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+		File image = File.createTempFile(imageFileName, /* prefix */
+				".jpg", /* suffix */
+				storageDir /* directory */
+		);
+		// Save a file: path for use with ACTION_VIEW intents
+		mCurrentPhotoPath = image.getAbsolutePath();
+		return image;
+	}
+	//Add the Photo to a Gallery
+	private void galleryAddPic() {
+		Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		File f = new File(mCurrentPhotoPath);
+		Uri contentUri = Uri.fromFile(f);
+		mediaScanIntent.setData(contentUri);
+		this.sendBroadcast(mediaScanIntent);
 	}
 
 	private TextHttpResponseHandler httpprofile = new TextHttpResponseHandler("UTF-8") {

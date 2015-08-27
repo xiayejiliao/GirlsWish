@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.provider.ContactsContract.Contacts.Data;
+
 /**
  * TimeUtils
  * 
@@ -195,18 +197,18 @@ public class TimeUtils {
 
 	/**
 	 * 
-	* @Title: getdefaulttime 
-	* @Description: 返回X分钟，X小时，X天，大于7天
-	* @param dateFormat
-	* @param timeString
-	* @return String
-	* @throws
+	 * @Title: getdefaulttime
+	 * @Description: 返回X分钟，X小时，X天，大于7天
+	 * @param dateFormat
+	 * @param timeString
+	 * @return String
+	 * @throws
 	 */
 	public static String getdefaulttime(SimpleDateFormat dateFormat, String timeString) {
 		if (StringUtils.isEmpty(timeString)) {
 			return "";
 		}
-		long t1= getCurrentTimeInLong();
+		long t1 = getCurrentTimeInLong();
 		long t2 = 0;
 		try {
 			t2 = dateFormat.parse(timeString).getTime();
@@ -215,20 +217,27 @@ public class TimeUtils {
 			e.printStackTrace();
 			return "";
 		}
-		long temp=t1-t2;
-		if(temp>0&&temp<60*60*1000){
-			return temp/60/1000+"分钟前";
+		long temp = t1 - t2;
+		if (temp > 0 && temp < 60 * 60 * 1000) {
+			return temp / 60 / 1000 + "分钟前";
 		}
-		if(temp>=60*60*1000&&temp<24*60*60*1000){
-			return temp/60/60/1000+"小时前";
+		if (temp >= 60 * 60 * 1000 && temp < 24 * 60 * 60 * 1000) {
+			return temp / 60 / 60 / 1000 + "小时前";
 		}
-		if(temp>=24*60*60*1000&&temp<7*24*60*60*1000){
-			return temp/24/60/60/1000+"天前";
+		if (temp >= 24 * 60 * 60 * 1000 && temp < 7 * 24 * 60 * 60 * 1000) {
+			return temp / 24 / 60 / 60 / 1000 + "天前";
 		}
-		if(temp>7*24*60*60*1000){
+		if (temp > 7 * 24 * 60 * 60 * 1000) {
 			return "大于7天";
 		}
 		return "--";
+	}
+
+	public static long getTodayzerotime() {
+		Date currentData = new Date();
+		Date zeroDate = new Date(currentData.getYear(), currentData.getMonth(), currentData.getDay(), 0, 0);
+		return zeroDate.getTime();
+
 	}
 
 }
