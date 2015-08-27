@@ -11,60 +11,92 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/toolbar" />
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_12"
-        android:background="@drawable/bg_login"
-        android:gravity="left|center"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/margin_4"
-        android:paddingTop="@dimen/margin_4" >
+        android:orientation="vertical" >
 
-        <ImageView
-            android:id="@+id/otherinfo_avatar"
-            android:layout_width="@dimen/margin_60"
-            android:layout_height="@dimen/margin_60"
-            android:layout_marginLeft="@dimen/margin_10"
-             />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:alpha="0.5"
+            android:background="@color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_14"
             android:gravity="left|center"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/otherinfo_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true" />
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/margin_4"
+            android:paddingTop="@dimen/margin_4" >
 
             <ImageView
-                android:id="@+id/otherinfo_sex"
-                android:layout_width="@dimen/margin_20"
-                android:layout_height="@dimen/margin_20"
-                 android:layout_marginTop="@dimen/margin_8"
-                />
+                android:id="@+id/otherinfo_avatar"
+                android:layout_width="@dimen/margin_60"
+                android:layout_height="@dimen/margin_60"
+                android:layout_marginLeft="@dimen/margin_10" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_14"
+                android:gravity="left|center"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/otherinfo_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true" />
+
+                <ImageView
+                    android:id="@+id/otherinfo_sex"
+                    android:layout_width="@dimen/margin_20"
+                    android:layout_height="@dimen/margin_20"
+                    android:layout_marginTop="@dimen/margin_8" />
+            </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:alpha="0.5"
+            android:background="@color/black" />
     </LinearLayout>
 
-    <com.tongjo.girlswish.widget.ButtonWithArrow
-        android:id="@+id/otherinfo_school"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_login"
-        android:layout_marginTop="@dimen/margin_20"
-        android:paddingTop="@dimen/margin_6"
-        android:paddingBottom="@dimen/margin_6"
-        tongjo:arrowvisiable="gone"
-        tongjo:iconvisiable="gone"
-        tongjo:lefttextValue="测试左边"
-        tongjo:righttextValue="测试右边" />
-    
-     <Button
+        android:layout_marginTop="@dimen/margin_12"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:alpha="0.5"
+            android:background="@color/black" />
+
+        <com.tongjo.girlswish.widget.ButtonWithArrow
+            android:id="@+id/otherinfo_school"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/margin_6"
+            android:paddingTop="@dimen/margin_6"
+            tongjo:arrowvisiable="gone"
+            tongjo:iconvisiable="gone"
+            tongjo:lefttextValue="测试左边"
+            tongjo:righttextValue="测试右边" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:alpha="0.5"
+            android:background="@color/black" />
+    </LinearLayout>
+
+    <Button
         android:id="@+id/otherinfo_send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
