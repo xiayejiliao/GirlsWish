@@ -28,8 +28,8 @@
 
     <string name="title_message">我的消息</string>
     <string name="title_wishes">已收消息</string>
-    <string name="title_section1">消息</string>
-    <string name="title_section2">心愿墙</string>
+    <string name="title_section1">心愿墙</string>
+    <string name="title_section2">消息</string>
     <string name="title_section3">我的</string>
 
     <!-- 下拉刷新界面 -->
