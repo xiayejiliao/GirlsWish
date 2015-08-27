@@ -3,19 +3,11 @@ package com.tongjo.girlswish.ui;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.http.Header;
 
-import com.easemob.EMEventListener;
-import com.easemob.EMNotifierEvent;
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMMessage;
-import com.easemob.chat.TextMessageBody;
-import com.easemob.chat.EMMessage.ChatType;
-import com.easemob.util.EMLog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -34,7 +26,6 @@ import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.emchat.GWHXSDKHelper;
-import com.tongjo.emchat.HXSDKHelper;
 import com.tongjo.emchat.UserUtils;
 import com.tongjo.emchat.UserUtils.UserGetLisener;
 import com.tongjo.girlswish.R;
@@ -42,7 +33,6 @@ import com.tongjo.girlswish.event.NewMsgEvent;
 import com.tongjo.girlswish.event.UnReadSetEvent;
 import com.tongjo.girlswish.ui.MainTabInfoAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabInfoAdapter.MItemLongPressListener;
-import com.tongjo.girlswish.ui.SystemMsgActivity.MsgDialogFragment;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.CollectionUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
@@ -69,7 +59,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainTabInfoFragment extends BaseFragment implements EMEventListener {
+public class MainTabInfoFragment extends BaseFragment {
 	private final static int MEG_WHAT_TOATS = 10010;
 	private static String TAG = "MainTabInfoFragment";
 	// private SlideListView mListView;
@@ -299,17 +289,8 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 		refreshUI();
 		//友盟页面统计
 		MobclickAgent.onPageStart("消息列表");
+		// 监听消息列表的变化
 		EventBus.getDefault().register(this);
-		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
-		if (sdkHelper == null) {
-			System.out.println("test null");
-		}
-		sdkHelper.pushActivity(this.getActivity());
-		// register the event listener when enter the foreground
-		EMChatManager.getInstance().registerEventListener(
-				this,
-				new EMNotifierEvent.Event[] { EMNotifierEvent.Event.EventNewMessage, EMNotifierEvent.Event.EventOfflineMessage, EMNotifierEvent.Event.EventDeliveryAck,
-						EMNotifierEvent.Event.EventReadAck });
 	}
 
 	@Override
@@ -320,43 +301,8 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 	}
 	@Override
 	public void onStop() {
-		// unregister this event listener when this activity enters the
-		// background
-		EMChatManager.getInstance().unregisterEventListener(this);
-
-		GWHXSDKHelper sdkHelper = (GWHXSDKHelper) GWHXSDKHelper.getInstance();
-
-		// 把此activity 从foreground activity 列表里移除
-		sdkHelper.popActivity(this.getActivity());
-
-	    EventBus.getDefault().unregister(this);
-		
+		EventBus.getDefault().unregister(this);
 		super.onStop();
-	}
-
-	/**
-	 * 事件监听
-	 * 
-	 * see {@link EMNotifierEvent}
-	 */
-	@Override
-	public void onEvent(EMNotifierEvent event) {
-		Log.d(TAG, event.getData().toString());
-		switch (event.getEvent()) {
-		case EventNewMessage: {
-			HXSDKHelper.getInstance().getNotifier().onNewMsg((EMMessage) event.getData());
-			refreshUI();
-			break;
-		}
-		case EventOfflineMessage: {
-			List<EMMessage> messages = (List<EMMessage>) event.getData();
-			HXSDKHelper.getInstance().getNotifier().onNewMesg(messages);
-			refreshUI();
-			break;
-		}
-		default:
-			break;
-		}
 	}
 
 	public void onEventMainThread(NewMsgEvent event) {
@@ -371,11 +317,10 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 		boolean hasUnReadMsg = false;
 		for (final TJMessage message : DataContainer.MessageList) {
 			if (!message.isRead()) {
-
 				hasUnReadMsg = true;
 			}
-			if (message.getUserId() == null && message.getHxid() != null) {
-				UserUtils.getUserByHxid(this.getContext(), message.getHxid(), new UserGetLisener() {
+			if (message.getHxid() != null) {
+				UserUtils.refreshUserInfo(this.getContext(), message.getHxid(), new UserGetLisener() {
 
 					@Override
 					public void onGetUser(TJUserInfo userInfo) {
@@ -383,6 +328,9 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 						message.setTitle(userInfo.getNickname());
 						message.setAvatarUrl(userInfo.getAvatarUrl());
 						message.setUserId(userInfo.get_id().toString());
+						if (mListAdapter != null) {
+							mListAdapter.notifyDataSetChanged();
+						}
 						updateMessage(message);
 					}
 				});
@@ -391,7 +339,6 @@ public class MainTabInfoFragment extends BaseFragment implements EMEventListener
 		UnReadSetEvent event = new UnReadSetEvent();
 		event.setUnread(hasUnReadMsg);
 		EventBus.getDefault().post(event);
-		// ((MainTabActivity) this.getActivity()).setAlertView(0, hasUnReadMsg);
 	}
 
 	private Handler handler = new Handler() {

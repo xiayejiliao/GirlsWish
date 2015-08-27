@@ -76,6 +76,12 @@ import com.easemob.util.EMLog;
 import com.easemob.util.FileUtils;
 import com.easemob.util.LatLng;
 import com.easemob.util.TextFormater;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.emchat.ImageCache;
 import com.tongjo.emchat.ImageUtils;
@@ -86,6 +92,7 @@ import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.Constant;
 import com.tongjo.girlswish.utils.DateUtils;
 import com.tongjo.girlswish.utils.SmileUtils;
+import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlwish.chat.task.LoadImageTask;
 
 public class MessageAdapter extends BaseAdapter{
@@ -130,7 +137,7 @@ public class MessageAdapter extends BaseAdapter{
 	private Context context;
 
 	private Map<String, Timer> timers = new Hashtable<String, Timer>();
-
+	
 	public MessageAdapter(Context context, String username, int chatType) {
 		this.username = username;
 		this.context = context;
@@ -519,9 +526,9 @@ public class MessageAdapter extends BaseAdapter{
 	private void setUserAvatar(final EMMessage message, ImageView imageView){
 	    if(message.direct == Direct.SEND){
 	        //显示自己头像
-	        UserUtils.setUserAvatar(context, EMChatManager.getInstance().getCurrentUser(), imageView);
+	        setUserAvatar(context, EMChatManager.getInstance().getCurrentUser(), imageView);
 	    }else{
-	        UserUtils.setUserAvatar(context, message.getFrom(), imageView);
+	        setUserAvatar(context, message.getFrom(), imageView);
 	    }
 	    imageView.setOnClickListener(new OnClickListener() {
 			
@@ -555,7 +562,61 @@ public class MessageAdapter extends BaseAdapter{
 			}
 		});
 	}
+	/**
+	 * 设置用户头像
+	 * 
+	 * @param username
+	 */
+	private void setUserAvatar(final Context context, String hxid, final ImageView imageView) {
+		UserUtils.getUserByHxid(context, hxid, new UserGetLisener() {
 
+			@Override
+			public void onGetUser(final TJUserInfo userInfo) {
+				/*if (!StringUtils.isBlank(userInfo.getAvatarUrl())) {
+					Picasso.with(context).load(userInfo.getAvatarUrl()).placeholder(com.tongjo.girlswish.R.drawable.default_avatar)
+							.into(imageView);
+				} else {
+					Picasso.with(context).load(R.drawable.default_avatar).into(imageView);
+				}*/
+				if (!StringUtils.isBlank(userInfo.getAvatarUrl())) {
+					Bitmap bitmap = ImageCache.getInstance().get(userInfo.getAvatarUrl());
+					if (bitmap != null) {
+						imageView.setImageBitmap((com.tongjo.girlswish.utils.ImageUtils.getRoundCornerDrawable(bitmap, 360)));
+					} else {
+						ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(context);
+						ImageLoader.getInstance().init(configuration);
+
+						ImageLoader.getInstance().loadImage(userInfo.getAvatarUrl(), new ImageSize(R.dimen.size_avatar, R.dimen.size_avatar), new SimpleImageLoadingListener() {
+							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+								if (loadedImage != null) {
+									ImageCache.getInstance().put(userInfo.getAvatarUrl(), loadedImage);
+									imageView.setImageBitmap((com.tongjo.girlswish.utils.ImageUtils.getRoundCornerDrawable(loadedImage, 360)));
+								}
+							};
+
+							public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+								Log.d(TAG, "头像加载失败");
+							};
+						});
+					}
+				}
+				MessageAdapter.this.notifyDataSetChanged();
+				/*((ChatActivity) context).runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						if (!StringUtils.isBlank(userInfo.getAvatarUrl())) {
+							Picasso.with(context).load(userInfo.getAvatarUrl()).placeholder(com.tongjo.girlswish.R.drawable.default_avatar).resize(R.dimen.size_avatar, R.dimen.size_avatar)
+									.into(imageView);
+						} else {
+							Picasso.with(context).load(R.drawable.default_avatar).resize(R.dimen.size_avatar, R.dimen.size_avatar).into(imageView);
+						}
+					}
+				});*/
+			}
+		});
+	}
+	
 	/**
 	 * 文本消息
 	 * 

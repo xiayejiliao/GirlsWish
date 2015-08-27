@@ -210,7 +210,6 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(this).getTJMessageDao();
 			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
 			Where<TJMessage, UUID> where = builder.where();
-			// 璇︾粏鐨勭郴缁熸秷鎭�
 			where.in("type", Arrays.asList(AppConstant.MSG_TYPE_NOTICE, AppConstant.MSG_TYPE_WISH_PICKED, AppConstant.MSG_TYPE_WISH_PICKED));
 			builder.setWhere(where);
 			builder.orderBy("createdTime", false);
@@ -267,7 +266,7 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 			if (querMessageList.size() <= 0) {
 				message = new TJMessage();
 				message.set_id(UUID.fromString(AppConstant.MSG_SYSTEM_UUID));
-				message.setTitle("绯荤粺娑堟伅");
+				message.setTitle("系统消息");
 				mTJMessageDao.createIfNotExists(message);
 			} else {
 				message = querMessageList.get(0);
@@ -284,7 +283,7 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 	}
 
 	/**
-	 * 鑾峰彇娑堟伅鍒楄〃
+	 * 获取系统消息
 	 */
 	public void getMessageData() {
 		RequestParams requestParams = new RequestParams();
@@ -296,7 +295,7 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 				Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
 				mListView.onRefreshComplete();
 				if (arg2 == null) {
-					handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触:").sendToTarget();
+					handler.obtainMessage(MEG_WHAT_TOATS, "获取系统消息失败:").sendToTarget();
 					return;
 				}
 				if (arg0 == 200) {
@@ -304,34 +303,33 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 					}.getType();
 					TJResponse<TJMessageList> response = new Gson().fromJson(arg2, type);
 					if (response == null || response.getResult() == null || response.getData() == null) {
-						handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触:").sendToTarget();
+						handler.obtainMessage(MEG_WHAT_TOATS, "获取系统消息失败:").sendToTarget();
 						return;
 					}
 					if (response.getResult().getCode() == 0) {
 						if (response.getData().getNotices() != null) {
 							Log.d(TAG, response.getData().getNotices().toString());
-							// 鍔犲叆鏁版嵁搴�
 							addMessage((List<TJMessage>) response.getData().getNotices());
 							refreshUI();
 						}
 					} else {
-						handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触:" + response.getResult().getMessage()).sendToTarget();
+						handler.obtainMessage(MEG_WHAT_TOATS, "获取系统消息失败:" + response.getResult().getMessage()).sendToTarget();
 					}
 				} else {
-					handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触:" + arg0).sendToTarget();
+					handler.obtainMessage(MEG_WHAT_TOATS, "获取系统消息失败:" + arg0).sendToTarget();
 				}
 			}
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
 				mListView.onRefreshComplete();
-				handler.obtainMessage(MEG_WHAT_TOATS, "娑堟伅鍒楄〃鑾峰彇澶辫触" + arg0).sendToTarget();
+				handler.obtainMessage(MEG_WHAT_TOATS, "获取系统消息失败" + arg0).sendToTarget();
 			}
 		});
 	}
 
 	/**
-	 * 浜嬩欢鐩戝惉
+	 * 获取系统消息监听
 	 * 
 	 * see {@link EMNotifierEvent}
 	 */
@@ -354,7 +352,7 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 		}
 	}
 
-	/* 鏈夋柊娑堟伅鍒版潵鍒锋柊椤甸潰 */
+	/* 刷新页面 */
 	private void refreshUI() {
 		if (mListAdapter != null) {
 			mListAdapter.notifyDataSetChanged();

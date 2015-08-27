@@ -265,5 +265,9 @@
     <string name="title_activity_my_pick_wish">MyPickWishActivity</string>
     <string name="title_activity_my_push_wish">MyPushWishActivity</string>
     <string name="title_activity_webview">WebviewActivity</string>
-
+    
+    <!--  -->
+    <string name="wish_no_picker">该心愿无人认领</string>
+    <string name="wish_no_creater">该心愿无主</string>
+    <string name="user_not_exits">用户不存在</string>
 </resources>

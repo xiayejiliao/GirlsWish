@@ -193,8 +193,7 @@ public class MainActivity extends AppCompatActivity {
 		InitView();
 		// 设置主页viewpager
 		viewPager = (ViewPager) findViewById(R.id.viewpager);
-		mPagerAdapter = new SampleFragmentPagerAdapter(
-				getSupportFragmentManager(), this);
+		mPagerAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(mPagerAdapter);
 		viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
 
@@ -302,17 +301,10 @@ public class MainActivity extends AppCompatActivity {
 	public class SampleFragmentPagerAdapter extends FragmentStatePagerAdapter {
 		final int PAGE_COUNT = 2;
 		private String tabTitles[] = new String[] { "心愿墙", "消息", };
-		private Context mContext;
-		private boolean msgIconVisible = false;
 
 		public SampleFragmentPagerAdapter(FragmentManager fm) {
 			super(fm);
 			// TODO Auto-generated constructor stub
-		}
-
-		public SampleFragmentPagerAdapter(FragmentManager fm, Context mContext) {
-			super(fm);
-			this.mContext = mContext;
 		}
 
 		@Override
@@ -335,27 +327,9 @@ public class MainActivity extends AppCompatActivity {
 		@SuppressLint("NewApi")
 		@Override
 		public CharSequence getPageTitle(int position) {
-			// TODO Auto-generated method stub
-			if (position == 0 || !msgIconVisible) {
-				return tabTitles[position];
-			} else {
-				Drawable image = mContext.getResources().getDrawable(
-						R.drawable.bg_alert_info, null);
-				image.setBounds(0, 0, 20, 20);
-				SpannableString sb = new SpannableString(tabTitles[position]
-						+ " ");
-				ImageSpan imageSpan = new ImageSpan(image,
-						ImageSpan.ALIGN_BASELINE);
-				int start = tabTitles[position].length();
-				sb.setSpan(imageSpan, start, start + 1,
-						Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-				return sb;
-			}
+			return tabTitles[position];
 		}
 
-		public void toggleIcon(boolean msgIconVisible) {
-			this.msgIconVisible = msgIconVisible;
-		}
 	}
 
 	public void onEventMainThread(UserNicknameChange event) {
@@ -378,12 +352,11 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public void onEventMainThread(UnReadSetEvent event) {
-		if (mPagerAdapter != null && tabLayout != null) {
-			mPagerAdapter.toggleIcon(event.isUnread());
-			// viewPager.destroyDrawingCache();
-			mPagerAdapter.saveState();
-			// mPagerAdapter.notifyDataSetChanged();
-			// tabLayout.getTabAt(1).setText(mPagerAdapter.getPageTitle(1));
+		if(event.isUnread()){
+			alertView2.setVisibility(View.VISIBLE);
+		}
+		else{
+			alertView2.setVisibility(View.INVISIBLE);
 		}
 	}
 

@@ -124,21 +124,24 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 				@Override
 				public void onClick(View v) {
 					// TODO 启动聊天窗口
-					Intent intent = new Intent(Mcontext, ChatActivity.class);
-					intent.putExtra("toUserHxid", tjWish.getCreatorUser().getHxid());
-					// 聊天记录加入列表
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
-					TJMessage message = new TJMessage();
-					message.setHxid(tjWish.getCreatorUser().getHxid());
-					message.setContent("");
-					message.setCreatedTime(sdf.format(new Date()));
-					message.setTitle(tjWish.getCreatorUser().getNickname());
-					message.setRead(true);
-					message.setAvatarUrl(tjWish.getCreatorUser().getAvatarUrl());
-					message.setType(AppConstant.MSG_TYPE_CHAT);
-					MessageUtils.addChatMessage(Mcontext, message);
-					intent.putExtra("toUserHxid", tjWish.getPickerUser().getHxid());
-					Mcontext.startActivity(intent);
+					if (tjWish.getPickerUser() != null && tjWish.getPickerUser().getHxid() != null) {
+						Intent intent = new Intent(Mcontext, ChatActivity.class);
+						intent.putExtra("toUserHxid", tjWish.getPickerUser().getHxid());
+						// 聊天记录加入列表
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+						TJMessage message = new TJMessage();
+						message.setHxid(tjWish.getCreatorUser().getHxid());
+						message.setCreatedTime(sdf.format(new Date()));
+						message.setTitle(tjWish.getCreatorUser().getNickname());
+						message.setRead(true);
+						message.setAvatarUrl(tjWish.getCreatorUser().getAvatarUrl());
+						message.setType(AppConstant.MSG_TYPE_CHAT);
+						MessageUtils.addChatMessage(Mcontext, message);
+						intent.putExtra("toUserHxid", tjWish.getPickerUser().getHxid());
+						Mcontext.startActivity(intent);
+					} else {
+						ToastUtils.show(Mcontext, R.string.wish_no_picker);
+					}
 				}
 			});
 		}

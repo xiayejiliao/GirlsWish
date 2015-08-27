@@ -107,6 +107,8 @@ import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.CommonUtils;
 import com.tongjo.girlswish.utils.SmileUtils;
+import com.tongjo.girlswish.utils.StringUtils;
+import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.ExpandGridView;
 import com.tongjo.girlswish.widget.PasteEditText;
 import com.tongjo.girlwish.data.DataContainer;
@@ -367,6 +369,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	}
 
 	private void setUpView() {
+		toChatUserHxid = getIntent().getStringExtra("toUserHxid");
+		if(StringUtils.isBlank(toChatUserHxid)){
+			ToastUtils.show(this, R.string.user_not_exits);
+			finish();
+		}
+		
 		iv_emoticons_normal.setOnClickListener(this);
 		iv_emoticons_checked.setOnClickListener(this);
 		// position = getIntent().getIntExtra("position", -1);
@@ -375,18 +383,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
 
-		toChatUserHxid = getIntent().getStringExtra("toUserHxid");
 		UserUtils.getUserByHxid(this, toChatUserHxid, new UserGetLisener() {
 
 			@Override
 			public void onGetUser(final TJUserInfo userInfo) {
 				try {
-					/*
-					 * Dao<TJUserInfo, UUID> mTJUerInfoDao = new
-					 * OrmLiteHelper(ChatActivity
-					 * .this.getApplicationContext()).getTJUserInfoDao();
-					 * mTJUerInfoDao.createIfNotExists(userInfo);
-					 */
 					toChatUser = userInfo;
 					runOnUiThread(new Runnable() {
 						public void run() {
@@ -401,7 +402,14 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			}
 		});
 		this.setCenterText(toChatUserHxid);
-		onConversationInit();
+		try{
+			onConversationInit();
+		}catch(Exception e){
+			ToastUtils.show(this, "用户未登陆");
+			Intent intent = new Intent();
+			intent.setClass(this, LoginActivity.class);
+			this.finish();
+		}
 		onListViewCreation();
 	}
 
@@ -1193,7 +1201,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			TJMessage tjMessage = new TJMessage();
 			tjMessage.setHxid(toChatUserHxid);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
-			tjMessage.setCreatedTime(sdf.format(new Date(emMessage.getMsgTime())));
+			tjMessage.setCreatedTime(sdf.format(new Date()));
 			switch (emMessage.getType()) {
 			// 根据消息type显示item
 			case IMAGE: // 图片
@@ -1290,7 +1298,10 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	protected void onNewIntent(Intent intent) {
 		// 点击notification bar进入聊天页面，保证只有一个聊天页面
 		String userHxid = intent.getStringExtra("toUserHxid");
-		if (toChatUserHxid.equals(userHxid))
+		if(StringUtils.isBlank(userHxid)){
+			ToastUtils.show(this, R.string.user_not_exits);
+			finish();
+		}else if (userHxid.equals(toChatUserHxid))
 			super.onNewIntent(intent);
 		else {
 			finish();
