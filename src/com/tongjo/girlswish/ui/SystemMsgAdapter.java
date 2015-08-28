@@ -22,6 +22,7 @@ import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.DateUtils;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.StringUtils;
+import com.tongjo.girlswish.utils.TimeUtils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -127,11 +128,7 @@ public class SystemMsgAdapter extends BaseAdapter {
 		holder.msgTextView.setText(message.getContent());
 		// holder.timeTextView.setText(message.getCreatedTime());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
-		try {
-			holder.timeTextView.setText(DateUtils.getTimestampString(sdf.parse(message.getCreatedTime())));
-		} catch (ParseException e) {
-			holder.timeTextView.setText(message.getCreatedTime());
-		}
+		holder.timeTextView.setText(TimeUtils.getdefaulttime(sdf, message.getCreatedTime()));
 		if (message.isRead()) {
 			holder.msgAlterTextView.setVisibility(View.INVISIBLE);
 		} else {
