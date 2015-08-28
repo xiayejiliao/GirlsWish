@@ -293,7 +293,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 					public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 						super.onLoadingFailed(imageUri, view, failReason);
 						ToastUtils.show(getApplicationContext(), failReason.toString());
-						MobclickAgent.reportError(getApplicationContext(), "照相失败" + failReason.getCause().toString());
+						MobclickAgent.reportError(getApplicationContext(), "获取图片失败" + failReason.getCause().toString());
 						System.out.println(failReason.getCause().toString());
 					}
 				});
