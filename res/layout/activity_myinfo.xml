@@ -39,7 +39,7 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/into_icon" />
 
-            <com.tongjo.girlswish.widget.CircleImageView
+            <ImageView
                 android:id="@+id/iv_myinfo_icon"
                 android:layout_width="65dp"
                 android:layout_height="65dp"

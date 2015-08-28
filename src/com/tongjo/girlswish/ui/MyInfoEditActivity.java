@@ -100,7 +100,6 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 	private boolean ischoosesex = false;
 
 	private String schoolid;
-	private DisplayImageOptions displayImageOptions;
 
 	// 照相机拍照后 ，图片保存的位置
 	private String mCurrentPhotoPath;
@@ -128,13 +127,6 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				}
 			}
 		});
-		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.testimg) // 设置图片下载期间显示的图片
-				.showImageForEmptyUri(R.drawable.testimg) // 设置图片Uri为空或是错误的时候显示的图片
-				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
-				.cacheInMemory(false) // 设置下载的图片是否缓存在内存中
-				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
-				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
-				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
 
 	}
 
@@ -245,7 +237,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 		System.out.println(requestCode);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == REQUEST_CAMERA) {
-				ImageLoader.getInstance().displayImage("file://" + mCurrentPhotoPath, iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
+				ImageLoader.getInstance().displayImage("file://" + mCurrentPhotoPath, iv_icon, new SimpleImageLoadingListener() {
 					@Override
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 						super.onLoadingComplete(imageUri, view, loadedImage);
@@ -277,7 +269,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 				String imgDecodableString = cursor.getString(columnIndex);
 				cursor.close();
-				ImageLoader.getInstance().displayImage("file://" + imgDecodableString, iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
+				ImageLoader.getInstance().displayImage("file://" + imgDecodableString, iv_icon, new SimpleImageLoadingListener() {
 					@Override
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 						super.onLoadingComplete(imageUri, view, loadedImage);
@@ -293,7 +285,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 					public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 						super.onLoadingFailed(imageUri, view, failReason);
 						ToastUtils.show(getApplicationContext(), failReason.toString());
-						MobclickAgent.reportError(getApplicationContext(), "照相失败" + failReason.getCause().toString());
+						MobclickAgent.reportError(getApplicationContext(), "获取图片失败" + failReason.getCause().toString());
 						System.out.println(failReason.getCause().toString());
 					}
 				});

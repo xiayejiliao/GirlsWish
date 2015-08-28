@@ -53,20 +53,11 @@ public class MainTabWishAdapter extends BaseAdapter {
 
 	private View curView = null;
 	private int curPosition = 0;
-	private DisplayImageOptions displayImageOptions;
 
 	public MainTabWishAdapter(Context context) {
 		super();
 		gestureDetector = new GestureDetector(context, new MyGestureListener());
 		this.mContext = context;
-		displayImageOptions = new DisplayImageOptions.Builder()
-				.showStubImage(R.drawable.testimg) // 设置图片下载期间显示的图片
-				.showImageForEmptyUri(R.drawable.testimg) // 设置图片Uri为空或是错误的时候显示的图片
-				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
-				.cacheInMemory(false) // 设置下载的图片是否缓存在内存中
-				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
-				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
-				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
 	}
 
 	public MainTabWishAdapter(Context context, List<TJWish> list) {
@@ -74,14 +65,6 @@ public class MainTabWishAdapter extends BaseAdapter {
 		gestureDetector = new GestureDetector(context, new MyGestureListener());
 		this.mContext = context;
 		this.mList = list;
-		displayImageOptions = new DisplayImageOptions.Builder()
-				.showStubImage(R.drawable.testimg) // 设置图片下载期间显示的图片
-				.showImageForEmptyUri(R.drawable.testimg) // 设置图片Uri为空或是错误的时候显示的图片
-				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
-				.cacheInMemory(false) // 设置下载的图片是否缓存在内存中
-				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
-				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
-				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
 	}
 
 	public void setList(List<TJWish> list) {
@@ -129,15 +112,11 @@ public class MainTabWishAdapter extends BaseAdapter {
 			convertView = mInflater.inflate(R.layout.listitem_wish_new, null);
 
 			holder.sex = (ImageView) convertView.findViewById(R.id.wish_sex);
-			holder.avatar = (ImageView) convertView
-					.findViewById(R.id.wish_avatar);
-			holder.content = (TextView) convertView
-					.findViewById(R.id.wish_content);
+			holder.avatar = (ImageView) convertView.findViewById(R.id.wish_avatar);
+			holder.content = (TextView) convertView.findViewById(R.id.wish_content);
 
-			holder.nickname = (TextView) convertView
-					.findViewById(R.id.wish_username);
-			holder.publicTime = (TextView) convertView
-					.findViewById(R.id.public_time);
+			holder.nickname = (TextView) convertView.findViewById(R.id.wish_username);
+			holder.publicTime = (TextView) convertView.findViewById(R.id.public_time);
 			convertView.setTag(holder);
 
 		} else {
@@ -146,29 +125,25 @@ public class MainTabWishAdapter extends BaseAdapter {
 
 		TJWish wish = mList.get(arg0);
 		if (wish != null) {
-			if (wish.getCreatorUser() != null
-					&& wish.getCreatorUser().getSchool() != null
-					&& wish.getCreatorUser().getSchool().getName() != null) {
+			if (wish.getCreatorUser() != null && wish.getCreatorUser().getSchool() != null && wish.getCreatorUser().getSchool().getName() != null) {
 				holder.nickname.setText(wish.getCreatorUser().getSchool().getName());
-			}else{
+			} else {
 				holder.nickname.setText("学校未知");
 			}
 			if (wish.getCreatedTime() != null) {
 				System.out.println(wish.getCreatedTime());
-				holder.publicTime.setText(TimeUtils.getdefaulttime(
-						TimeUtils.DEFAULT_DATE_FORMAT, wish.getCreatedTime()));
-			}else{
+				holder.publicTime.setText(TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, wish.getCreatedTime()));
+			} else {
 				holder.publicTime.setText("未知");
 			}
 
 			if (wish.getContent() != null) {
 				holder.content.setText("\t\t\t\t" + wish.getContent());
-			}else{
+			} else {
 				holder.content.setText("");
-			} 
+			}
 
-			if (wish.getCreatorUser() != null
-					&& wish.getCreatorUser().getGender() == 0) {
+			if (wish.getCreatorUser() != null && wish.getCreatorUser().getGender() == 0) {
 				holder.sex.setImageResource(R.drawable.women);
 			} else {
 				holder.sex.setImageResource(R.drawable.men);
@@ -190,12 +165,9 @@ public class MainTabWishAdapter extends BaseAdapter {
 			 * ("#"+wish.getBackgroundColor())); }
 			 */
 			if (wish.getCreatorUser() != null && !StringUtils.isEmpty(wish.getCreatorUser().getAvatarUrl())) {
-				ImageLoader.getInstance().displayImage(
-						wish.getCreatorUser().getAvatarUrl(), holder.avatar,
-						displayImageOptions);
-			}else{
-				Bitmap bitmap =  BitmapFactory.decodeResource(mContext.getResources(),R.drawable.defaultavatar);
-				holder.avatar.setImageBitmap(ImageUtils.getRoundCornerDrawable(bitmap,360));
+				ImageLoader.getInstance().displayImage(wish.getCreatorUser().getAvatarUrl(), holder.avatar);
+			} else {
+				ImageLoader.getInstance().displayImage("drawable://" + R.drawable.defaultavatar, holder.avatar);
 			}
 		}
 
@@ -262,8 +234,7 @@ public class MainTabWishAdapter extends BaseAdapter {
 
 		// 手势移动操作，移动时触发
 		@Override
-		public boolean onScroll(MotionEvent e1, MotionEvent e2,
-				float distanceX, float distanceY) {
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			System.out.println("onScroll");
 			return true;
 		}
@@ -276,8 +247,7 @@ public class MainTabWishAdapter extends BaseAdapter {
 
 		// 手势移动操作，UP时才会触发
 		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			System.out.println("onFling");
 			return false;
 		}

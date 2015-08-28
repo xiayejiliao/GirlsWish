@@ -10,7 +10,7 @@
     android:paddingTop="20dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark" >
 
-    <com.tongjo.girlswish.widget.CircleImageView
+    <ImageView
         android:id="@+id/iv_drawer_icon"
         android:layout_width="80dp"
         android:layout_height="80dp"

@@ -3,6 +3,7 @@ package com.tongjo.girlswish.ui;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -22,6 +23,7 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
@@ -84,7 +86,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 	private final static int NEWICON = 745;
 	private int REQUEST_CAMERA = 3621;
 	private int SELECT_FILE = 6523;
-	private CircleImageView iv_icon;
+	private ImageView iv_icon;
 	private TextView tv_nicker;
 	private TextView tv_school;
 	private TextView tv_sex;
@@ -92,7 +94,6 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 	private AsyncHttpClient asyncHttpClient;
 	private Uri mImageCaptureUri;
 	private ActionBar actionBar;
-	private DisplayImageOptions displayImageOptions;
 	// 照相机拍照后 ，图片保存的位置
 	private String mCurrentPhotoPath;
 
@@ -105,7 +106,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setTitle("主页");
 
-		iv_icon = (CircleImageView) findViewById(R.id.iv_myinfo_icon);
+		iv_icon = (ImageView) findViewById(R.id.iv_myinfo_icon);
 		tv_nicker = (TextView) findViewById(R.id.tv_myinfo_nicker);
 		tv_school = (TextView) findViewById(R.id.tv_myinfo_school);
 		tv_phone = (TextView) findViewById(R.id.tv_myinfo_phone);
@@ -127,18 +128,8 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		tv_phone.setText(SpUtils.get(getApplicationContext(), AppConstant.USER_PHONE, "电话").toString());
 		String iconurl = SpUtils.get(getApplicationContext(), AppConstant.USER_ICONURL, "").toString();
 		if (!StringUtils.isEmpty(iconurl)) {
-			Picasso.with(this).load(iconurl).into(iv_icon);
+			ImageLoader.getInstance().displayImage(iconurl, iv_icon);
 		}
-
-		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.testimg) // 设置图片下载期间显示的图片
-				.showImageForEmptyUri(R.drawable.testimg) // 设置图片Uri为空或是错误的时候显示的图片
-				.showImageOnFail(R.drawable.testimg) // 设置图片加载或解码过程中发生错误显示的图片
-				.cacheInMemory(false) // 设置下载的图片是否缓存在内存中
-				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
-				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
-				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
-		//调用照相机的时候会  清空数据
-
 	}
 
 	@Override
@@ -199,6 +190,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == SCHOOL) {
+			
 				String schoolname = data.getStringExtra("schoolname");
 				String schoolid = data.getStringExtra("schoolid");
 				tv_school.setText(schoolname);
@@ -207,12 +199,12 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_USEREDIT, params, updateschool);
 			}
 			if (requestCode == REQUEST_CAMERA) {
-				
-				ImageLoader.getInstance().displayImage("file://" + mCurrentPhotoPath, iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
+				ImageLoader.getInstance().displayImage("file://" + mCurrentPhotoPath, iv_icon, new SimpleImageLoadingListener() {
 					@Override
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 						super.onLoadingComplete(imageUri, view, loadedImage);
 						// 上传头像
+
 						ByteArrayOutputStream out = new ByteArrayOutputStream();
 						loadedImage.compress(Bitmap.CompressFormat.PNG, 85, out);
 						RequestParams params = new RequestParams();
@@ -240,7 +232,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 				String imgDecodableString = cursor.getString(columnIndex);
 				cursor.close();
-				ImageLoader.getInstance().displayImage("file://" + imgDecodableString, iv_icon, displayImageOptions, new SimpleImageLoadingListener() {
+				ImageLoader.getInstance().displayImage("file://" + imgDecodableString, iv_icon, new SimpleImageLoadingListener() {
 					@Override
 					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 						super.onLoadingComplete(imageUri, view, loadedImage);
@@ -278,7 +270,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 							File f = createImageFile();
 							// 指定了MediaStore.EXTRA_OUTPUT后，返回的intent会是null
 							intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-							Bundle outState=new Bundle();
+							Bundle outState = new Bundle();
 							outState.putString("mCurrentPhotoPath", mCurrentPhotoPath);
 							onSaveInstanceState(outState);
 							startActivityForResult(intent, REQUEST_CAMERA);
@@ -300,6 +292,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		});
 		builder.show();
 	}
+
 	private File createImageFile() throws IOException {
 		// Create an image file name
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -313,7 +306,8 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		mCurrentPhotoPath = image.getAbsolutePath();
 		return image;
 	}
-	//Add the Photo to a Gallery
+
+	// Add the Photo to a Gallery
 	private void galleryAddPic() {
 		Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 		File f = new File(mCurrentPhotoPath);
@@ -321,6 +315,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		mediaScanIntent.setData(contentUri);
 		this.sendBroadcast(mediaScanIntent);
 	}
+
 	public String getRealPathFromURI(Uri contentUri) {
 		String[] proj = { MediaStore.Images.Media.DATA };
 		Cursor cursor = managedQuery(contentUri, proj, null, null, null);
@@ -433,7 +428,6 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 			System.out.println("(" + arg0 + ")" + arg3.toString());
 		}
 	};
-
 
 	class AvatarUrl {
 		private String avatarUrl;

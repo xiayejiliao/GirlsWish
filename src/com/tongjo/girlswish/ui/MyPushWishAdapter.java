@@ -16,6 +16,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -65,19 +66,11 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 	private Logger logger = LoggerFactory.getLogger(MyPushWishAdapter.class);
 	private Context Mcontext;
 	private List<TJWish> wish;
-	private DisplayImageOptions displayImageOptions;
 
 	public MyPushWishAdapter(Context mcontext, List<TJWish> list) {
 		super();
 		Mcontext = mcontext;
 		this.wish = list;
-		displayImageOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.ic_broken_image_black_24dp) // 设置图片下载期间显示的图片
-				.showImageForEmptyUri(R.drawable.ic_broken_image_black_24dp) // 设置图片Uri为空或是错误的时候显示的图片
-				.showImageOnFail(R.drawable.ic_broken_image_black_24dp) // 设置图片加载或解码过程中发生错误显示的图片
-				.cacheInMemory(false) // 设置下载的图片是否缓存在内存中
-				.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
-				.displayer(new RoundedBitmapDisplayer(180))// 设置成圆角图片
-				.imageScaleType(ImageScaleType.EXACTLY).build(); // 创建配置过得DisplayImageOption对象
 	}
 
 	@Override
@@ -100,9 +93,10 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 			holder.ivsex.setVisibility(View.GONE);
 			holder.tvSchool.setVisibility(View.GONE);
 			holder.tvNick.setVisibility(View.GONE);
-			holder.tvtime.setVisibility(View.GONE);
+			holder.tvtime.setVisibility(View.VISIBLE);
 			holder.ivicon.setImageResource(R.drawable.wishunpicked);
-
+			String t = TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, tjWish.getCreatedTime());
+			holder.tvtime.setText("发表时间:" + t);
 		} else {
 			holder.ivtalk.setVisibility(View.VISIBLE);
 			holder.tvtime.setVisibility(View.VISIBLE);
@@ -114,12 +108,17 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 
 			String t = TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, tjWish.getPickedTime());
 
-			holder.tvtime.setText(t);
+			holder.tvtime.setText("摘取时间:" + t);
 			holder.tvNick.setText(tjWish.getPickerUser().getNickname());
 			if (tjWish.getPickerUser().getSchool() != null) {
 				holder.tvSchool.setText(tjWish.getPickerUser().getSchool().getName());
 			}
-			ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), holder.ivicon, displayImageOptions);
+			if (tjWish.getPickerUser() != null) {
+				if (tjWish.getPickerUser().getAvatarUrl() != null) {
+					ImageLoader.getInstance().displayImage(tjWish.getPickerUser().getAvatarUrl(), holder.ivicon);
+				}
+			}
+
 			holder.ivtalk.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -144,6 +143,19 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 					} else {
 						ToastUtils.show(Mcontext, R.string.wish_no_picker);
 					}
+				}
+			});
+			holder.ivicon.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// 跳转到个人信息详情页面
+
+					Intent intent = new Intent(Mcontext, OtherInfoActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("user", tjWish.getPickerUser());
+					intent.putExtras(bundle);
+					Mcontext.startActivity(intent);
 				}
 			});
 		}
