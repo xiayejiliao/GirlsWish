@@ -36,11 +36,13 @@ import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.event.UnReadSetEvent;
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 	// 策划栏的头部分
 	private LinearLayout drawerheader;
 	// 侧滑栏 头部 我的头像
-	private CircleImageView iv_icon;
+	private ImageView iv_icon;
 	// 侧滑栏 头部 我的昵称
 	private TextView tv_nick;
 	// 侧滑栏 头部 我的学校
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 		// 设置返回按钮
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
-		iv_icon = (CircleImageView) findViewById(R.id.iv_drawer_icon);
+		iv_icon = (ImageView) findViewById(R.id.iv_drawer_icon);
 		tv_nick = (TextView) findViewById(R.id.tv_drawer_nick);
 		tv_school = (TextView) findViewById(R.id.tv_drawer_schoolname);
 
@@ -250,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 		String iconurl = SpUtils.get(getApplicationContext(),
 				AppConstant.USER_ICONURL, "").toString();
 		if (iconurl != null && !iconurl.equals("")) {
-			Picasso.with(this).load(iconurl).into(iv_icon);
+			ImageLoader.getInstance().displayImage(iconurl, iv_icon);
 		}
 	}
 

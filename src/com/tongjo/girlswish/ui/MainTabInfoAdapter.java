@@ -24,6 +24,7 @@ import com.tongjo.girlswish.utils.DateUtils;
 import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.SmileUtils;
 import com.tongjo.girlswish.utils.StringUtils;
+import com.tongjo.girlswish.utils.TimeUtils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -134,11 +135,9 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		holder.msgTextView.setText(span, BufferType.SPANNABLE);
 		// holder.timeTextView.setText(message.getCreatedTime());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
-		try {
-			holder.timeTextView.setText(DateUtils.getTimestampString(sdf.parse(message.getCreatedTime())));
-		} catch (ParseException e) {
-			holder.timeTextView.setText(message.getCreatedTime());
-		}
+			//holder.timeTextView.setText(DateUtils.getTimestampString(sdf.parse(message.getCreatedTime())));
+		holder.timeTextView.setText(TimeUtils.getdefaulttime(sdf, message.getCreatedTime()));
+		
 		if (message.isRead()) {
 			holder.msgAlterTextView.setVisibility(View.INVISIBLE);
 		} else {
@@ -156,25 +155,21 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		 * R.color.addwish_yellowColor)); }
 		 */
 		if (message.getType() == AppConstant.MSG_TYPE_SYSTEM) {
-			holder.iconImageView.setImageResource(R.drawable.msg_sys_all);
+			ImageLoader.getInstance().displayImage("drawable://"+R.drawable.msg_sys_all, holder.iconImageView);
 		} else {
 			final ViewHolder finalholder = holder;
 			if (!StringUtils.isBlank(message.getAvatarUrl())) {
 				Bitmap bitmap = ImageCache.getInstance().get(message.getAvatarUrl());
 				if (bitmap != null) {
-					finalholder.iconImageView.setImageBitmap((com.tongjo.girlswish.utils.ImageUtils.getRoundCornerDrawable(bitmap, 360)));
+					finalholder.iconImageView.setImageBitmap(bitmap);
 				} else {
-					ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
-					ImageLoader.getInstance().init(configuration);
-
-					ImageLoader.getInstance().loadImage(message.getAvatarUrl(), new ImageSize(R.dimen.info_list_img_width, R.dimen.info_list_img_height), new SimpleImageLoadingListener() {
+					//ImageLoader 配置的时候已近配置裁剪圆形
+					ImageLoader.getInstance().displayImage(message.getAvatarUrl(), finalholder.iconImageView, new SimpleImageLoadingListener(){
 						public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 							if (loadedImage != null) {
 								ImageCache.getInstance().put(message.getAvatarUrl(), loadedImage);
-								finalholder.iconImageView.setImageBitmap(ImageUtils.getRoundCornerDrawable(loadedImage, 360));
 							}
 						};
-
 						public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 							Log.d(TAG, "头像加载失败");
 						};
