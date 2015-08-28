@@ -103,6 +103,7 @@ class MyPickWishAdapter extends RecyclerView.Adapter<MyPickWishAdapter.ViewHolde
 			}else if ( sex==1) {
 				holder.ivsex.setImageResource(R.drawable.men);
 			}
+			holder.tvtime.setText(TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, tjWish.getPickedTime()));
 			ImageLoader.getInstance().displayImage(tjWish.getCreatorUser().getAvatarUrl(), holder.ivicon, displayImageOptions);
 			holder.ivtalk.setOnClickListener(new OnClickListener() {
 

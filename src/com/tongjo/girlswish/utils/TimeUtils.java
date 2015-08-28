@@ -2,6 +2,7 @@ package com.tongjo.girlswish.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import android.provider.ContactsContract.Contacts.Data;
@@ -204,40 +205,71 @@ public class TimeUtils {
 	 * @return String
 	 * @throws
 	 */
+	/**
+	 * 
+	 * @Title: getdefaulttime
+	 * @Description: 杩斿洖X鍒嗛挓锛孹灏忔椂锛孹澶╋紝澶т簬7澶?
+	 * @param dateFormat
+	 * @param timeString
+	 * @return String
+	 * @throws
+	 */
 	public static String getdefaulttime(SimpleDateFormat dateFormat, String timeString) {
 		if (StringUtils.isEmpty(timeString)) {
-			return "";
+			return "--";
 		}
-		long t1 = getCurrentTimeInLong();
-		long t2 = 0;
-		try {
-			t2 = dateFormat.parse(timeString).getTime();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "";
+
+		long comparetime = stringtoLong(dateFormat, timeString);
+
+		long currenttime = getCurrentTimeInLong();
+		long todayzero = getTodayZeroTime();
+		long yesterdayzero = getYesterdZeroTime();
+		long sevenbeforezero = getSevenbeforeZeroTime();
+		if (comparetime >= currenttime) {
+			return "--";
 		}
-		long temp = t1 - t2;
-		if (temp > 0 && temp < 60 * 60 * 1000) {
-			return temp / 60 / 1000 + "分钟前";
+		if (comparetime < currenttime && comparetime >= todayzero) {
+			SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+			return format.format(new Date(comparetime));
 		}
-		if (temp >= 60 * 60 * 1000 && temp < 24 * 60 * 60 * 1000) {
-			return temp / 60 / 60 / 1000 + "小时前";
+		if (comparetime < todayzero && comparetime >= yesterdayzero) {
+			return "昨天";
 		}
-		if (temp >= 24 * 60 * 60 * 1000 && temp < 7 * 24 * 60 * 60 * 1000) {
-			return temp / 24 / 60 / 60 / 1000 + "天前";
+		if (comparetime < yesterdayzero && comparetime >= sevenbeforezero) {
+			SimpleDateFormat format = new SimpleDateFormat("EE");
+			return format.format(new Date(comparetime));
 		}
-		if (temp > 7 * 24 * 60 * 60 * 1000) {
-			return "大于7天";
+		if (comparetime < sevenbeforezero) {
+			SimpleDateFormat format = new SimpleDateFormat("M/dd");
+			return format.format(new Date(comparetime));
 		}
 		return "--";
 	}
 
-	public static long getTodayzerotime() {
-		Date currentData = new Date();
-		Date zeroDate = new Date(currentData.getYear(), currentData.getMonth(), currentData.getDay(), 0, 0);
-		return zeroDate.getTime();
+	public static long getTodayZeroTime() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		return calendar.getTime().getTime();
+	}
 
+	public static long getYesterdZeroTime() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -1);
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		return calendar.getTime().getTime();
+	}
+
+	public static long getSevenbeforeZeroTime() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, -7);
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		return calendar.getTime().getTime();
 	}
 
 }
