@@ -35,6 +35,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJWish;
 import com.tongjo.bean.TJWishList;
@@ -44,6 +45,7 @@ import com.tongjo.girlswish.event.WishPush;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
 import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
 import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.DeleteConfirmDialog.DialogClickListener;
@@ -178,9 +180,13 @@ public class MainTabWishFragment extends BaseFragment {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								if (wish != null && wish.get_id() != null) {
-									pickWish(wish.get_id().toString());
+									if(wish.getCreatorUser() != null){
+									pickWish(wish.get_id().toString(),wish.getCreatorUser().getNickname());
+									}else{
+										pickWish(wish.get_id().toString(),"");
+									}
 								} else {
-									Toast.makeText(getActivity(), "系统出错!",
+									Toast.makeText(getActivity(), "对不起，系统出错啦!",
 											Toast.LENGTH_LONG).show();
 								}
 							}
@@ -238,6 +244,25 @@ public class MainTabWishFragment extends BaseFragment {
 
 	}
 
+	/**
+	 * 当前用户信息是否完整
+	 * @return
+	 */
+	public boolean isUserInfoComplete(){
+		String name = SpUtils.get(getActivity(), AppConstant.USER_NICKNAME, "").toString();
+		String school = SpUtils.get(getActivity(), AppConstant.USER_SCHOOLNAME, "").toString();
+		int sex = (Integer) SpUtils.get(getActivity(), AppConstant.USER_SEX, -1);
+		String phone = SpUtils.get(getActivity(), AppConstant.USER_PHONE, "").toString();
+		String iconurl = SpUtils.get(getActivity(), AppConstant.USER_ICONURL, "").toString();
+		
+		if(StringUtils.isBlank(name) || StringUtils.isBlank(school) || StringUtils.isBlank(phone) 
+				|| StringUtils.isBlank(iconurl) || sex == -1){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
 	public void updateUi(int total) {
 		
 		if(total > DataContainer.WishList.size()){
@@ -332,7 +357,14 @@ public class MainTabWishFragment extends BaseFragment {
 	 * 
 	 * @param wishId
 	 */
-	public void pickWish(String wishId) {
+	public void pickWish(String wishId,final String createName) {
+		if(!isUserInfoComplete()){
+			ToastUtils.show(getActivity(), "对不起，请先完善你的个人信息，然后再摘取心愿哦");
+			Intent intent = new Intent(getActivity(),
+					MyinfoActivity.class);
+			startActivity(intent);
+			return;
+		}
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("_id", wishId);
 		asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_PICKWISH,
@@ -362,21 +394,21 @@ public class MainTabWishFragment extends BaseFragment {
 								return;
 							}
 							if (response.getResult().getCode() == 0) {
-								ToastUtils.show(getActivity(), "摘取心愿成功" + arg0);
+								ToastUtils.show(getActivity(), "恭喜您，成功摘取"+createName+"的心愿!");
 								getWishData(wishall);
 							} else if (response.getResult().getCode() == 1) {
-								ToastUtils.show(getActivity(), "没有登录，需要登录"
+								ToastUtils.show(getActivity(), "对不起，您没有登录，请重新登录"
 										+ arg0);
 							}
 							// 2次数超过限制
 							else if (response.getResult().getCode() == 2) {
-								ToastUtils.show(getActivity(), "摘取心愿失败:"
+								ToastUtils.show(getActivity(), "对不起，您摘取心愿失败啦:"
 										+ response.getResult().getMessage());
 							}
 
 							// 3信息不完善
 							else if (response.getResult().getCode() == 3) {
-								ToastUtils.show(getActivity(), "摘取心愿失败:"
+								ToastUtils.show(getActivity(), "对不起，您摘取心愿失败啦:"
 										+ response.getResult().getMessage());
 
 								Intent intent = new Intent(getActivity(),
@@ -393,7 +425,7 @@ public class MainTabWishFragment extends BaseFragment {
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2,
 							Throwable arg3) {
-						ToastUtils.show(getActivity(), "摘取心愿失败" + arg0);
+						ToastUtils.show(getActivity(), "对不起，摘取心愿失败啦！，请重试！");
 					}
 				});
 	}

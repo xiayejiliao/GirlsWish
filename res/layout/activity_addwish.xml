@@ -32,7 +32,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_50"
+                android:layout_marginBottom="@dimen/margin_40"
                 android:layout_marginTop="@dimen/margin_46"
                 android:paddingLeft="@dimen/margin_10"
                 android:paddingRight="@dimen/margin_10" >
@@ -77,6 +77,19 @@
                         android:layout_marginTop="@dimen/margin_32"
                         android:background="#979797" />
                 </LinearLayout>
+                
+                <TextView 
+                    android:id="@+id/text_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_6"
+                    android:layout_below="@id/wish_content"
+                    android:layout_alignParentRight="true"
+                    android:text="已输入:0/50"
+                    android:textColor="@color/llwhite"
+                    android:textSize="@dimen/text_size_14"
+                    />
+                
             </RelativeLayout>
         </LinearLayout>
 

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -26,6 +27,7 @@ import com.tongjo.bean.TJWishList;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.event.WishPush;
 import com.tongjo.girlswish.utils.AppConstant;
+import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.umeng.analytics.MobclickAgent;
@@ -35,6 +37,7 @@ import de.greenrobot.event.EventBus;
 public class AddWishActivity extends BaseActivity {
 	private final String TAG = "AddWishActivity";
 	private EditText mEditText = null;
+	private TextView mInputNumber = null;
 
 	private Toolbar toolbar;
 
@@ -79,6 +82,8 @@ public class AddWishActivity extends BaseActivity {
 			}
 		});
 
+		mInputNumber = (TextView)findViewById(R.id.text_number);
+		
 		mEditText = (EditText) findViewById(R.id.wish_content);
 		mEditText.setFocusable(true);
 		mEditText.setFocusableInTouchMode(true);
@@ -104,14 +109,47 @@ public class AddWishActivity extends BaseActivity {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-
+				mInputNumber.setText("已输入："+s.length()+"/50");
 			}
 
 		});
 
 	}
+	
+	
+	/**
+	 * 当前用户信息是否完整
+	 * @return
+	 */
+	public boolean isUserInfoComplete(){
+		String name = SpUtils.get(getApplication(), AppConstant.USER_NICKNAME, "").toString();
+		String school = SpUtils.get(getApplication(), AppConstant.USER_SCHOOLNAME, "").toString();
+		int sex = (Integer) SpUtils.get(getApplication(), AppConstant.USER_SEX, -1);
+		String phone = SpUtils.get(getApplication(), AppConstant.USER_PHONE, "").toString();
+		String iconurl = SpUtils.get(getApplication(), AppConstant.USER_ICONURL, "").toString();
+		
+		if(StringUtils.isBlank(name) || StringUtils.isBlank(school) || StringUtils.isBlank(phone) 
+				|| StringUtils.isBlank(iconurl) || sex == -1){
+			return false;
+		}else{
+			return true;
+		}
+	}
 
+	/**
+	 * 发布心愿
+	 * @param content
+	 */
 	public void addWish(String content) {
+		
+		if(!isUserInfoComplete()){
+			ToastUtils.show(getApplication(), "对不起，请先完善你的个人信息，然后再发布心愿哦");
+			Intent intent = new Intent(AddWishActivity.this,
+					MyinfoActivity.class);
+			startActivity(intent);
+			return;
+		}
+		
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("content", content);
 		requestParams.add("backgroundColor", "9CCF98");
@@ -141,28 +179,28 @@ public class AddWishActivity extends BaseActivity {
 
 					// 0成功
 					if (response.getResult().getCode() == 0) {
-						Toast.makeText(getApplicationContext(), "发布心愿成功" + arg0, Toast.LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), "恭喜您，发布心愿成功了！", Toast.LENGTH_LONG).show();
 						EventBus.getDefault().post(new WishPush(null));
 						AddWishActivity.this.finish();
 					}
 					// 1没有登录
 					else if (response.getResult().getCode() == 1) {
-						ToastUtils.show(AddWishActivity.this, "没有登录，需要登录" + arg0);
+						ToastUtils.show(AddWishActivity.this, "对不起，您没有登录，请重新登录");
 					}
 					// 2次数超过限制
 					else if (response.getResult().getCode() == 2) {
-						ToastUtils.show(AddWishActivity.this, "发布心愿失败:" + response.getResult().getMessage());
+						ToastUtils.show(AddWishActivity.this, "对不起，发布心愿失败了:" + response.getResult().getMessage());
 					}
 
 					// 3信息不完善
 					else if (response.getResult().getCode() == 3) {
-						ToastUtils.show(AddWishActivity.this, "发布心愿失败:" + response.getResult().getMessage());
+						ToastUtils.show(AddWishActivity.this, "对不起，发布心愿失败了:" + response.getResult().getMessage());
 
 						Intent intent = new Intent(AddWishActivity.this, MyinfoActivity.class);
 						startActivity(intent);
 						AddWishActivity.this.finish();
 					} else {
-						ToastUtils.show(AddWishActivity.this, "发布心愿失败:" + response.getResult().getMessage());
+						ToastUtils.show(AddWishActivity.this, "发布心愿失败了:" + response.getResult().getMessage());
 					}
 
 				}
