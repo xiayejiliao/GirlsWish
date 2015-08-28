@@ -18,13 +18,14 @@
         android:layout_marginTop="@dimen/margin_chat_activity"
         android:paddingLeft="20dp" >
 
-        <com.tongjo.girlswish.widget.CircleImageView
+        <ImageView
             android:id="@+id/iv_userhead"
             android:layout_width="@dimen/size_avatar"
             android:layout_height="@dimen/size_avatar"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="@dimen/margin_chat_activity"
+            android:contentDescription="@string/app_name"
             android:src="@drawable/default_avatar"
             />
 

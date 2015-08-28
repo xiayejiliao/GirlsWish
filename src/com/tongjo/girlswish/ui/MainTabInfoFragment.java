@@ -25,7 +25,6 @@ import com.tongjo.bean.TJMessageList;
 import com.tongjo.bean.TJResponse;
 import com.tongjo.bean.TJUserInfo;
 import com.tongjo.db.OrmLiteHelper;
-import com.tongjo.emchat.GWHXSDKHelper;
 import com.tongjo.emchat.UserUtils;
 import com.tongjo.emchat.UserUtils.UserGetLisener;
 import com.tongjo.girlswish.R;
@@ -129,7 +128,7 @@ public class MainTabInfoFragment extends BaseFragment {
 
 		});
 
-		mListView.setMode(Mode.BOTH);
+		mListView.setMode(Mode.DISABLED);
 		mListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
@@ -376,6 +375,7 @@ public class MainTabInfoFragment extends BaseFragment {
 				@Override
 				public void onClick(View arg0) {
 					deleteMessage(mPosition);
+					mListAdapter.notifyDataSetChanged();
 					menuDialog.dismiss();
 				}
 			});

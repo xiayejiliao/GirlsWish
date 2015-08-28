@@ -22,11 +22,12 @@
             android:src="@drawable/sound" />
         -->
 
-        <com.tongjo.girlswish.widget.CircleImageView
+        <ImageView
             android:id="@+id/info_list_icon"
             android:layout_width="@dimen/info_list_img_width"
             android:layout_height="@dimen/info_list_img_height"
             android:layout_marginRight="@dimen/info_list_img_margin_right"
+            android:contentDescription="@string/app_name"
             android:src="@drawable/default_avatar" />
 
         <TextView

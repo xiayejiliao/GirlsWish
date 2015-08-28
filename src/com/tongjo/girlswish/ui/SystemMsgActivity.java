@@ -178,7 +178,7 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 
 		});
 
-		mListView.setMode(Mode.BOTH);
+		mListView.setMode(Mode.DISABLED);
 		mListView.setOnRefreshListener(new OnRefreshListener<ListView>() {
 			@Override
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
@@ -427,6 +427,7 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 				@Override
 				public void onClick(View arg0) {
 					deleteMessage(mPosition);
+					mListAdapter.notifyDataSetChanged();
 					menuDialog.dismiss();
 				}
 			});

@@ -155,26 +155,23 @@ public class MainTabInfoAdapter extends BaseAdapter {
 		 * R.color.addwish_yellowColor)); }
 		 */
 		if (message.getType() == AppConstant.MSG_TYPE_SYSTEM) {
-			ImageLoader.getInstance().displayImage("drawable://"+R.drawable.msg_sys_all, holder.iconImageView);
+			holder.iconImageView.setImageResource(R.drawable.msg_sys_all);
+			//ImageLoader.getInstance().displayImage("drawable://"+R.drawable.msg_sys_all, holder.iconImageView);
 		} else {
 			final ViewHolder finalholder = holder;
 			if (!StringUtils.isBlank(message.getAvatarUrl())) {
-				Bitmap bitmap = ImageCache.getInstance().get(message.getAvatarUrl());
-				if (bitmap != null) {
-					finalholder.iconImageView.setImageBitmap(bitmap);
-				} else {
-					//ImageLoader 配置的时候已近配置裁剪圆形
-					ImageLoader.getInstance().displayImage(message.getAvatarUrl(), finalholder.iconImageView, new SimpleImageLoadingListener(){
-						public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-							if (loadedImage != null) {
-								ImageCache.getInstance().put(message.getAvatarUrl(), loadedImage);
-							}
-						};
-						public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-							Log.d(TAG, "头像加载失败");
-						};
-					});
-				}
+				// ImageLoader 配置的时候已近配置裁剪圆形
+				ImageLoader.getInstance().displayImage(message.getAvatarUrl(), finalholder.iconImageView, new SimpleImageLoadingListener() {
+					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+						
+					};
+
+					public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+						Log.d(TAG, "头像加载失败");
+					};
+				});
+			} else {
+				ImageLoader.getInstance().displayImage("drawable://" + R.drawable.default_avatar, holder.iconImageView);
 			}
 		}
 		convertView.setOnTouchListener(new OnTouchListener() {

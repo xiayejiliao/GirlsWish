@@ -565,35 +565,19 @@ public class MessageAdapter extends BaseAdapter {
 
 			@Override
 			public void onGetUser(final TJUserInfo userInfo) {
-				/*
-				 * if (!StringUtils.isBlank(userInfo.getAvatarUrl())) {
-				 * Picasso.with
-				 * (context).load(userInfo.getAvatarUrl()).placeholder
-				 * (com.tongjo.girlswish.R.drawable.default_avatar)
-				 * .into(imageView); } else {
-				 * Picasso.with(context).load(R.drawable
-				 * .default_avatar).into(imageView); }
-				 */
 				if (!StringUtils.isBlank(userInfo.getAvatarUrl())) {
-					Bitmap bitmap = ImageCache.getInstance().get(userInfo.getAvatarUrl());
-					if (bitmap != null) {
-						imageView.setImageBitmap(bitmap);
-					} else {
 						//imageloader 配置的时候就设置了圆形裁剪
 						ImageLoader.getInstance().displayImage(userInfo.getAvatarUrl(), imageView, new SimpleImageLoadingListener() {
 							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-								if (loadedImage != null) {
-									ImageCache.getInstance().put(userInfo.getAvatarUrl(), loadedImage);
-								}
 							};
 
 							public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 								Log.d(TAG, "头像加载失败");
 							};
 						});
-					}
+				} else {
+					ImageLoader.getInstance().displayImage("drawable://" + R.drawable.default_avatar, imageView);
 				}
-				MessageAdapter.this.notifyDataSetChanged();
 				/*
 				 * ((ChatActivity) context).runOnUiThread(new Runnable() {
 				 * 
