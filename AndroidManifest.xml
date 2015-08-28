@@ -216,6 +216,12 @@
         </activity>
         <activity android:name=".ui.WebviewActivity" >
         </activity>
+        <!-- 自定义的alertdialog -->
+        <activity
+            android:name=".activity.AlertDialog"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyDialogStyle" >
+        </activity>
     </application>
 
 </manifest>

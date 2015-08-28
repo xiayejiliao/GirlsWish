@@ -1225,7 +1225,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			default:
 				tjMessage.setContent("");
 			}
-			MessageUtils.updateChatMessage(this, tjMessage);
+			MessageUtils.addChatMessage(this, tjMessage, true);
 		}
 		super.onStop();
 	}

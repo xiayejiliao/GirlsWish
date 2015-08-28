@@ -1,27 +1,16 @@
 package com.tongjo.girlswish.ui;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.tongjo.bean.TJMessage;
-import com.tongjo.emchat.ImageCache;
 import com.tongjo.girlswish.R;
-import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemClickListener;
-import com.tongjo.girlswish.ui.MainTabWishAdapter.MItemLongPressListener;
-import com.tongjo.girlswish.ui.MainTabWishAdapter.MyGestureListener;
-import com.tongjo.girlswish.ui.MainTabWishAdapter.ViewHolder;
 import com.tongjo.girlswish.utils.AppConstant;
-import com.tongjo.girlswish.utils.DateUtils;
-import com.tongjo.girlswish.utils.ImageUtils;
 import com.tongjo.girlswish.utils.SmileUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.TimeUtils;

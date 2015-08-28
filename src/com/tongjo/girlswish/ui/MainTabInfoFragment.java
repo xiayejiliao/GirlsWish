@@ -319,7 +319,7 @@ public class MainTabInfoFragment extends BaseFragment {
 				hasUnReadMsg = true;
 			}
 			if (message.getHxid() != null) {
-				UserUtils.refreshUserInfo(this.getContext(), message.getHxid(), new UserGetLisener() {
+				UserUtils.getUserByHxidFromNetOrMem(this.getContext(), message.getHxid(), new UserGetLisener() {
 
 					@Override
 					public void onGetUser(TJUserInfo userInfo) {

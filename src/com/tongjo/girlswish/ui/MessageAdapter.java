@@ -20,14 +20,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -468,7 +462,7 @@ public class MessageAdapter extends BaseAdapter {
 				public void onClick(View v) {
 
 					// 显示重发消息的自定义alertdialog
-					Intent intent = new Intent(activity, AlertDialog.class);
+					Intent intent = new Intent(activity, AlertDialogActivity.class);
 					intent.putExtra("msg", activity.getString(R.string.confirm_resend));
 					intent.putExtra("title", activity.getString(R.string.resend));
 					intent.putExtra("cancel", true);

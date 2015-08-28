@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.TextMessageBody;
+import com.easemob.chat.core.e;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -50,7 +51,7 @@ public class MessageUtils {
 				message.setContent(((TextMessageBody) emMessage.getBody()).getMessage());
 				message.setRead(false);
 
-				addChatMessage(appContext, message);
+				addChatMessage(appContext, message, false);
 			} else {
 				// 将消息存入数据库
 				TJMessage tjMessage = new TJMessage();
@@ -68,104 +69,65 @@ public class MessageUtils {
 			}
 		} catch (Exception e) {
 			Log.e(TAG, e.getStackTrace().toString());
-		} finally{
+		} finally {
 			NewMsgEvent event = new NewMsgEvent();
 			EventBus.getDefault().post(event);
 		}
 	}
 
-	public static void updateChatMessage(final Context appContext, final TJMessage message){
+	public static void addChatMessage(final Context appContext, final TJMessage message, boolean hasRead) {
 		try {
-			Iterator<TJMessage> msgIterator = DataContainer.MessageList.iterator();
-			TJMessage updateMessage = null;
-			while (msgIterator.hasNext()) {
-				TJMessage next = msgIterator.next();
-				if (next.getHxid() != null && next.getHxid().equals(message.getHxid())) {
-					msgIterator.remove();
-					updateMessage = next;
+			TJMessage addOrUpdateTJMessage = null;
+			for (TJMessage tjMessage : DataContainer.MessageList) {
+				if (!StringUtils.isBlank(tjMessage.getHxid()) && tjMessage.getHxid().equals(message.getHxid())) {
+					addOrUpdateTJMessage = tjMessage;
+					DataContainer.MessageList.remove(tjMessage);
 					break;
 				}
 			}
-			if (updateMessage == null) {
-				updateMessage = new TJMessage();
-				updateMessage.set_id(UUID.randomUUID());
-				if (DataContainer.userInfoMap.containsKey(message.getHxid())) {
-					TJUserInfo userInfo = DataContainer.userInfoMap.get(message.getHxid());
-					updateMessage.setUserId(userInfo.get_id().toString());
-					updateMessage.setTitle(userInfo.getNickname());
-					updateMessage.setAvatarUrl(userInfo.getAvatarUrl());
-				}
+			if (addOrUpdateTJMessage == null) {
+				addOrUpdateTJMessage = new TJMessage();
+				addOrUpdateTJMessage.set_id(UUID.randomUUID());
 			}
-			updateMessage.setContent(message.getContent());
-			updateMessage.setCreatedTime(message.getCreatedTime());
-			updateMessage.setRead(true);
-			DataContainer.MessageList.add(0, updateMessage);
+			if (message.getUserId() == null && DataContainer.userInfoMap.containsKey(message.getHxid())) {
+				TJUserInfo userInfo = DataContainer.userInfoMap.get(message.getHxid());
+				addOrUpdateTJMessage.setUserId(userInfo.get_id().toString());
+				addOrUpdateTJMessage.setTitle(userInfo.getNickname());
+				addOrUpdateTJMessage.setAvatarUrl(userInfo.getAvatarUrl());
+			} else {
+
+			}
+			addOrUpdateTJMessage.setContent(message.getContent());
+			addOrUpdateTJMessage.setCreatedTime(message.getCreatedTime());
+			addOrUpdateTJMessage.setRead(hasRead);
+			DataContainer.MessageList.add(0, addOrUpdateTJMessage);
+			final TJMessage tjMessage = addOrUpdateTJMessage;
 			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
-			mTJMessageDao.createOrUpdate(updateMessage);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			NewMsgEvent event = new NewMsgEvent();
-			event.setNew_msg_count(1);
-			EventBus.getDefault().post(event);
-		}
-	}
-	public static void addChatMessage(final Context appContext, final TJMessage message) {
-		Iterator<TJMessage> msgIterator = DataContainer.MessageList.iterator();
-        while(msgIterator.hasNext()){ 
-        	TJMessage tempMessage = msgIterator.next();
-        	if(!StringUtils.isBlank(tempMessage.getHxid()) && tempMessage.getHxid().equals(message.getHxid())){
-        		msgIterator.remove();
-        		break;
-        	}
-        }  
-        if(message.getUserId() == null && DataContainer.userInfoMap.containsKey(message.getHxid())){
-        	TJUserInfo userInfo  = DataContainer.userInfoMap.get(message.getHxid());
-        	message.setUserId(userInfo.get_id().toString());
-        	message.setTitle(userInfo.getNickname());
-        	message.setAvatarUrl(userInfo.getAvatarUrl());
-        }
-		DataContainer.MessageList.add(0, message);
-		try {
-			Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
-			QueryBuilder<TJMessage, UUID> builder = mTJMessageDao.queryBuilder();
-			Where<TJMessage, UUID> where = builder.where();
-			where.in("type", Arrays.asList(AppConstant.MSG_TYPE_CHAT));
-			where.and();
-			where.eq("hxid", message.getHxid());
-			builder.setWhere(where);
-			builder.orderBy("createdTime", false);
-			PreparedQuery<TJMessage> preparedQuery = builder.prepare();
-			List<TJMessage> querMessageList = mTJMessageDao.query(preparedQuery);
-			if (querMessageList.size() <= 0) {
-				message.set_id(UUID.randomUUID());
-				mTJMessageDao.create(message);
-				if(message.getUserId() == null){
-				UserUtils.getUserByHxid(appContext, message.getHxid(), new UserGetLisener() {
+			mTJMessageDao.createOrUpdate(addOrUpdateTJMessage);
+			if (addOrUpdateTJMessage.getUserId() == null) {
+				UserUtils.getUserByHxidFromNet(appContext, tjMessage.getHxid(), new UserGetLisener() {
 
 					@Override
 					public void onGetUser(TJUserInfo userInfo) {
 						DataContainer.userInfoMap.put(userInfo.getHxid(), userInfo);
-						message.setTitle(userInfo.getNickname());
-			        	message.setAvatarUrl(userInfo.getAvatarUrl());
-			        	message.setUserId(userInfo.get_id().toString());
-			        	
-			        	Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
-			        	try {
-							mTJMessageDao.update(message);
+						tjMessage.setTitle(userInfo.getNickname());
+						tjMessage.setAvatarUrl(userInfo.getAvatarUrl());
+						tjMessage.setUserId(userInfo.get_id().toString());
+						NewMsgEvent event = new NewMsgEvent();
+						event.setNew_msg_count(1);
+						EventBus.getDefault().post(event);
+
+						Dao<TJMessage, UUID> mTJMessageDao = new OrmLiteHelper(appContext).getTJMessageDao();
+						try {
+							mTJMessageDao.update(tjMessage);
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
 					}
 				});
-				}
-			} else {
-				message.set_id(querMessageList.get(0).get_id());
-				mTJMessageDao.update(message);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
-			Log.e(TAG, e.getMessage());
 		} finally {
 			NewMsgEvent event = new NewMsgEvent();
 			event.setNew_msg_count(1);
@@ -175,22 +137,20 @@ public class MessageUtils {
 
 	public static void addSysMessage(final Context appContext, final TJMessage message) {
 		DataContainer.SystemMsgList.add(message);
-		Iterator<TJMessage> msgIterator = DataContainer.MessageList.iterator();
 		TJMessage sysMessage = null;
-        while(msgIterator.hasNext()){  
-        	TJMessage next = msgIterator.next();
-        	if(next.getType() == AppConstant.MSG_TYPE_SYSTEM){
-        		sysMessage = next;
-        		msgIterator.remove();
-        		break;
-        	}
-        }  
-        if(sysMessage == null){
-        	sysMessage = new TJMessage();
+		for (TJMessage tjMessage : DataContainer.MessageList) {
+			if (tjMessage.getType() == AppConstant.MSG_TYPE_SYSTEM) {
+				sysMessage = tjMessage;
+				DataContainer.MessageList.remove(tjMessage);
+				break;
+			}
+		}
+		if (sysMessage == null) {
+			sysMessage = new TJMessage();
 			sysMessage.set_id(UUID.fromString(AppConstant.MSG_SYSTEM_UUID));
 			sysMessage.setTitle("系统消息");
-        }
-        sysMessage.setContent(message.getTitle());
+		}
+		sysMessage.setContent(message.getTitle());
 		sysMessage.setCreatedTime(message.getCreatedTime());
 		sysMessage.setRead(false);
 		sysMessage.setType(AppConstant.MSG_TYPE_SYSTEM);

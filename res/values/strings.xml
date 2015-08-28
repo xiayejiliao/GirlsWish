@@ -204,6 +204,9 @@
     <string name="voice_call">[语音通话]</string>
     <string name="voice">声音</string>
     <string name="not_download">未下载:</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="prompt">提示</string>
     <!-- 登录界面 -->
     <string name="login_phonedescription">请输入手机号</string>
     <string name="login_passworddescription">请输入密码</string>
