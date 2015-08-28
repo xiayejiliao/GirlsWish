@@ -23,6 +23,7 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
@@ -189,6 +190,7 @@ public class MyinfoActivity extends AppCompatActivity implements OnClickListener
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			if (requestCode == SCHOOL) {
+			
 				String schoolname = data.getStringExtra("schoolname");
 				String schoolid = data.getStringExtra("schoolid");
 				tv_school.setText(schoolname);
