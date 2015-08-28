@@ -51,6 +51,7 @@ import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.TimeUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.LinkTextView;
+import com.tongjo.girlwish.data.DataContainer;
 
 import de.greenrobot.event.EventBus;
 
@@ -127,7 +128,7 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 						Intent intent = new Intent(Mcontext, ChatActivity.class);
 						intent.putExtra("toUserHxid", tjWish.getPickerUser().getHxid());
 						// 聊天记录加入列表
-						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+						/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
 						TJMessage message = new TJMessage();
 						message.setHxid(tjWish.getCreatorUser().getHxid());
 						message.setCreatedTime(sdf.format(new Date()));
@@ -135,7 +136,8 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 						message.setRead(true);
 						message.setAvatarUrl(tjWish.getCreatorUser().getAvatarUrl());
 						message.setType(AppConstant.MSG_TYPE_CHAT);
-						MessageUtils.addChatMessage(Mcontext, message);
+						MessageUtils.addChatMessage(Mcontext, message);*/
+						DataContainer.userInfoMap.put(tjWish.getPickerUser().getHxid(), tjWish.getPickerUser());
 						intent.putExtra("toUserHxid", tjWish.getPickerUser().getHxid());
 						Mcontext.startActivity(intent);
 					} else {

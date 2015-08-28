@@ -27,7 +27,7 @@
             android:layout_width="@dimen/info_list_img_width"
             android:layout_height="@dimen/info_list_img_height"
             android:layout_marginRight="@dimen/info_list_img_margin_right"
-            android:src="@drawable/testimg" />
+            android:src="@drawable/default_avatar" />
 
         <TextView
             android:id="@+id/info_list_title"

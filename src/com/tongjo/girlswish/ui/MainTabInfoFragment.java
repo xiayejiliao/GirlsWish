@@ -290,7 +290,7 @@ public class MainTabInfoFragment extends BaseFragment {
 		//友盟页面统计
 		MobclickAgent.onPageStart("消息列表");
 		// 监听消息列表的变化
-		EventBus.getDefault().register(this);
+	    EventBus.getDefault().register(this);
 	}
 
 	@Override
