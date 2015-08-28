@@ -583,9 +583,6 @@ public class MessageAdapter extends BaseAdapter{
 					if (bitmap != null) {
 						imageView.setImageBitmap((com.tongjo.girlswish.utils.ImageUtils.getRoundCornerDrawable(bitmap, 360)));
 					} else {
-						ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(context);
-						ImageLoader.getInstance().init(configuration);
-
 						ImageLoader.getInstance().loadImage(userInfo.getAvatarUrl(), new ImageSize(R.dimen.size_avatar, R.dimen.size_avatar), new SimpleImageLoadingListener() {
 							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 								if (loadedImage != null) {

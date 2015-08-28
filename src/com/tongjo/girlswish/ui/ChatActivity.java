@@ -1201,7 +1201,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			TJMessage tjMessage = new TJMessage();
 			tjMessage.setHxid(toChatUserHxid);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
-			tjMessage.setCreatedTime(sdf.format(new Date()));
+			tjMessage.setCreatedTime(sdf.format(emMessage.getMsgTime()));
 			switch (emMessage.getType()) {
 			// 根据消息type显示item
 			case IMAGE: // 图片

@@ -164,9 +164,6 @@ public class MainTabInfoAdapter extends BaseAdapter {
 				if (bitmap != null) {
 					finalholder.iconImageView.setImageBitmap((com.tongjo.girlswish.utils.ImageUtils.getRoundCornerDrawable(bitmap, 360)));
 				} else {
-					ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(mContext);
-					ImageLoader.getInstance().init(configuration);
-
 					ImageLoader.getInstance().loadImage(message.getAvatarUrl(), new ImageSize(R.dimen.info_list_img_width, R.dimen.info_list_img_height), new SimpleImageLoadingListener() {
 						public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 							if (loadedImage != null) {
