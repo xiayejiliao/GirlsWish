@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg_progress"
+    android:background="@color/lwhite"
     android:orientation="vertical"
     android:padding="8dp" >
 
@@ -11,16 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        style="?android:attr/progressBarStyle" />
+        style="?android:attr/progressBarStyleSmall" />
 
     <TextView
         android:id="@+id/id_tv_loadingmsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:textColor="@android:color/white"
+        android:textColor="@color/lblack"
         android:layout_marginTop="@dimen/margin_4"
         android:gravity="center"
-        android:textSize="@dimen/text_size_16" />
+        android:textSize="@dimen/text_size_14" />
 
 </LinearLayout>

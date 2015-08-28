@@ -48,6 +48,7 @@ import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
+import com.tongjo.girlswish.widget.CustomeProgressDialog;
 import com.tongjo.girlswish.widget.DeleteConfirmDialog.DialogClickListener;
 import com.tongjo.girlwish.data.DataContainer;
 import com.umeng.analytics.MobclickAgent;
@@ -365,13 +366,20 @@ public class MainTabWishFragment extends BaseFragment {
 			startActivity(intent);
 			return;
 		}
+		
+		final CustomeProgressDialog dialog = new CustomeProgressDialog(getActivity(),"正在努力摘取中!");
+		dialog.show();
+		
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("_id", wishId);
 		asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_PICKWISH,
 				requestParams, new TextHttpResponseHandler("UTF-8") {
 
 					@Override
-					public void onSuccess(int arg0, Header[] arg1, String arg2) {
+					public void onSuccess(int arg0, Header[] arg1, String arg2) { 
+						if(dialog != null && dialog.isShowing()){
+							dialog.dismiss();
+						}
 						if (arg2 == null) {
 							ToastUtils.show(getActivity(), "摘取心愿失败");
 							return;
@@ -425,6 +433,9 @@ public class MainTabWishFragment extends BaseFragment {
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2,
 							Throwable arg3) {
+						if(dialog != null && dialog.isShowing()){
+							dialog.dismiss();
+						}
 						ToastUtils.show(getActivity(), "对不起，摘取心愿失败啦！，请重试！");
 					}
 				});

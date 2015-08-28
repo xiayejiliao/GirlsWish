@@ -30,6 +30,7 @@ import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.StringUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
+import com.tongjo.girlswish.widget.CustomeProgressDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import de.greenrobot.event.EventBus;
@@ -150,6 +151,9 @@ public class AddWishActivity extends BaseActivity {
 			return;
 		}
 		
+		final CustomeProgressDialog dialog = new CustomeProgressDialog(AddWishActivity.this,"正在努力发布中!");
+		dialog.show();
+		
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("content", content);
 		requestParams.add("backgroundColor", "9CCF98");
@@ -157,6 +161,9 @@ public class AddWishActivity extends BaseActivity {
 
 			@Override
 			public void onSuccess(int arg0, Header[] arg1, String arg2) {
+				if(dialog != null && dialog.isShowing()){
+					dialog.dismiss();
+				}
 				if (arg2 == null) {
 					ToastUtils.show(getApplicationContext(), "发布心愿失败:");
 					return;
@@ -208,6 +215,9 @@ public class AddWishActivity extends BaseActivity {
 
 			@Override
 			public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+				if(dialog != null && dialog.isShowing()){
+					dialog.dismiss();
+				}
 				Toast.makeText(getApplicationContext(), "发布心愿失败" + arg0, Toast.LENGTH_LONG).show();
 			}
 		});
