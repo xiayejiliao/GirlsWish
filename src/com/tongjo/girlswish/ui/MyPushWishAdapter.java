@@ -99,9 +99,10 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 			holder.ivsex.setVisibility(View.GONE);
 			holder.tvSchool.setVisibility(View.GONE);
 			holder.tvNick.setVisibility(View.GONE);
-			holder.tvtime.setVisibility(View.GONE);
+			holder.tvtime.setVisibility(View.VISIBLE);
 			holder.ivicon.setImageResource(R.drawable.wishunpicked);
-
+			String t = TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, tjWish.getCreatedTime());
+			holder.tvtime.setText("发表时间:"+t);
 		} else {
 			holder.ivtalk.setVisibility(View.VISIBLE);
 			holder.tvtime.setVisibility(View.VISIBLE);
@@ -113,7 +114,7 @@ class MyPushWishAdapter extends RecyclerView.Adapter<MyPushWishAdapter.ViewHolde
 
 			String t = TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, tjWish.getPickedTime());
 
-			holder.tvtime.setText(t);
+			holder.tvtime.setText("摘取时间:"+t);
 			holder.tvNick.setText(tjWish.getPickerUser().getNickname());
 			if (tjWish.getPickerUser().getSchool() != null) {
 				holder.tvSchool.setText(tjWish.getPickerUser().getSchool().getName());
