@@ -27,10 +27,7 @@ public class StartActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		 MobclickAgent.setDebugMode(false);
-		//关闭友盟默认的页面统计，友盟的默认统计只统计activity
-		MobclickAgent.openActivityDurationTrack(false);
-		//设置友盟异常捕获
-		MobclickAgent.setCatchUncaughtExceptions(true);
+	
 		setContentView(R.layout.activity_start);
 		int loginstate = (Integer) SpUtils.get(getApplicationContext(), AppConstant.USER_LOGINSTATE, 0);
 		if (loginstate == 0) {

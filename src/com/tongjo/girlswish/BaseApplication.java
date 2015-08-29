@@ -28,6 +28,7 @@ import com.tongjo.girlswish.model.UserSex;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlwish.data.DataContainer;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Application;
 import android.graphics.Bitmap;
@@ -65,6 +66,10 @@ public class BaseApplication extends Application {
 		initImageLoader();
 		/** 初始化环信 */
 		hxSDKHelper.onInit(this.getApplicationContext());
+		//关闭友盟默认的页面统计，友盟的默认统计只统计activity
+		MobclickAgent.openActivityDurationTrack(false);
+		//设置友盟异常捕获,默认是开启异常捕获的
+		//MobclickAgent.setCatchUncaughtExceptions(true);
 	}
 
 	private void initImageLoader() {
