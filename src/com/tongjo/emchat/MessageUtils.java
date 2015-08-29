@@ -53,7 +53,6 @@ public class MessageUtils {
 
 				addChatMessage(appContext, message, false);
 			} else {
-				// 将消息存入数据库
 				TJMessage tjMessage = new TJMessage();
 				tjMessage.set_id(UUID.fromString(emMessage.getStringAttribute("_id")));
 				tjMessage.setTitle(emMessage.getStringAttribute("title"));
@@ -88,6 +87,8 @@ public class MessageUtils {
 			if (addOrUpdateTJMessage == null) {
 				addOrUpdateTJMessage = new TJMessage();
 				addOrUpdateTJMessage.set_id(UUID.randomUUID());
+				addOrUpdateTJMessage.setHxid(message.getHxid());
+				addOrUpdateTJMessage.setType(AppConstant.MSG_TYPE_CHAT);
 			}
 			if (message.getUserId() == null && DataContainer.userInfoMap.containsKey(message.getHxid())) {
 				TJUserInfo userInfo = DataContainer.userInfoMap.get(message.getHxid());

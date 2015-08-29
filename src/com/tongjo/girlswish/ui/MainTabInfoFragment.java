@@ -107,7 +107,7 @@ public class MainTabInfoFragment extends BaseFragment {
 							break;
 						}
 						message.setRead(true);
-						refreshUI();
+						refreshUI(false);
 						updateMessage(message);
 						startActivity(intent);
 					}
@@ -264,7 +264,7 @@ public class MainTabInfoFragment extends BaseFragment {
 							Log.d(TAG, response.getData().getNotices().toString());
 							// 加入数据库
 							addMessage((List<TJMessage>) response.getData().getNotices());
-							refreshUI();
+							refreshUI(false);
 						}
 					} else {
 						handler.obtainMessage(MEG_WHAT_TOATS, "消息列表获取失败:" + response.getResult().getMessage()).sendToTarget();
@@ -282,10 +282,23 @@ public class MainTabInfoFragment extends BaseFragment {
 		});
 	}
 
+	//@Override
+    /*public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            //相当于Fragment的onResume
+        	// 监听消息列表的变化
+    	    EventBus.getDefault().register(this);
+        } else {
+            //相当于Fragment的onPause
+        	EventBus.getDefault().unregister(this);
+        }
+    }*/
+	
 	@Override
 	public void onResume() {
 		super.onResume();
-		refreshUI();
+		refreshUI(true);
 		//友盟页面统计
 		MobclickAgent.onPageStart("消息列表");
 		// 监听消息列表的变化
@@ -295,21 +308,22 @@ public class MainTabInfoFragment extends BaseFragment {
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
+		EventBus.getDefault().unregister(this);
 		MobclickAgent.onPageEnd("消息列表");
 		super.onPause();
 	}
 	@Override
 	public void onStop() {
-		EventBus.getDefault().unregister(this);
+		//EventBus.getDefault().unregister(this);
 		super.onStop();
 	}
 
 	public void onEventMainThread(NewMsgEvent event) {
-		refreshUI();
+		refreshUI(true);
 	}
 	
 	/* 有新消息到来刷新页面 */
-	private void refreshUI() {
+	private void refreshUI(boolean refreshUserInfo) {
 		if (mListAdapter != null) {
 			mListAdapter.notifyDataSetChanged();
 		}
@@ -318,7 +332,7 @@ public class MainTabInfoFragment extends BaseFragment {
 			if (!message.isRead()) {
 				hasUnReadMsg = true;
 			}
-			if (message.getHxid() != null) {
+			if (refreshUserInfo && message.getHxid() != null) {
 				UserUtils.getUserByHxidFromNetOrMem(this.getContext(), message.getHxid(), new UserGetLisener() {
 
 					@Override
@@ -327,9 +341,15 @@ public class MainTabInfoFragment extends BaseFragment {
 						message.setTitle(userInfo.getNickname());
 						message.setAvatarUrl(userInfo.getAvatarUrl());
 						message.setUserId(userInfo.get_id().toString());
-						if (mListAdapter != null) {
-							mListAdapter.notifyDataSetChanged();
-						}
+						MainTabInfoFragment.this.getActivity().runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								if (mListAdapter != null) {
+									mListAdapter.notifyDataSetChanged();
+								}
+							}
+						});
 						updateMessage(message);
 					}
 				});
