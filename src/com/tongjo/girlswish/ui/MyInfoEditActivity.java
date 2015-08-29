@@ -201,7 +201,7 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 			@Override
 			public void onClick(DialogInterface dialog, int item) {
 				if (items[item].equals("照相机")) {
-					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 					if (intent.resolveActivity(getPackageManager()) != null) {
 						try {
 							File f = createImageFile();

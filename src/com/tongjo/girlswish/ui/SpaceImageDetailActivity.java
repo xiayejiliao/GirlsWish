@@ -1,13 +1,16 @@
 package com.tongjo.girlswish.ui;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.tongjo.girlswish.widget.SmoothImageView;
 
 public class SpaceImageDetailActivity extends Activity {
@@ -35,7 +38,10 @@ public class SpaceImageDetailActivity extends Activity {
 		imageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
 		imageView.setScaleType(ScaleType.FIT_CENTER);
 		setContentView(imageView);
-		ImageLoader.getInstance().displayImage(mImageUrl, imageView);
+		//ImageLoader.getInstance().displayImage(mImageUrl, imageView);
+		//配置的圆角显示与SmoothImageView的某些显示有冲突，不适用圆角显示
+		ImageLoader.getInstance().displayImage(mImageUrl, imageView, DisplayImageOptions.createSimple());
+	
 		
 		imageView.setOnTouchListener(new View.OnTouchListener() {
 			
