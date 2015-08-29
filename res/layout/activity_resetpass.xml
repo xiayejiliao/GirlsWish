@@ -70,6 +70,7 @@
                 android:id="@+id/et_resetpass_newpass"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:inputType="textPassword"
                 android:background="@null"
                 android:hint="新密码" />
         </LinearLayout>
