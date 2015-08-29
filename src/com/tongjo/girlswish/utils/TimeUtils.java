@@ -248,7 +248,7 @@ public class TimeUtils {
 
 	public static long getTodayZeroTime() {
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		return calendar.getTime().getTime();
@@ -257,7 +257,7 @@ public class TimeUtils {
 	public static long getYesterdZeroTime() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -1);
-		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		return calendar.getTime().getTime();
@@ -266,7 +266,7 @@ public class TimeUtils {
 	public static long getSevenbeforeZeroTime() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, -7);
-		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 0);
 		return calendar.getTime().getTime();
