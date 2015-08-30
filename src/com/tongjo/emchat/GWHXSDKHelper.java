@@ -146,7 +146,7 @@ public class GWHXSDKHelper extends HXSDKHelper{
                     EMLog.d(TAG, String.format("透传消息：action:%s,message:%s", action,message.toString()));
                     final String str = appContext.getString(R.string.receive_the_passthrough);
                     
-                    final String CMD_TOAST_BROADCAST = "easemob.demo.cmd.toast";
+                    final String CMD_TOAST_BROADCAST = "easemob.cmd.toast";
                     IntentFilter cmdFilter = new IntentFilter(CMD_TOAST_BROADCAST);
                     
                     if(broadCastReceiver == null){
@@ -155,7 +155,8 @@ public class GWHXSDKHelper extends HXSDKHelper{
                             @Override
                             public void onReceive(Context context, Intent intent) {
                                 // TODO Auto-generated method stub
-                                Toast.makeText(appContext, intent.getStringExtra("cmd_value"), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(appContext, intent.getStringExtra("cmd_value"), Toast.LENGTH_SHORT).show();
+                            	Log.d(CMD_TOAST_BROADCAST, intent.getStringExtra("cmd_value"));
                             }
                         };
                         
@@ -254,13 +255,13 @@ public class GWHXSDKHelper extends HXSDKHelper{
             @Override
             public String getTitle(EMMessage message) {
               //修改标题,这里使用默认
-            	String title = "您有一条系统消息,快去看看";
+            	String title = "您有一条消息,快去看看";
 				int msg_type = message.getIntAttribute("type",
 						AppConstant.MSG_TYPE_CHAT);
 				if (msg_type == AppConstant.MSG_TYPE_CHAT) {
 					title = "您的好友给你发来一条消息";
 				}else{
-					title = "系统消息：" + ((TextMessageBody)message.getBody()).getMessage();
+					title = "您有一条系统消息，快去看看：" + ((TextMessageBody)message.getBody()).getMessage();
 				}
                 return title;
             }
