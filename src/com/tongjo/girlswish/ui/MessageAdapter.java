@@ -555,7 +555,7 @@ public class MessageAdapter extends BaseAdapter {
 	 * @param username
 	 */
 	private void setUserAvatar(final Context context, String hxid, final ImageView imageView) {
-		UserUtils.getUserByHxid(context, hxid, new UserGetLisener() {
+		UserUtils.getUserByHxidFromNetOrMem(context, hxid, new UserGetLisener() {
 
 			@Override
 			public void onGetUser(final TJUserInfo userInfo) {
