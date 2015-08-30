@@ -73,7 +73,9 @@ public class BaseApplication extends Application {
 	}
 
 	private void initImageLoader() {
-		DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.image_imageloading) // 设置图片在下载期间显示的图片
+		DisplayImageOptions options = new DisplayImageOptions.Builder()
+		
+		//.showImageOnLoading(R.drawable.image_imageloading) // 设置图片在下载期间显示的图片
 				.showImageForEmptyUri(R.drawable.default_image)// 设置图片Uri为空或是错误的时候显示的图片
 				.showImageOnFail(R.drawable.image_imageloaderror) // 设置图片加载/解码过程中错误时候显示的图片
 				.cacheInMemory(false)// 设置下载的图片是否缓存在内存中
@@ -85,7 +87,7 @@ public class BaseApplication extends Application {
 				// .delayBeforeLoading(int delayInMillis)//延时加载
 				// 设置图片加入缓存前，对bitmap进行设置
 				// .preProcessor(BitmapProcessor preProcessor)
-				.resetViewBeforeLoading(true)// 设置图片在下载前是否重置
+				//.resetViewBeforeLoading(true)// 设置图片在下载前是否重置
 				.displayer(new RoundedBitmapDisplayer(180))// 是否设置为圆角，弧度为多少
 				.build();
 
