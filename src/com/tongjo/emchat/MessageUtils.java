@@ -79,6 +79,10 @@ public class MessageUtils {
 			TJMessage addOrUpdateTJMessage = null;
 			for (TJMessage tjMessage : DataContainer.MessageList) {
 				if (!StringUtils.isBlank(tjMessage.getHxid()) && tjMessage.getHxid().equals(message.getHxid())) {
+					// 如果消息最近时间未改变则表示没有更新的聊天消息，不需要更新消息记录
+					if(tjMessage.getCreatedTime().equals(message.getCreatedTime())){
+						return;
+					}
 					addOrUpdateTJMessage = tjMessage;
 					DataContainer.MessageList.remove(tjMessage);
 					break;
