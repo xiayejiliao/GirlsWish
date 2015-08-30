@@ -15,6 +15,7 @@ package com.tongjo.girlswish.ui;
 
 import java.io.File;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -30,7 +31,7 @@ import com.tongjo.emchat.ImageCache;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlwish.chat.task.DownloadImageTask;
 
-public class AlertDialogActivity extends BaseActivity {
+public class AlertDialogActivity extends Activity {
 	private TextView mTextView;
 	private Button mButton;
 	private int position;
