@@ -145,7 +145,7 @@
             android:layout_gravity="right|bottom"
             android:layout_margin="@dimen/margin_20"
             android:src="@drawable/ic_add_white_24dp"
-            app:backgroundTint="@color/wish_floatingactionbutton"
+            app:borderWidth="0dp"
             app:elevation="@dimen/margin_6"
             app:fabSize="normal"
             app:rippleColor="#33728dff" />
