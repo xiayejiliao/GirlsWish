@@ -1297,6 +1297,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	@Override
 	protected void onNewIntent(Intent intent) {
 		// 点击notification bar进入聊天页面，保证只有一个聊天页面
+		adapter.notifyDataSetChanged();
 		String userHxid = intent.getStringExtra("toUserHxid");
 		if(StringUtils.isBlank(userHxid)){
 			ToastUtils.show(this, R.string.user_not_exits);

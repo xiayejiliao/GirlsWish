@@ -63,6 +63,7 @@ public class BaseApplication extends Application {
 		super.onCreate();
 
 		DataContainer.userInfo = LoadLocalUserInfo();
+		
 		initImageLoader();
 		/** 初始化环信 */
 		hxSDKHelper.onInit(this.getApplicationContext());
@@ -138,7 +139,7 @@ public class BaseApplication extends Application {
 			e.printStackTrace();
 		}
 		try {
-			String name = (String) SpUtils.get(getApplicationContext(), AppConstant.USER_NAME, "Name");
+			String name = (String) SpUtils.get(getApplicationContext(), AppConstant.USER_NICKNAME, "Name");
 			user.setNickname(name);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -153,6 +154,20 @@ public class BaseApplication extends Application {
 			String avatar = (String) SpUtils.get(getApplicationContext(), AppConstant.USER_ICONURL, "");
 			user.setAvatarUrl(avatar);
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			String hxid = (String) SpUtils.get(getApplicationContext(), AppConstant.USER_HXID, "");
+			user.setHxid(hxid);;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			String hxidpassword = (String) SpUtils.get(getApplicationContext(), AppConstant.USER_HXPASSWORD, "");
+			user.setHxpassword(hxidpassword);;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

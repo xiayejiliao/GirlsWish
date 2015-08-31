@@ -560,7 +560,6 @@ public class MessageAdapter extends BaseAdapter {
 			@Override
 			public void onGetUser(final TJUserInfo userInfo) {
 				if (!StringUtils.isBlank(userInfo.getAvatarUrl())) {
-						//imageloader 配置的时候就设置了圆形裁剪
 						ImageLoader.getInstance().displayImage(userInfo.getAvatarUrl(), imageView, new SimpleImageLoadingListener() {
 							public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 							};

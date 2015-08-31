@@ -97,6 +97,7 @@ public class TJUserInfo implements Serializable{
 	@Override
 	public String toString() {
 		return "TJUserInfo [_id=" + _id + ", email=" + email + ", tel=" + tel + ", realname=" + realname + ", gender=" + gender + ", nickname=" + nickname + ", avatarUrl=" + avatarUrl + ", school="
-				+ school + "]";
+				+ school + ", hxid=" + hxid + ", hxpassword=" + hxpassword + "]";
 	}
+	
 }

@@ -1,6 +1,7 @@
 package com.tongjo.girlswish.ui;
 
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -30,6 +31,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,17 +47,20 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
+import com.tongjo.bean.TJLocalUserInfo;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.event.UnReadSetEvent;
 import com.tongjo.girlswish.event.UserIconChange;
 import com.tongjo.girlswish.event.UserLogout;
 import com.tongjo.girlswish.event.UserNicknameChange;
 import com.tongjo.girlswish.event.UserSchoolnameChange;
+import com.tongjo.girlswish.model.LoginState;
 import com.tongjo.girlswish.ui.MainTabActivity.MyOnPageChangeListener;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.CircleImageView;
+import com.tongjo.girlwish.data.DataContainer;
 import com.umeng.analytics.MobclickAgent;
 
 import de.greenrobot.event.EventBus;
@@ -146,11 +151,9 @@ public class MainActivity extends AppCompatActivity {
 		// actionBar.setHomeAsUpIndicator(R.drawable.ic_reorder_white_24dp);
 		// 设置返回按钮
 		actionBar.setDisplayHomeAsUpEnabled(true);
-
 		iv_icon = (ImageView) findViewById(R.id.iv_drawer_icon);
 		tv_nick = (TextView) findViewById(R.id.tv_drawer_nick);
 		tv_school = (TextView) findViewById(R.id.tv_drawer_schoolname);
-
 		navigationView = (NavigationView) findViewById(R.id.naviagionview);
 		// 侧滑栏 条目点击
 		navigationView
@@ -345,7 +348,8 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public void onEventMainThread(UserIconChange event) {
-		Picasso.with(this).load(event.getIconurl()).into(iv_icon);
+		ImageLoader.getInstance().displayImage(event.getIconurl(), iv_icon);
+		DataContainer.userInfo.setAvatarUrl(event.getIconurl());
 	}
 
 	public void onEventMainThread(UserLogout event) {
@@ -441,9 +445,7 @@ public class MainActivity extends AppCompatActivity {
 			lastPosition = offset*arg0+offset*arg1;
 			cursor.startAnimation(animation);
 			
-			
-			  System.out.println("onPageScrolled:" + arg0 + ";" + arg1 + ";" +
-					  currentPage+";"+offset*arg1);
+		
 			 
 			/** 为了避开最后一次改变后的触发，采用这种判断方式 */
 			if (arg1 < 0.0001 || arg1 > 0.9999) {

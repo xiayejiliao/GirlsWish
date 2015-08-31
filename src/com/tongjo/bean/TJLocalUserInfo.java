@@ -31,8 +31,10 @@ public class TJLocalUserInfo extends TJUserInfo{
 
 	@Override
 	public String toString() {
-		return super.toString()+"TJLocalUserInfo [loginStatus=" + loginStatus + "]";
+		return "TJLocalUserInfo [loginStatus=" + loginStatus + ", schoolName=" + schoolName + ", toString()=" + super.toString() + "]";
 	}
+
+	
 	
 	
 }
