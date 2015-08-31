@@ -105,7 +105,6 @@ public class RegisterActivity extends AppCompatActivity {
 			}
 		});
 
-		et_password.addTextChangedListener(textWatcher);
 		
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 		
