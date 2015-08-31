@@ -151,6 +151,10 @@ public class AddWishActivity extends BaseActivity {
 			return;
 		}
 		
+		if(AddWishActivity.this == null){
+			return;
+		}
+		
 		final CustomeProgressDialog dialog = new CustomeProgressDialog(AddWishActivity.this,"正在努力发布中!");
 		dialog.show();
 		

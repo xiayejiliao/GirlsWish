@@ -78,12 +78,14 @@ public class MainTabWishFragment extends BaseFragment {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 	}
+
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
 		MobclickAgent.onPageStart("心愿墙页面");
 		super.onResume();
 	}
+
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
@@ -181,10 +183,11 @@ public class MainTabWishFragment extends BaseFragment {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								if (wish != null && wish.get_id() != null) {
-									if(wish.getCreatorUser() != null){
-									pickWish(wish.get_id().toString(),wish.getCreatorUser().getNickname());
-									}else{
-										pickWish(wish.get_id().toString(),"");
+									if (wish.getCreatorUser() != null) {
+										pickWish(wish.get_id().toString(), wish
+												.getCreatorUser().getNickname());
+									} else {
+										pickWish(wish.get_id().toString(), "");
 									}
 								} else {
 									Toast.makeText(getActivity(), "对不起，系统出错啦!",
@@ -227,19 +230,20 @@ public class MainTabWishFragment extends BaseFragment {
 								| DateUtils.FORMAT_SHOW_DATE
 								| DateUtils.FORMAT_ABBREV_ALL);
 				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-				
-				if(mListView.getCurrentMode().equals(Mode.PULL_FROM_END)){
-					TJWish wish = DataContainer.WishList.get(DataContainer.WishList.size()-1);
+
+				if (mListView.getCurrentMode().equals(Mode.PULL_FROM_END)) {
+					TJWish wish = DataContainer.WishList
+							.get(DataContainer.WishList.size() - 1);
 					String wishId = null;
-					if(wish != null && wish.get_id() != null ){
+					if (wish != null && wish.get_id() != null) {
 						wishId = wish.get_id().toString();
 					}
-					
-					getWishData(wishall,wishId,false);
-				}else{
+
+					getWishData(wishall, wishId, false);
+				} else {
 					getWishData(wishall);
 				}
-				
+
 			}
 		});
 
@@ -247,48 +251,54 @@ public class MainTabWishFragment extends BaseFragment {
 
 	/**
 	 * 当前用户信息是否完整
+	 * 
 	 * @return
 	 */
-	public boolean isUserInfoComplete(){
-		String name = SpUtils.get(getActivity(), AppConstant.USER_NICKNAME, "").toString();
-		String school = SpUtils.get(getActivity(), AppConstant.USER_SCHOOLNAME, "").toString();
-		int sex = (Integer) SpUtils.get(getActivity(), AppConstant.USER_SEX, -1);
-		String phone = SpUtils.get(getActivity(), AppConstant.USER_PHONE, "").toString();
-		String iconurl = SpUtils.get(getActivity(), AppConstant.USER_ICONURL, "").toString();
-		
-		if(StringUtils.isBlank(name) || StringUtils.isBlank(school) || StringUtils.isBlank(phone) 
-				|| StringUtils.isBlank(iconurl) || sex == -1){
+	public boolean isUserInfoComplete() {
+		String name = SpUtils.get(getActivity(), AppConstant.USER_NICKNAME, "")
+				.toString();
+		String school = SpUtils.get(getActivity(), AppConstant.USER_SCHOOLNAME,
+				"").toString();
+		int sex = (Integer) SpUtils
+				.get(getActivity(), AppConstant.USER_SEX, -1);
+		String phone = SpUtils.get(getActivity(), AppConstant.USER_PHONE, "")
+				.toString();
+		String iconurl = SpUtils.get(getActivity(), AppConstant.USER_ICONURL,
+				"").toString();
+
+		if (StringUtils.isBlank(name) || StringUtils.isBlank(school)
+				|| StringUtils.isBlank(phone) || StringUtils.isBlank(iconurl)
+				|| sex == -1) {
 			return false;
-		}else{
+		} else {
 			return true;
 		}
 	}
-	
+
 	public void updateUi(int total) {
-		
-		if(total > DataContainer.WishList.size()){
+
+		if (total > DataContainer.WishList.size()) {
 			mListView.setMode(Mode.BOTH);
-		}else{
+		} else {
 			mListView.setMode(Mode.PULL_FROM_START);
 		}
-		
+
 		mAdapter.setList(DataContainer.WishList);
 		mAdapter.notifyDataSetChanged();
 	}
 
-
-	public void getWishData(String gender){
-		getWishData(gender,null,true);
+	public void getWishData(String gender) {
+		getWishData(gender, null, true);
 	}
-	
+
 	/**
-	 * 获取心愿列表
-	 * isRefresh为true表示刷新，false表示加载更多
+	 * 获取心愿列表 isRefresh为true表示刷新，false表示加载更多
 	 */
-	public void getWishData(String gender,String lastId,final boolean isRefresh) {
+	public void getWishData(String gender, String lastId,
+			final boolean isRefresh) {
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("gender", gender);
-		if(!StringUtils.isBlank(lastId)){
+		if (!StringUtils.isBlank(lastId)) {
 			requestParams.add("lastid", lastId);
 		}
 		asyncHttpClient.get(AppConstant.URL_BASE + AppConstant.URL_WISH,
@@ -322,7 +332,7 @@ public class MainTabWishFragment extends BaseFragment {
 								if (response.getData().getWishes() != null) {
 									Log.d(TAG, response.getData().getWishes()
 											.toString());
-									if(isRefresh){
+									if (isRefresh) {
 										DataContainer.WishList.clear();
 									}
 									DataContainer.WishList
@@ -335,11 +345,16 @@ public class MainTabWishFragment extends BaseFragment {
 									 */
 								}
 							} else {
-								ToastUtils.show(getActivity(), "心愿列表获取失败:"
-										+ response.getResult().getMessage());
+								if (getActivity() != null)
+									ToastUtils
+											.show(getActivity(), "心愿列表获取失败:"
+													+ response.getResult()
+															.getMessage());
 							}
 						} else {
-							ToastUtils.show(getActivity(), "心愿列表获取失败" + arg0);
+							if (getActivity() != null)
+								ToastUtils.show(getActivity(), "心愿列表获取失败"
+										+ arg0);
 						}
 					}
 
@@ -347,8 +362,9 @@ public class MainTabWishFragment extends BaseFragment {
 					public void onFailure(int arg0, Header[] arg1, String arg2,
 							Throwable arg3) {
 						mListView.onRefreshComplete();
-						Toast.makeText(getActivity(), "心愿列表获取失败" + arg0,
-								Toast.LENGTH_LONG).show();
+						if (getActivity() != null)
+							Toast.makeText(getActivity(), "心愿列表获取失败" + arg0,
+									Toast.LENGTH_LONG).show();
 					}
 				});
 	}
@@ -358,26 +374,26 @@ public class MainTabWishFragment extends BaseFragment {
 	 * 
 	 * @param wishId
 	 */
-	public void pickWish(String wishId,final String createName) {
-		if(!isUserInfoComplete()){
+	public void pickWish(String wishId, final String createName) {
+		if (!isUserInfoComplete()) {
 			ToastUtils.show(getActivity(), "对不起，请先完善你的个人信息，然后再摘取心愿哦");
-			Intent intent = new Intent(getActivity(),
-					MyinfoActivity.class);
+			Intent intent = new Intent(getActivity(), MyinfoActivity.class);
 			startActivity(intent);
 			return;
 		}
-		
-		final CustomeProgressDialog dialog = new CustomeProgressDialog(getActivity(),"正在努力摘取中!");
+
+		final CustomeProgressDialog dialog = new CustomeProgressDialog(
+				getActivity(), "正在努力摘取中!");
 		dialog.show();
-		
+
 		RequestParams requestParams = new RequestParams();
 		requestParams.add("_id", wishId);
 		asyncHttpClient.post(AppConstant.URL_BASE + AppConstant.URL_PICKWISH,
 				requestParams, new TextHttpResponseHandler("UTF-8") {
 
 					@Override
-					public void onSuccess(int arg0, Header[] arg1, String arg2) { 
-						if(dialog != null && dialog.isShowing()){
+					public void onSuccess(int arg0, Header[] arg1, String arg2) {
+						if (dialog != null && dialog.isShowing()) {
 							dialog.dismiss();
 						}
 						if (arg2 == null) {
@@ -402,11 +418,12 @@ public class MainTabWishFragment extends BaseFragment {
 								return;
 							}
 							if (response.getResult().getCode() == 0) {
-								ToastUtils.show(getActivity(), "恭喜您，成功摘取"+createName+"的心愿!");
+								ToastUtils.show(getActivity(), "恭喜您，成功摘取"
+										+ createName + "的心愿!");
 								getWishData(wishall);
 							} else if (response.getResult().getCode() == 1) {
-								ToastUtils.show(getActivity(), "对不起，您没有登录，请重新登录"
-										+ arg0);
+								ToastUtils.show(getActivity(),
+										"对不起，您没有登录，请重新登录" + arg0);
 							}
 							// 2次数超过限制
 							else if (response.getResult().getCode() == 2) {
@@ -433,7 +450,7 @@ public class MainTabWishFragment extends BaseFragment {
 					@Override
 					public void onFailure(int arg0, Header[] arg1, String arg2,
 							Throwable arg3) {
-						if(dialog != null && dialog.isShowing()){
+						if (dialog != null && dialog.isShowing()) {
 							dialog.dismiss();
 						}
 						ToastUtils.show(getActivity(), "对不起，摘取心愿失败啦！，请重试！");

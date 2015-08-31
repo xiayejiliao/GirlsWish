@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -53,6 +54,7 @@ import com.tongjo.girlswish.event.UserSchoolnameChange;
 import com.tongjo.girlswish.ui.MainTabActivity.MyOnPageChangeListener;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
+import com.tongjo.girlswish.utils.ToastUtils;
 import com.tongjo.girlswish.widget.CircleImageView;
 import com.umeng.analytics.MobclickAgent;
 
@@ -622,5 +624,26 @@ public class MainActivity extends AppCompatActivity {
 			}
 			return bool;
 		}
+	}
+	
+	public static boolean isBackPressed  = false;
+	
+	@Override
+	public void onBackPressed() {
+		if(!isBackPressed){
+			ToastUtils.show(getApplicationContext(), "再按一次退出程序");
+			isBackPressed = true;
+			
+			new Handler(getMainLooper()).postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					isBackPressed = false;
+				}
+			}, 1000);
+		}else{
+			super.onBackPressed();
+		}
+		
 	}
 }
