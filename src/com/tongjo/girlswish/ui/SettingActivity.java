@@ -98,7 +98,7 @@ public class SettingActivity extends AppCompatActivity implements OnClickListene
 			startActivity(new Intent(SettingActivity.this, ResetPassActivity.class));
 			break;
 		case R.id.bt_setting_about:
-			Intent about=new Intent(SettingActivity.this, AboutActivity.class);
+			Intent about=new Intent(SettingActivity.this, WebviewActivity.class);
 			about.putExtra(WebviewActivity.WEBURL, "http://wishes520.com/about.html");
 			startActivity(about);
 			break;

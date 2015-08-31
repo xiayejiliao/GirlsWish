@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
 
+import com.loopj.android.http.BuildConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
 import com.tongjo.girlswish.R;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
 		actionBar.setTitle("Wishes");
 		// actionBar.setHomeAsUpIndicator(R.drawable.ic_reorder_white_24dp);
 		// 设置返回按钮
+
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		iv_icon = (ImageView) findViewById(R.id.iv_drawer_icon);
 		tv_nick = (TextView) findViewById(R.id.tv_drawer_nick);

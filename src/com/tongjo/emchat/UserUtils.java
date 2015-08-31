@@ -92,7 +92,7 @@ public class UserUtils {
 
 					@Override
 					public void onSuccess(int arg0, Header[] arg1, String arg2) {
-						Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
+						//Log.d(TAG, "arg0:" + arg0 + "arg2:" + arg2);
 						if (arg0 == 200) {
 							Type type = new TypeToken<TJResponse<TJUserInfo>>() {
 							}.getType();

@@ -168,7 +168,6 @@ public class MainTabWishFragment extends BaseFragment {
 
 			@Override
 			public void MItemClick(View v, int position) {
-				Log.d(TAG, String.valueOf(position));
 				/*
 				 * dialog = new WishDialogFragment(position);
 				 * dialog.show(getFragmentManager(), "WishDialogFragment");
@@ -311,7 +310,6 @@ public class MainTabWishFragment extends BaseFragment {
 							ToastUtils.show(getActivity(), "心愿列表获取失败");
 							return;
 						}
-						Log.d(TAG, arg2);
 						if (arg0 == 200) {
 							Type type = new TypeToken<TJResponse<TJWishList>>() {
 							}.getType();
@@ -330,9 +328,7 @@ public class MainTabWishFragment extends BaseFragment {
 							}
 							if (response.getResult().getCode() == 0) {
 								if (response.getData().getWishes() != null) {
-									Log.d(TAG, response.getData().getWishes()
-											.toString());
-									if (isRefresh) {
+									if(isRefresh){
 										DataContainer.WishList.clear();
 									}
 									DataContainer.WishList
@@ -400,7 +396,6 @@ public class MainTabWishFragment extends BaseFragment {
 							ToastUtils.show(getActivity(), "摘取心愿失败");
 							return;
 						}
-						Log.d(TAG, arg2);
 						if (arg0 == 200) {
 
 							Type type = new TypeToken<TJResponse<Object>>() {

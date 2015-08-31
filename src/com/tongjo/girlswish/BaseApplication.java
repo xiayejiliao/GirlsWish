@@ -69,6 +69,7 @@ public class BaseApplication extends Application {
 		hxSDKHelper.onInit(this.getApplicationContext());
 		//关闭友盟默认的页面统计，友盟的默认统计只统计activity
 		MobclickAgent.openActivityDurationTrack(false);
+		MobclickAgent.setDebugMode(false);
 		//设置友盟异常捕获,默认是开启异常捕获的
 		//MobclickAgent.setCatchUncaughtExceptions(true);
 	}
@@ -96,11 +97,15 @@ public class BaseApplication extends Application {
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).memoryCacheExtraOptions(480, 800) // 即保存的每个缓存文件的最大长宽
 				.threadPoolSize(4)// 线程池内加载的数量
 				.threadPriority(Thread.NORM_PRIORITY - 2) // 优先级
-				.denyCacheImageMultipleSizesInMemory().memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024)) // 内存缓存实现
+				.denyCacheImageMultipleSizesInMemory()
+				.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024)) // 内存缓存实现
 				// 内存缓存大小
-				.memoryCacheSize(2 * 1024 * 1024)
+				//.memoryCacheSize(2 * 1024 * 1024)
 				// 磁盘缓存大小
-				.discCacheSize(50 * 1024 * 1024).discCacheFileNameGenerator(new Md5FileNameGenerator()).tasksProcessingOrder(QueueProcessingType.LIFO).discCache(new UnlimitedDiskCache(cacheDir))
+				//.discCacheSize(50 * 1024 * 1024)
+				//.discCacheFileNameGenerator(new Md5FileNameGenerator())
+				.tasksProcessingOrder(QueueProcessingType.LIFO)
+				.discCache(new UnlimitedDiskCache(cacheDir))
 				// 配置默认的DisplayImageOptions，这个可以在以后使用时单独为每个显示任务配置。
 				.defaultDisplayImageOptions(options)
 				.build();
@@ -171,7 +176,6 @@ public class BaseApplication extends Application {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Log.d(TAG, user.toString());
 		return user;
 	}
 

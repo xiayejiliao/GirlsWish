@@ -2,6 +2,8 @@ package com.tongjo.girlswish.ui;
 
 import java.lang.reflect.Type;
 
+import javax.security.auth.PrivateCredentialPermission;
+
 import org.apache.http.Header;
 
 import com.google.gson.Gson;
@@ -32,9 +34,12 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -100,6 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
 			}
 		});
 
+		
 		asyncHttpClient = ((BaseApplication) getApplication()).getAsyncHttpClient();
 		
 		
@@ -219,6 +225,7 @@ public class RegisterActivity extends AppCompatActivity {
 			}
 		}
 	};
+
 
 	private TextHttpResponseHandler httpgetcaptcha = new TextHttpResponseHandler("UTF-8") {
 

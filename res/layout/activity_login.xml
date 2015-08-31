@@ -94,6 +94,7 @@
                         android:layout_marginLeft="12dp"
                         android:layout_toRightOf="@+id/tv_login_pass"
                         android:background="@null"
+                        android:digits="@string/password_digit"
                         android:hint="@string/login_passworddescription"
                         android:inputType="textPassword"
                         android:textColor="@color/black" />
