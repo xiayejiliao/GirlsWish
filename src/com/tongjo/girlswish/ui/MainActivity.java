@@ -1,21 +1,17 @@
 package com.tongjo.girlswish.ui;
 
 import java.lang.reflect.Field;
-import java.util.UUID;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.TabLayout.OnTabSelectedListener;
-import android.support.design.widget.TabLayout.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -27,11 +23,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,19 +39,15 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
-import com.tongjo.bean.TJLocalUserInfo;
 import com.tongjo.girlswish.R;
 import com.tongjo.girlswish.event.UnReadSetEvent;
 import com.tongjo.girlswish.event.UserIconChange;
 import com.tongjo.girlswish.event.UserLogout;
 import com.tongjo.girlswish.event.UserNicknameChange;
 import com.tongjo.girlswish.event.UserSchoolnameChange;
-import com.tongjo.girlswish.model.LoginState;
-import com.tongjo.girlswish.ui.MainTabActivity.MyOnPageChangeListener;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlswish.utils.SpUtils;
 import com.tongjo.girlswish.utils.ToastUtils;
-import com.tongjo.girlswish.widget.CircleImageView;
 import com.tongjo.girlwish.data.DataContainer;
 import com.umeng.analytics.MobclickAgent;
 
@@ -83,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
 	// 同步侧滑栏和actionbar
 	private ActionBarDrawerToggle actionBarDrawerToggle;
 
-	// mViewPager导航标签
-	private TabLayout mTabLayout;
 	// 策划栏的头部分
 	private LinearLayout drawerheader;
 	// 侧滑栏 头部 我的头像
@@ -99,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
 	// 主页导航
 	private ViewPager viewPager = null;
 	private SampleFragmentPagerAdapter mPagerAdapter = null;
-	private TabLayout tabLayout = null;
 
 	private final static int count = 2;
 
@@ -118,19 +103,21 @@ public class MainActivity extends AppCompatActivity {
 	private TextView alertView1;
 	private TextView alertView2;
 
-	// 定义颜色变化的起始值和结束值
-	private final int startColorR = 0x66;
-	private final int startColorG = 0x66;
-	private final int startColorB = 0x66;
-	private final int endColorR = 0x2C;
-	private final int endColorG = 0xA7;
-	private final int endColorB = 0xDB;
+	/*
+	 *  定义颜色变化的起始值和结束值
+	 *  初始应该是蓝色，逐渐变成灰色，另一边则相反
+	 */
+	private final int endColorR = 0x66;
+	private final int endColorG = 0x66;
+	private final int endColorB = 0x66;
+	private final int startColorR = 0x2C;
+	private final int startColorG = 0xA7;
+	private final int startColorB = 0xDB;
 
 	// 用于区分Scroll类别
 	private static boolean isClick = false;
 	
 	private float offset = 0;	
-	private int currentPage = 0;
 
 	/**
 	 * Used to store the last screen title. For use in
@@ -205,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
 		viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
 
 		setViewPagerScrollSpeed();
+		setSelectTextColor(0);
 		isClick = true;
 
 		// 注册evenbus的事件订阅
@@ -390,131 +378,74 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	/**
+	 * 生成手势滑动时tab上对应文字的色彩变化
+	 * 并将变化后的色彩设置到对应文字上
+	 * 
+	 * @param percent
+	 * @param oldTab
+	 * @param newTab
+	 */
+	public void generateGradientTextColor(float percent,int oldTab,int newTab){
+		int offsetR = (int) ((endColorR - startColorR) * percent);
+		int newStartColorR = startColorR + offsetR;
+		int newEndColorR = endColorR - offsetR;
+
+		int offsetG = (int) ((endColorG - startColorG) * percent);
+		int newStartColorG = startColorG + offsetG;
+		int newEndColorG = endColorG - offsetG;
+
+		int offsetB = (int) ((endColorB - startColorB) * percent);
+		int newStartColorB = startColorB + offsetB;
+		int newEndColorB = endColorB - offsetB;
+
+//		int startColor = (((newStartColorR << 8) + newStartColorG) << 8)
+//				+ newStartColorB;
+//		int endColor = (((newEndColorR << 8) + newEndColorG) << 8)
+//				+ newEndColorB;
+//		System.out.println(Integer.toHexString(startColor)); 
+		setGradientText(oldTab, newStartColorR,newStartColorG,newStartColorB, newTab, newEndColorR,
+				newEndColorG,newEndColorB);
+	}
+	
+	/**
 	 * 设置滚动时底下文字颜色的变化过程
 	 * 
 	 * @param oldTab
-	 * @param oldColor
+	 * @param startColorR
+	 * @param startColorG
+	 * @param startColorB
 	 * @param newTab
-	 * @param newColor
+	 * @param endColorR
+	 * @param endColorG
+	 * @param endColorB
 	 */
-	public void setGradientText(int oldTab, int oldColor, int newTab,
-			int newColor) {
-		/* System.out.println(Integer.toHexString(oldColor)); */
-
-		int oldblue = oldColor % 256;
-		int oldgreen = ((int) (oldColor >> 8)) % 256;
-		int oldred = ((int) (oldColor >> 16)) % 256;
-
-		int newblue = newColor % 256;
-		int newgreen = ((int) (newColor >> 8)) % 256;
-		int newred = ((int) (newColor >> 16)) % 256;
+	public void setGradientText(int oldTab, int startColorR, int startColorG,int startColorB,int newTab,
+			int endColorR,int endColorG,int endColorB) {
 
 		switch (oldTab) {
 		case 0:
-			textView1.setTextColor(Color.rgb(oldred, oldgreen, oldblue));
+			textView1.setTextColor(Color.rgb(startColorR, startColorG, startColorB));
 			break;
 		case 1:
-			textView2.setTextColor(Color.rgb(oldred, oldgreen, oldblue));
+			textView2.setTextColor(Color.rgb(startColorR, startColorG, startColorB));
 			break;
 		}
 
 		switch (newTab) {
 		case 0:
-			textView1.setTextColor(Color.rgb(newred, newgreen, newblue));
+			textView1.setTextColor(Color.rgb(endColorR, endColorG, endColorB));
 			break;
 		case 1:
-			textView2.setTextColor(Color.rgb(newred, newgreen, newblue));
+			textView2.setTextColor(Color.rgb(endColorR, endColorG, endColorB));
 			break;
 
 		}
 	}
 
-	/** 页面切换时的动作 */
-	public class MyOnPageChangeListener implements OnPageChangeListener {
-		private float currentPercentage = 0;
-
-		private float lastPosition = 0;
-		public void onPageScrollStateChanged(int arg0) {
-		}
-
-		/** 三个参数分别为当前的页面，当前页面偏移百分比，当前页面偏移的像素 */
-		public void onPageScrolled(int arg0, float arg1, int arg2) {
-			Animation animation = new TranslateAnimation(lastPosition, offset*arg0+offset*arg1, 0, 0);//显然这个比较简洁，只有一行代码。
-			animation.setFillAfter(true);// True:图片停在动画结束位置
-			animation.setDuration(300);
-			lastPosition = offset*arg0+offset*arg1;
-			cursor.startAnimation(animation);
-			
-		
-			 
-			/** 为了避开最后一次改变后的触发，采用这种判断方式 */
-			if (arg1 < 0.0001 || arg1 > 0.9999) {
-				return;
-			}
-
-			/** 设置滑动时颜色的渐变效果 */
-			// 往右滑动的情况
-			if (arg1 > currentPercentage) {
-				int oldoffsetR = (int) ((endColorR - startColorR) * arg1);
-				int newoffsetR = endColorR - oldoffsetR;
-
-				int oldoffsetG = (int) ((endColorG - startColorG) * arg1);
-				int newoffsetG = endColorG - oldoffsetG;
-
-				int oldoffsetB = (int) ((endColorB - startColorB) * arg1);
-				int newoffsetB = endColorB - oldoffsetB;
-
-				int oldColor = (((oldoffsetR << 8) + (0xbb + oldoffsetG)) << 8)
-						+ oldoffsetB;
-				int newColor = (((newoffsetR << 8) + newoffsetG) << 8)
-						+ newoffsetB;
-				/* System.out.println(Integer.toHexString(newColor)); */
-				/*setGradientText(arg0, oldColor, arg0 + 1, newColor);*/
-				currentPercentage = arg1;
-			}
-			// 往左滑动情况
-			else if (currentPercentage > arg1) {
-				int oldoffsetR = (int) ((endColorR - startColorR) * (1 - arg1));
-				int newoffsetR = endColorR - oldoffsetR;
-
-				int oldoffsetG = (int) ((endColorG - startColorG) * (1 - arg1));
-				int newoffsetG = endColorG - oldoffsetG;
-
-				int oldoffsetB = (int) ((endColorB - startColorB) * (1 - arg1));
-				int newoffsetB = endColorB - oldoffsetB;
-
-				int oldColor = (((oldoffsetR << 8) + (0xbb + oldoffsetG)) << 8)
-						+ oldoffsetB;
-				int newColor = (((newoffsetR << 8) + newoffsetG) << 8)
-						+ newoffsetB;
-				/* System.out.println(Integer.toHexString(oldColor)); */
-				/*setGradientText(arg0 + 1, oldColor, arg0, newColor);*/
-				currentPercentage = arg1;
-			}
-		}
-
-		// 实测这边不会在onPageScrolled执行完成后在执行，一般80%左右这边就触发了
-		public void onPageSelected(int arg0) {
-			currentPage = arg0;
-			setSelectTextColor(arg0);
-			switch (arg0) {
-			case 0:
-				
-				break;
-			case 1:
-				
-				break;
-			case 2:
-				break;
-
-			default:
-				break;
-			}
-
-		}
-	}
-
-	/** 设置当前显示的文字颜色 ,文字选中的颜色和底部游标的颜色是一致的 */
+	/** 
+	 * 设置当前显示的文字颜色 ,文字选中的颜色和底部游标的颜色是一致的
+	 * 
+	 */
 	public void setSelectTextColor(int tab) {
 		switch (tab) {
 		case 0:
@@ -527,6 +458,55 @@ public class MainActivity extends AppCompatActivity {
 			break;
 		}
 	}
+	
+	/** 页面切换时的动作 */
+	public class MyOnPageChangeListener implements OnPageChangeListener {
+		private float currentPercentage = 0;
+
+		private float lastPosition = 0;
+		public void onPageScrollStateChanged(int arg0) {
+		}
+
+		/** 三个参数分别为当前的页面，当前页面偏移百分比，当前页面偏移的像素 */
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+			/*
+			 * 做下边游标随着手势一起移动
+			 */
+			Animation animation = new TranslateAnimation(lastPosition, offset*arg0+offset*arg1, 0, 0);//显然这个比较简洁，只有一行代码。
+			animation.setFillAfter(true);// True:图片停在动画结束位置
+			animation.setDuration(300);
+			lastPosition = offset*arg0+offset*arg1;
+			cursor.startAnimation(animation);
+			
+		
+			 
+			/* 为了避开最后一次改变后的触发，采用这种判断方式 */
+			if (arg1 < 0.0001 || arg1 > 0.9999) {
+				return;
+			}
+
+			/*
+			 *  设置滑动时颜色的渐变效果 
+			 */
+			
+			// 往右滑动的情况
+			if (arg1 > currentPercentage) {
+				generateGradientTextColor(arg1,arg0,arg0+1);
+				currentPercentage = arg1;
+			}
+			// 往左滑动情况
+			else if (currentPercentage > arg1) {
+				generateGradientTextColor(1-arg1,arg0+1,arg0);
+				currentPercentage = arg1;
+			}
+		}
+
+		// 实测这边不会在onPageScrolled执行完成后在执行，一般80%左右这边就触发了
+		public void onPageSelected(int arg0) {
+			setSelectTextColor(arg0);
+		}
+	}
+
 	
 	/** Tab上的Tab点击监听 */
 	private class MyOnClickListener implements OnClickListener {
@@ -630,6 +610,9 @@ public class MainActivity extends AppCompatActivity {
 	
 	public static boolean isBackPressed  = false;
 	
+	/**
+	 * 退出程序确认
+	 */
 	@Override
 	public void onBackPressed() {
 		if(!isBackPressed){
