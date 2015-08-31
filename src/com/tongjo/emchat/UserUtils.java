@@ -24,6 +24,7 @@ import com.tongjo.db.OrmLiteHelper;
 import com.tongjo.girlswish.BaseApplication;
 import com.tongjo.girlswish.utils.AppConstant;
 import com.tongjo.girlwish.data.DataContainer;
+import com.umeng.analytics.h;
 
 public class UserUtils {
 	protected static final String R = null;

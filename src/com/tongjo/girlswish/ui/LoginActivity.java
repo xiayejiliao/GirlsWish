@@ -212,6 +212,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 								SpUtils.put(getApplicationContext(), AppConstant.USER_EMAIL, userInfo.getEmail());
 								SpUtils.put(getApplicationContext(), AppConstant.USER_HXID, userInfo.getHxid());
 								SpUtils.put(getApplicationContext(), AppConstant.USER_HXPASSWORD, userInfo.getHxpassword());
+								System.out.println(userInfo.toString());
 								TJSchool userSchool = userInfo.getSchool();
 								if (userSchool != null) {
 									SpUtils.put(getApplicationContext(), AppConstant.USER_SCHOOLID, userSchool.get_id().toString());

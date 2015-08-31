@@ -343,6 +343,9 @@ public class MyInfoEditActivity extends BaseActivity implements OnClickListener 
 						SpUtils.put(getApplicationContext(), AppConstant.USER_ICONURL, userInfo.getAvatarUrl());
 						SpUtils.put(getApplicationContext(), AppConstant.USER_EMAIL, userInfo.getEmail());
 						SpUtils.put(getApplicationContext(), AppConstant.USER_PHONE, userInfo.getTel());
+						SpUtils.put(getApplicationContext(), AppConstant.USER_HXID, userInfo.getHxid());
+						SpUtils.put(getApplicationContext(), AppConstant.USER_HXPASSWORD, userInfo.getHxpassword());
+						
 						TJSchool userSchool = userInfo.getSchool();
 						loginEMChat(userInfo.getHxid(), userInfo.getHxpassword());
 						if (userSchool != null) {
