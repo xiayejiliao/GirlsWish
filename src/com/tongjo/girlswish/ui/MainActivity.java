@@ -343,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public void onEventMainThread(UserIconChange event) {
-		Picasso.with(this).load(event.getIconurl()).into(iv_icon);
+		ImageLoader.getInstance().displayImage(event.getIconurl(), iv_icon);
 	}
 
 	public void onEventMainThread(UserLogout event) {
