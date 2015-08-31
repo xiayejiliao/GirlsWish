@@ -131,7 +131,6 @@ public class MainTabWishAdapter extends BaseAdapter {
 				holder.nickname.setText("学校未知");
 			}
 			if (wish.getCreatedTime() != null) {
-				System.out.println(wish.getCreatedTime());
 				holder.publicTime.setText(TimeUtils.getdefaulttime(TimeUtils.DEFAULT_DATE_FORMAT, wish.getCreatedTime()));
 			} else {
 				holder.publicTime.setText("未知");
