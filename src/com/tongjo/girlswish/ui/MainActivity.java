@@ -261,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
-
 		return super.onCreateOptionsMenu(menu);
 	}
 
