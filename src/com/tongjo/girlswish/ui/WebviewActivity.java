@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+
 /*
  * 16ren
  *传入url  显示 一个web
@@ -19,33 +20,41 @@ import android.webkit.WebView;
  */
 public class WebviewActivity extends AppCompatActivity {
 
-	public final static String WEBURL="weburl";
+	public final static String WEBURL = "weburl";
+	public final static String TITLE = "title";
 	private ActionBar mActionBar;
 	private String url;
+	private String title;
 	private WebView mWebView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_webview);
 
-		//设置返回按钮
-		mActionBar=getSupportActionBar();
+		// 设置返回按钮
+		mActionBar = getSupportActionBar();
 		mActionBar.setDisplayHomeAsUpEnabled(true);
-		
-		url= getIntent().getStringExtra(WEBURL);
-		
-		mWebView=(WebView)findViewById(R.id.webview_systeminfo);
-		
-		if(!StringUtils.isEmpty(url)){
+
+		//获取网址和title
+		url = getIntent().getStringExtra(WEBURL);
+		title = getIntent().getStringExtra(TITLE);
+		//设置title
+		mActionBar.setTitle(title);
+
+		//加载网页
+		mWebView = (WebView) findViewById(R.id.webview_systeminfo);
+		if (!StringUtils.isEmpty(url)) {
 			mWebView.loadUrl(url);
 		}
-		
+
 	}
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		MobclickAgent.onPageStart("web页面");
-		//友盟用户活跃统计
+		// 友盟用户活跃统计
 		MobclickAgent.onResume(this);
 	}
 
@@ -53,16 +62,18 @@ public class WebviewActivity extends AppCompatActivity {
 	public void onPause() {
 		super.onPause();
 		MobclickAgent.onPageEnd("web页面");
-		//友盟用户活跃统计
+		// 友盟用户活跃统计
 		MobclickAgent.onPause(this);
 	}
-	public void ShowWeb(String url){
-		if(mWebView!=null){
+
+	public void ShowWeb(String url) {
+		if (mWebView != null) {
 			if (!StringUtils.isEmpty(url)) {
 				mWebView.loadUrl(url);
 			}
 		}
 	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
