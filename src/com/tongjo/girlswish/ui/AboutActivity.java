@@ -21,11 +21,16 @@ import android.webkit.WebView;
 public class AboutActivity extends AppCompatActivity implements OnClickListener {
 	private ButtonWithArrow btfun;
 	private ButtonWithArrow btterms;
+	private ActionBar mActionBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_about);
+		mActionBar=getSupportActionBar();
+		mActionBar.setDisplayHomeAsUpEnabled(true);
+		mActionBar.setTitle("关于");
+		
 		btfun = (ButtonWithArrow) findViewById(R.id.bt_about_fun);
 		btterms = (ButtonWithArrow) findViewById(R.id.bt_about_term);
 		btfun.setOnClickListener(this);
@@ -33,6 +38,18 @@ public class AboutActivity extends AppCompatActivity implements OnClickListener 
 
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	@Override
 	public void onClick(View v) {
 		Intent intent = new Intent(AboutActivity.this, WebviewActivity.class);
