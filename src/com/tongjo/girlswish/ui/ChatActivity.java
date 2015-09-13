@@ -1200,6 +1200,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		if (emMessage != null) {
 			TJMessage tjMessage = new TJMessage();
 			tjMessage.setHxid(toChatUserHxid);
+			tjMessage.setRead(true);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
 			tjMessage.setCreatedTime(sdf.format(emMessage.getMsgTime()));
 			switch (emMessage.getType()) {
