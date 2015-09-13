@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         layout="@layout/toolbar" />
     
+     <!-- 整个底部操作，包括表情输入和其他操作 -->
     <LinearLayout
         android:id="@+id/bar_bottom"
         android:layout_width="match_parent"
@@ -30,6 +31,8 @@
             android:layout_height="0.5dp"
             android:background="@color/gray_normal" />
 
+        
+        <!-- 底部的操作栏，包括语音文本切换，文本输入，表情，更多，发送等 -->
         <LinearLayout
             android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
@@ -46,7 +49,7 @@
                 android:layout_marginLeft="6dp"
                 android:background="@drawable/chatting_setmode_voice_btn"
                 android:onClick="setModeVoice"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_set_mode_keyboard"
@@ -57,6 +60,8 @@
                 android:onClick="setModeKeyboard"
                 android:visibility="gone" />
 
+            
+            <!-- 按住说话按钮 -->
             <LinearLayout
                 android:id="@+id/btn_press_to_speak"
                 android:layout_width="0dp"
@@ -140,9 +145,11 @@
 
             <Button
                 android:id="@+id/btn_send"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/margin_50"
                 android:layout_height="32dp"
                 android:layout_marginRight="4dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
                 android:background="@drawable/chat_send_btn_selector"
                 android:onClick="onClick"
                 android:text="@string/button_send"
@@ -151,6 +158,7 @@
                 android:visibility="gone" />
         </LinearLayout>
 
+        <!-- 底部弹出框，表情和其他的操作 -->
         <LinearLayout
             android:id="@+id/more"
             android:layout_width="match_parent"
@@ -255,6 +263,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:orientation="vertical" >
 
                         <RelativeLayout
@@ -285,6 +294,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:orientation="vertical" >
 
                         <RelativeLayout
@@ -316,6 +326,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="6dp"
+                    android:visibility="gone"
                     android:weightSum="4" >
 
                     <LinearLayout
@@ -413,6 +424,8 @@
         </LinearLayout>
     </LinearLayout>
 
+    
+    <!-- 聊天界面 -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

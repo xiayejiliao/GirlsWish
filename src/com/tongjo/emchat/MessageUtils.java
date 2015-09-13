@@ -50,7 +50,8 @@ public class MessageUtils {
 				message.setCreatedTime(sdf.format(new Date(emMessage.getMsgTime())));
 				message.setContent(((TextMessageBody) emMessage.getBody()).getMessage());
 				message.setRead(false);
-
+				message.setMsgId(emMessage.getMsgId());
+				
 				addChatMessage(appContext, message, false);
 			} else {
 				TJMessage tjMessage = new TJMessage();
@@ -63,6 +64,7 @@ public class MessageUtils {
 				tjMessage.setType(emMessage.getIntAttribute("type"));
 				tjMessage.setCreatedTime(emMessage.getStringAttribute("createdTime"));
 				tjMessage.setRead(false);
+				tjMessage.setMsgId(emMessage.getMsgId());
 
 				addSysMessage(appContext, tjMessage);
 			}
@@ -80,7 +82,7 @@ public class MessageUtils {
 			for (TJMessage tjMessage : DataContainer.MessageList) {
 				if (!StringUtils.isBlank(tjMessage.getHxid()) && tjMessage.getHxid().equals(message.getHxid())) {
 					// 如果消息最近时间未改变则表示没有更新的聊天消息，不需要更新消息记录
-					if(tjMessage.getCreatedTime().equals(message.getCreatedTime())){
+					if(StringUtils.isEquals(tjMessage.getMsgId(),message.getMsgId())){
 						tjMessage.setRead(message.isRead());
 						return;
 					}
@@ -93,6 +95,7 @@ public class MessageUtils {
 				addOrUpdateTJMessage = new TJMessage();
 				addOrUpdateTJMessage.set_id(UUID.randomUUID());
 				addOrUpdateTJMessage.setHxid(message.getHxid());
+				addOrUpdateTJMessage.setMsgId(message.getMsgId());
 				addOrUpdateTJMessage.setType(AppConstant.MSG_TYPE_CHAT);
 			}
 			if (message.getUserId() == null && DataContainer.userInfoMap.containsKey(message.getHxid())) {

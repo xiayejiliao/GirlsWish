@@ -328,6 +328,7 @@ public class MainTabInfoFragment extends BaseFragment {
 			mListAdapter.notifyDataSetChanged();
 		}
 		boolean hasUnReadMsg = false;
+		List<TJMessage> md = DataContainer.MessageList;
 		for (final TJMessage message : DataContainer.MessageList) {
 			if (!message.isRead()) {
 				hasUnReadMsg = true;

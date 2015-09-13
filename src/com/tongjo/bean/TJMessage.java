@@ -10,6 +10,8 @@ public class TJMessage {
 	@DatabaseField(id = true, index = true)
 	private UUID _id;
 	@DatabaseField
+	private String msgId;
+	@DatabaseField
 	private int type;
 	@DatabaseField
 	private String title;
@@ -131,6 +133,15 @@ public class TJMessage {
 
 	public void setWishId(String wishId) {
 		this.wishId = wishId;
+	}
+
+	
+	public String getMsgId() {
+		return msgId;
+	}
+
+	public void setMsgId(String msgId) {
+		this.msgId = msgId;
 	}
 
 	@Override
