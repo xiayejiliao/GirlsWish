@@ -9,13 +9,18 @@
         <item name="android:popupBackground">#ffffff</item>
         <item name="android:dropDownHorizontalOffset">0dip</item>
     </style>
-	<!-- 溢出菜单图标-->
+    <!-- 溢出菜单图标 -->
     <style name="OverFlow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
         <item name="android:src">@drawable/actionoverflowbutton</item>
     </style>
 
+        
+    <!-- OverFlow menu Styles -->
+    <style name="PopupMenuListView" parent="@style/Widget.AppCompat.Light.ListView.DropDown">
+        <item name="android:listSelector">@drawable/pop_item_selector</item>
+    </style>
+    
     <style name="MaterialAppTheme.NoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
-
         <!-- Main theme colors -->
         <!-- your app branding color for the app bar -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -35,10 +40,16 @@
 
         <!-- 溢出菜单样式 -->
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
-        <!-- 溢出菜单图标-->
+        <!-- 溢出菜单图标 -->
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
+        
+        <!-- 同样可以设置溢出菜单样式,这边目前是设置list样式 -->
+        <item name="android:dropDownListViewStyle">@style/PopupMenuListView</item>
+        <item name="dropDownListViewStyle">@style/PopupMenuListView</item>
     </style>
 
+    
+    
     <style name="MaterialAppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
 
         <!-- Main theme colors -->
@@ -58,9 +69,10 @@
 
         <!-- 溢出菜单样式 -->
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
-        <!-- 溢出菜单图标-->
+        <!-- 溢出菜单图标 -->
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
     </style>
+
 
     <style name="IMTheme.Transparent" parent="@style/MaterialAppTheme.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>

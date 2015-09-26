@@ -110,6 +110,7 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 		// mRefreshableView = (RefreshableView)
 		// view.findViewById(R.id.info_refreshable_view);
 		mListAdapter = new SystemMsgAdapter(this.getApplicationContext(), DataContainer.SystemMsgList);
+		List<TJMessage> list = DataContainer.SystemMsgList;
 		mListView.setEmptyView(mEmptyView);
 		mListView.setAdapter(mListAdapter);
 		selectData();
@@ -275,6 +276,7 @@ public class SystemMsgActivity extends AppCompatActivity implements EMEventListe
 			message.setCreatedTime(systemMsgList.get(systemMsgList.size() - 1).getCreatedTime());
 			message.setRead(false);
 			message.setType(AppConstant.MSG_TYPE_SYSTEM);
+			/*message.setMsgId("msgId");*/
 			Log.e(TAG, message.toString());
 			mTJMessageDao.update(message);
 		} catch (SQLException e) {

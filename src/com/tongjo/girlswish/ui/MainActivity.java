@@ -626,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
 				public void run() {
 					isBackPressed = false;
 				}
-			}, 1000);
+			}, 5000);
 		}else{
 			super.onBackPressed();
 		}

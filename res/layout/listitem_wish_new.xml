@@ -73,7 +73,7 @@
                         android:layout_width="@dimen/margin_18"
                         android:layout_height="@dimen/margin_18"
                         android:layout_marginTop="@dimen/margin_6"
-                        android:src="@drawable/femail" />
+                        android:src="@drawable/women" />
                 </LinearLayout>
             </LinearLayout>
 
